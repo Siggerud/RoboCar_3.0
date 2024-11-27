@@ -45,9 +45,9 @@ class CarControl:
 
     def start(self):
         if self._camera:
-            #self._get_camera_ready() # this needs to be first method called
+            self._get_camera_ready() # this needs to be first method called
 
-            self._activate_camera()
+            #self._activate_camera()
 
         if self._arduinoCommunicator:
             self._activate_arduino_communication()
@@ -126,6 +126,7 @@ class CarControl:
                 servo.setup()
         print("starting")
         while not flag.value:
+            print("loop")
             for event in self._xboxControl.get_controller_events():
                 button, pressValue = self._xboxControl.get_button_and_press_value_from_event(event)
                 print(button)
