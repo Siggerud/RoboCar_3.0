@@ -127,7 +127,7 @@ except (X11ForwardingError, NoControllerDetected) as e:
 
 car = setup_car(parser)
 
-arduinoCommunicator = setup_arduino_communicator(parser)
+#arduinoCommunicator = setup_arduino_communicator(parser)
 
 # define servos aboard car
 servoHorizontal = setup_servo(parser, "horizontal")
