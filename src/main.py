@@ -147,15 +147,15 @@ if servoVertical:
 
 #if arduinoCommunicator:
     #carController.add_arduino_communicator(arduinoCommunicator)
-"""
+
 if camera:
     cameraHelper = CameraHelper()
     cameraHelper.add_car(car)
     cameraHelper.add_servo(servoHorizontal)
 
     carController.add_camera(camera)
-    carController.add_camera_helper(cameraHelper)
-"""
+    #carController.add_camera_helper(cameraHelper)
+
 # start car
 carController.start()
 
