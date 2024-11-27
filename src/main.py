@@ -127,34 +127,34 @@ except (X11ForwardingError, NoControllerDetected) as e:
 
 car = setup_car(parser)
 
-#arduinoCommunicator = setup_arduino_communicator(parser)
+arduinoCommunicator = setup_arduino_communicator(parser)
 
 # define servos aboard car
-#servoHorizontal = setup_servo(parser, "horizontal")
-#servoVertical = setup_servo(parser, "vertical")
+servoHorizontal = setup_servo(parser, "horizontal")
+servoVertical = setup_servo(parser, "vertical")
 
 # setup camera
-#camera = setup_camera(parser)
+camera = setup_camera(parser)
 
 # add components
 if car:
     carController.add_car(car)
-#if servoHorizontal:
-#    carController.add_servo(servoHorizontal)
+if servoHorizontal:
+    carController.add_servo(servoHorizontal)
 
-#if servoVertical:
-#    carController.add_servo(servoVertical)
+if servoVertical:
+    carController.add_servo(servoVertical)
 
-#if arduinoCommunicator:
-#    carController.add_arduino_communicator(arduinoCommunicator)
+if arduinoCommunicator:
+    carController.add_arduino_communicator(arduinoCommunicator)
 
-#if camera:
-#    cameraHelper = CameraHelper()
-#    cameraHelper.add_car(car)
- #   cameraHelper.add_servo(servoHorizontal)
+if camera:
+    cameraHelper = CameraHelper()
+    cameraHelper.add_car(car)
+    cameraHelper.add_servo(servoHorizontal)
 
-  # carController.add_camera(camera)
-   # carController.add_camera_helper(cameraHelper)
+    carController.add_camera(camera)
+    carController.add_camera_helper(cameraHelper)
 
 # start car
 carController.start()
