@@ -8,6 +8,8 @@ from roboCarHelper import print_startup_error, convert_from_board_number_to_bcm_
 from time import sleep
 from configparser import ConfigParser
 import os
+import speech_recognition as sr
+import sounddevice
 
 def setup_camera(parser):
     if not parser["Components.enabled"].getboolean("Camera"):
@@ -127,8 +129,57 @@ flag = carController.shared_flag
 
 # keep process running until keyboard interrupt
 try:
+    # Initialize recognizer class (for recognizing the speech)
+    r = sr.Recognizer()
+
+    listenTime = 3
     while not flag.value:  # listen for any processes setting the event
-        sleep(0.5)
+        spokenWords = ""
+
+        # Reading Microphone as source
+        # listening the speech and store in audio_text variable
+        with sr.Microphone(device_index=1) as source:
+            r.adjust_for_ambient_noise(source)
+            while True:
+                # recoginze_() method will throw a request
+                # error if the API is unreachable,
+                # hence using exception handling
+
+                print("Talk")
+                while True:
+                    audio_text = r.listen(source, timeout=None, phrase_time_limit=3)
+                    try:
+                        # using google speech recognition
+                        spokenWords = r.recognize_google(audio_text)
+                        print("Text: " + spokenWords)
+                        break
+                    except sr.UnknownValueError:
+                        continue
+                    except sr.RequestError as e:
+                        print(f"Could not request results from Google Speech Recognition; {e}")
+                        break
+
+                if spokenWords.lower() == "light up green":
+                    print("green")
+                    # GPIO.output(greenLightPin, True)
+                    # GPIO.output(redLightPin, False)
+                elif spokenWords.lower() == "light up red":
+                    print("red")
+                    # GPIO.output(redLightPin, True)
+                    # GPIO.output(greenLightPin, False)
+                elif spokenWords.lower() == "turn off lights":
+                    print("off")
+                    # GPIO.output(redLightPin, False)
+                    # GPIO.output(greenLightPin, False)
+                elif spokenWords.lower() == "turn on lights":
+                    print("on")
+                    # GPIO.output(redLightPin, True)
+                    # GPIO.output(greenLightPin, True)
+                elif spokenWords.lower() == "cancel program":
+                    break
+
+            sleep(0.5)
+
 except KeyboardInterrupt:
     flag.value = True # set event to stop all active processes
 finally:
