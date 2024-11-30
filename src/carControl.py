@@ -125,6 +125,7 @@ class CarControl:
             for servo in self._servos:
                 servo.setup()
         while not flag.value:
+            print("before xbox events")
             for event in self._xboxControl.get_controller_events():
                 button, pressValue = self._xboxControl.get_button_and_press_value_from_event(event)
                 print(button)
