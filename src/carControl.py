@@ -127,11 +127,7 @@ class CarControl:
         times = []
         tStart = None
         while not flag.value:
-            events = self._xboxControl.get_controller_events()
-            for count, event in enumerate(events):
-                tEnd = time()
-                if tStart:
-                    times.append(tEnd - tStart)
+            for event in self._xboxControl.get_controller_events():
                 button, pressValue = self._xboxControl.get_button_and_press_value_from_event(event)
                 if self._xboxControl.check_for_exit_event(button):
                     self._exit_program(flag)
@@ -145,8 +141,9 @@ class CarControl:
 
                 if self._cameraHelper:
                     self._cameraHelper.update_control_values_for_video_feed(shared_array)
-                if count == len(events) -1:
-                    tStart = time()
+
+                # sleep between event handlings to not overload cpu
+                sleep(0.001)
 
         if self._car:
             self._car.cleanup()
