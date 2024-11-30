@@ -124,8 +124,7 @@ class CarControl:
         if self._servoEnabled:
             for servo in self._servos:
                 servo.setup()
-        times = []
-        tStart = None
+
         while not flag.value:
             for event in self._xboxControl.get_controller_events():
                 button, pressValue = self._xboxControl.get_button_and_press_value_from_event(event)
@@ -142,8 +141,8 @@ class CarControl:
                 if self._cameraHelper:
                     self._cameraHelper.update_control_values_for_video_feed(shared_array)
 
-            # sleep between event handlings to not overload cpu
-            sleep(0.001)
+            # sleep between event handlings to not overload cpu, sleep value is derived from experiments
+            sleep(0.002)
 
         if self._car:
             self._car.cleanup()
@@ -151,7 +150,7 @@ class CarControl:
         if self._servoEnabled:
             for servo in self._servos:
                 servo.cleanup()
-        print(min(times))
+
         self._xboxControl.cleanup()
 
         print("Exiting car handling")
