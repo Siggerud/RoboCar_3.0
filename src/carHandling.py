@@ -1,4 +1,4 @@
-
+import RPi.GPIO as GPIO
 from roboCarHelper import map_value_to_new_scale
 from itertools import chain
 
@@ -42,8 +42,6 @@ class CarHandling:
 		self._gasAndReverseButtons = list(self._controlsDictThrottle.values())
 
 	def setup(self):
-		import RPi.GPIO as GPIO
-
 		GPIO.setmode(GPIO.BOARD)
 
 		GPIO.setup(self._leftBackward, GPIO.OUT)
@@ -65,7 +63,6 @@ class CarHandling:
 		if button in self._turnButtons:
 			self._prepare_car_for_turning(button, pressValue)
 			self._move_car()
-			print(button)
 		elif button in self._gasAndReverseButtons:
 			self._prepare_car_for_throttle(button, pressValue)
 			self._move_car()
@@ -166,7 +163,7 @@ class CarHandling:
 
 			self._goForward = False
 			self._goReverse = False
-		
+		#TODO: only change if speed has changed
 		self._change_duty_cycle([self._pwmA, self._pwmB], speed)
 		self._speed = speed
 

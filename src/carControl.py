@@ -124,10 +124,10 @@ class CarControl:
         if self._servoEnabled:
             for servo in self._servos:
                 servo.setup()
+
         while not flag.value:
             for event in self._xboxControl.get_controller_events():
                 button, pressValue = self._xboxControl.get_button_and_press_value_from_event(event)
-                print(button)
                 if self._xboxControl.check_for_exit_event(button):
                     self._exit_program(flag)
                     break
