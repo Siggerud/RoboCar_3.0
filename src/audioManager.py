@@ -6,13 +6,12 @@ class AudioManager:
     def __init__(self):
         self._listenTime = None #TODO: make this a config variable
         self._deviceIndex = 1 #TODO: make this a config variable
-        self._recognizer = sr.Recognizer()
-        self._source = None
 
     def listen_for_command(self):
+        r = sr.Recognizer()
         with sr.Microphone(device_index=self._deviceIndex) as source:
-            self._recognizer.adjust_for_ambient_noise(source)
-            audio_text = self._recognizer.listen(source, timeout=None, phrase_time_limit=self._listenTime)
+            r.adjust_for_ambient_noise(source)
+            audio_text = r.listen(source, timeout=None, phrase_time_limit=self._listenTime)
             try:
                 # using google speech recognition
                 spokenWords: str = self._recognizer.recognize_google(audio_text)
