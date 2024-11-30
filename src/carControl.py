@@ -2,7 +2,6 @@ import subprocess
 from multiprocessing import Process, Array, Value
 from xboxControl import XboxControl
 from time import sleep
-from audioManager import get_audio
 
 class CarControl:
     def __init__(self):
@@ -23,8 +22,6 @@ class CarControl:
 
         self._buttonToObjectDict = {
         }
-
-        #self._voice_manager = AudioManager()
 
         self.shared_array = None
         self.shared_flag = Value('b', False)
@@ -51,8 +48,6 @@ class CarControl:
             self._get_camera_ready() # this needs to be first method called
 
             self._activate_camera()
-
-        self._activate_voice_commands()
 
         self._activate_car_handling()
 
@@ -99,11 +94,6 @@ class CarControl:
 
         self._camera.add_array_dict(arrayDict)
         self._cameraHelper.add_array_dict(arrayDict)
-
-    def _activate_voice_commands(self):
-        process = Process(target=self._start_listening_for_voice_commands, args=(self.shared_flag, ))
-        self._processes.append(process)
-        process.start()
 
     def _activate_camera(self):
         process = Process(target=self._start_camera, args=(self.shared_array, self.shared_flag))
@@ -156,8 +146,6 @@ class CarControl:
 
         print("Exiting car handling")
 
-    def _start_listening_for_voice_commands(self, flag):
-        get_audio()
 
     def _start_camera(self, shared_array, flag):
         self._camera.setup()
