@@ -63,6 +63,7 @@ class CarHandling:
 		if button in self._turnButtons:
 			self._prepare_car_for_turning(button, pressValue)
 			self._move_car()
+			print(button)
 		elif button in self._gasAndReverseButtons:
 			self._prepare_car_for_throttle(button, pressValue)
 			self._move_car()
