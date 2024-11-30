@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+
 from roboCarHelper import map_value_to_new_scale
 from itertools import chain
 
@@ -42,6 +42,8 @@ class CarHandling:
 		self._gasAndReverseButtons = list(self._controlsDictThrottle.values())
 
 	def setup(self):
+		import RPi.GPIO as GPIO
+
 		GPIO.setmode(GPIO.BOARD)
 
 		GPIO.setup(self._leftBackward, GPIO.OUT)
