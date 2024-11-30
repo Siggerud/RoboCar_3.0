@@ -127,8 +127,8 @@ class CarControl:
         times = []
         tStart = None
         while not flag.value:
-
-            for event in self._xboxControl.get_controller_events():
+            events = self._xboxControl.get_controller_events()
+            for count, event in enumerate(events):
                 tEnd = time()
                 if tStart:
                     times.append(tEnd - tStart)
@@ -145,7 +145,8 @@ class CarControl:
 
                 if self._cameraHelper:
                     self._cameraHelper.update_control_values_for_video_feed(shared_array)
-            tStart = time()
+                if count == len(events) -1:
+                    tStart = time()
 
         if self._car:
             self._car.cleanup()
