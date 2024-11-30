@@ -1,5 +1,4 @@
 from CarHandling import CarHandling
-from ArduinoCommunicator import ArduinoCommunicator, InvalidPortError
 from camera import Camera
 from CameraHelper import CameraHelper
 from servoHandling import ServoHandling
@@ -23,37 +22,6 @@ def setup_camera(parser):
     camera = Camera(resolution)
 
     return camera
-
-
-def setup_arduino_communicator(parser):
-    if not parser["Components.enabled"].getboolean("ArduinoCommunicator"):
-        return None
-
-    arduinoCommunicatorData = parser["Arduino.specs"]
-
-    port = arduinoCommunicatorData.get("Port")
-    baudrate = arduinoCommunicatorData.getint("Baudrate", 9600)
-
-    try:
-        arduinoCommunicator = ArduinoCommunicator(port, baudrate)
-    except InvalidPortError as e:
-        print_startup_error(e)
-        exit()
-
-    buzzerPin = parser["Distance.buzzer.pin"].getint("Buzzer")
-
-    if parser["Components.enabled"].getboolean("DistanceBuzzer"):
-        arduinoCommunicator.activate_distance_sensors(buzzerPin)
-
-    if parser["Components.enabled"].getboolean("ProgressiveLights"):
-        progressiveLightPins = []
-        lightPins = parser["Progressive.light.pins"]
-        for key in lightPins:
-            progressiveLightPins.append(lightPins.getint(key))
-
-        arduinoCommunicator.activate_photocell_lights(progressiveLightPins)
-
-    return arduinoCommunicator
 
 
 def setup_servo(parser, plane):
@@ -127,7 +95,6 @@ except (X11ForwardingError, NoControllerDetected) as e:
 
 car = setup_car(parser)
 
-arduinoCommunicator = setup_arduino_communicator(parser)
 
 # define servos aboard car
 servoHorizontal = setup_servo(parser, "horizontal")
@@ -144,9 +111,6 @@ if servoHorizontal:
 
 if servoVertical:
     carController.add_servo(servoVertical)
-
-if arduinoCommunicator:
-    carController.add_arduino_communicator(arduinoCommunicator)
 
 if camera:
     cameraHelper = CameraHelper()
