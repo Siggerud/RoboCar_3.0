@@ -101,7 +101,7 @@ class CarControl:
         self._cameraHelper.add_array_dict(arrayDict)
 
     def _activate_voice_commands(self):
-        process = Process(target=self._start_listening_for_voice_commands, args=(self.shared_flag))
+        process = Process(target=self._start_listening_for_voice_commands, args=(self.shared_flag, ))
         self._processes.append(process)
         process.start()
 
