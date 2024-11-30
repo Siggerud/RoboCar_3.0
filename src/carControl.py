@@ -1,5 +1,5 @@
 import subprocess
-from multiprocessing import Process, Array, Value
+from multiprocessing import Process, Value
 from xboxControl import XboxControl
 from time import sleep
 
@@ -43,6 +43,9 @@ class CarControl:
         if not self._servoEnabled:
             self._servoEnabled = True
 
+    def add_array(self, array):
+        self.shared_array = array
+
     def start(self):
         if self._camera:
             self._get_camera_ready() # this needs to be first method called
@@ -66,31 +69,31 @@ class CarControl:
             self._camera.set_servo_enabled()
 
     def _set_shared_array_and_array_dict(self):
-        arrayInput = []
+        #arrayInput = []
         arrayDict = {}
         counter = 0
         if self._car:
             arrayDict["speed"] = counter
-            arrayInput.append(0.0)
+            #arrayInput.append(0.0)
             counter += 1
 
             arrayDict["turn"] = counter
-            arrayInput.append(0.0)
+            #arrayInput.append(0.0)
             counter += 1
 
         if self._servoEnabled:
             arrayDict["servo"] = counter
-            arrayInput.append(0.0)
+            #arrayInput.append(0.0)
             counter += 1
 
         arrayDict["HUD"] = counter
-        arrayInput.append(0.0)
+        #arrayInput.append(0.0)
         counter += 1
 
         arrayDict["Zoom"] = counter
-        arrayInput.append(1.0)
+        #arrayInput.append(1.0)
 
-        self.shared_array = Array('d', arrayInput)
+        #self.shared_array = Array('d', arrayInput)
 
         self._camera.add_array_dict(arrayDict)
         self._cameraHelper.add_array_dict(arrayDict)

@@ -9,7 +9,8 @@ from time import sleep
 from configparser import ConfigParser
 import os
 import speech_recognition as sr
-import sounddevice
+import sounddevice # to avoid lots of ALSA error
+from multiprocessing import Array
 
 def setup_camera(parser):
     if not parser["Components.enabled"].getboolean("Camera"):
@@ -122,10 +123,23 @@ if camera:
     carController.add_camera(camera)
     carController.add_camera_helper(cameraHelper)
 
+shared_array = Array(
+    'd', [
+        0.0, #speed
+        0.0, #turn
+        0.0, # servo
+        0.0, #HUD
+        1.0 #zoom
+    ]
+)
+
+carController.add_array(shared_array)
+
 # start car
 carController.start()
 
 flag = carController.shared_flag
+
 
 # keep process running until keyboard interrupt
 try:
