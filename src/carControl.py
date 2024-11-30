@@ -142,8 +142,8 @@ class CarControl:
                 if self._cameraHelper:
                     self._cameraHelper.update_control_values_for_video_feed(shared_array)
 
-                # sleep between event handlings to not overload cpu
-                sleep(0.001)
+            # sleep between event handlings to not overload cpu
+            sleep(0.001)
 
         if self._car:
             self._car.cleanup()
