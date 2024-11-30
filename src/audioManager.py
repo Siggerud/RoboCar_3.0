@@ -10,7 +10,7 @@ class AudioManager:
         self._source = None
 
     def setup(self):
-        self._source = sr.MicroPhone(device_index=self._deviceIndex)
+        self._source = sr.Microphone(device_index=self._deviceIndex)
         self._recognizer.adjust_for_ambient_noise(self._source)
 
     def listen_for_command(self):
