@@ -157,8 +157,6 @@ class CarControl:
         print("Exiting car handling")
 
     def _start_listening_for_voice_commands(self, flag):
-        self._voice_manager.setup()
-
         while not flag.value:
             self._voice_manager.listen_for_command()
 
