@@ -1,7 +1,7 @@
 import subprocess
 from multiprocessing import Process, Array, Value
 from xboxControl import XboxControl
-from time import sleep
+from time import sleep, time
 
 class CarControl:
     def __init__(self):
@@ -124,9 +124,14 @@ class CarControl:
         if self._servoEnabled:
             for servo in self._servos:
                 servo.setup()
-
+        times = []
+        tStart = None
         while not flag.value:
+
             for event in self._xboxControl.get_controller_events():
+                tEnd = time()
+                if tStart:
+                    times.append(tEnd - tStart)
                 button, pressValue = self._xboxControl.get_button_and_press_value_from_event(event)
                 if self._xboxControl.check_for_exit_event(button):
                     self._exit_program(flag)
@@ -140,6 +145,7 @@ class CarControl:
 
                 if self._cameraHelper:
                     self._cameraHelper.update_control_values_for_video_feed(shared_array)
+                tStart = time()
 
         if self._car:
             self._car.cleanup()
@@ -147,7 +153,7 @@ class CarControl:
         if self._servoEnabled:
             for servo in self._servos:
                 servo.cleanup()
-
+        print(min(times))
         self._xboxControl.cleanup()
 
         print("Exiting car handling")
