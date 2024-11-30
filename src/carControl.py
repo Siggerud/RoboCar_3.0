@@ -1,7 +1,8 @@
 import subprocess
 from multiprocessing import Process, Array, Value
 from xboxControl import XboxControl
-from time import sleep, time
+from time import sleep
+from audioManager import AudioManager
 
 class CarControl:
     def __init__(self):
@@ -22,6 +23,8 @@ class CarControl:
 
         self._buttonToObjectDict = {
         }
+
+        self._voice_manager = AudioManager()
 
         self.shared_array = None
         self.shared_flag = Value('b', False)
@@ -49,8 +52,7 @@ class CarControl:
 
             self._activate_camera()
 
-        if self._arduinoCommunicator:
-            self._activate_arduino_communication()
+        self._activate_voice_commands()
 
         self._activate_car_handling()
 
@@ -98,14 +100,13 @@ class CarControl:
         self._camera.add_array_dict(arrayDict)
         self._cameraHelper.add_array_dict(arrayDict)
 
-
-    def _activate_camera(self):
-        process = Process(target=self._start_camera, args=(self.shared_array, self.shared_flag))
+    def _activate_voice_commands(self):
+        process = Process(target=self._start_listening_for_voice_commands, args=(self.shared_flag))
         self._processes.append(process)
         process.start()
 
-    def _activate_arduino_communication(self):
-        process = Process(target=self._start_listening_for_arduino_communication, args=(self.shared_flag,))
+    def _activate_camera(self):
+        process = Process(target=self._start_camera, args=(self.shared_array, self.shared_flag))
         self._processes.append(process)
         process.start()
 
@@ -154,6 +155,12 @@ class CarControl:
         self._xboxControl.cleanup()
 
         print("Exiting car handling")
+
+    def _start_listening_for_voice_commands(self, flag):
+        self._voice_manager.setup()
+
+        while not flag.value:
+            self._voice_manager.listen_for_command()
 
     def _start_camera(self, shared_array, flag):
         self._camera.setup()
