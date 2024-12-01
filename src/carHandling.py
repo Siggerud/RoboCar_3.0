@@ -85,7 +85,7 @@ class CarHandling:
 		if command in list(self._commands_to_gpio_values.keys()):
 			newGpioValues = self._commands_to_gpio_values[command]
 			self._adjust_gpio_values(newGpioValues)
-		elif command in ["go forward", "reverse car"]
+		elif command in ["go forward", "reverse car"]:
 			self._adjust_speed(command)
 
 	"""
@@ -137,7 +137,7 @@ class CarHandling:
 
 		if adjustSpeed:
 			self._change_duty_cycle()
-		
+
 	def _change_duty_cycle(self):
 		for pwm in [self._pwmA, self._pwmB]:
 			pwm.ChangeDutyCycle(self._speed)
