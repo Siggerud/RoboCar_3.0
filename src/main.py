@@ -184,7 +184,6 @@ try:
                 except KeyError:
                     continue
 
-            sleep(0.5)
 
 except KeyboardInterrupt:
     flag.value = True # set event to stop all active processes

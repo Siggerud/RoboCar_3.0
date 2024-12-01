@@ -154,6 +154,8 @@ class CarControl:
             except KeyError:
                 continue
 
+            sleep(0.5)
+
             #self._cameraHelper.update_control_values_for_video_feed(shared_array)
 
         for servo in self._servos:
