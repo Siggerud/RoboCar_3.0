@@ -28,7 +28,7 @@ class CarControl:
         self._exitCommand: str = "cancel program" #TODO: make this an input to the class
 
         self.shared_array = None
-        self._shared_array_voice = None
+        self._shared_value = None
         self.shared_flag = Value('b', False)
 
     def add_arduino_communicator(self, arduinoCommunicator):
@@ -124,7 +124,7 @@ class CarControl:
     def _activate_voice_command_handling(self):
         process = Process(
             target=self._start_listening_for_voice_commands,
-            args=(self._shared_array_voice, self.shared_flag)
+            args=(self._shared_value, self.shared_flag)
         )
         self._processes.append(process)
         process.start()
@@ -133,7 +133,7 @@ class CarControl:
         for index, command in enumerate(list(self._commandToObjects.keys())):
             self._commands_to_numbers[command] = index
 
-    def _start_listening_for_voice_commands(self, shared_array, flag):
+    def _start_listening_for_voice_commands(self, shared_value, flag):
 
 
         self._car.setup()
@@ -141,7 +141,7 @@ class CarControl:
             servo.setup()
 
         while not flag.value:
-            command: str = self._get_voice_command(shared_array)
+            command: str = self._shared_value.value
             if command == self._exitCommand:
                 self._exit_program(flag)
                 break
@@ -158,8 +158,6 @@ class CarControl:
 
         self._car.cleanup()
 
-    def _get_voice_command(self, array) -> str:
-        return array[0]
 
     def _start_listening_for_xbox_commands(self, shared_array, flag):
         self._print_button_explanation()
@@ -286,8 +284,8 @@ class CarControl:
 
         return not returnCode
 
-    def add_voice_array(self, shared_array_voice):
-        self._shared_array_voice = shared_array_voice
+    def add_voice_value(self, _shared_value):
+        self._shared_value = _shared_value
 
 
 class X11ForwardingError(Exception):

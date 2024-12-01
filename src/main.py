@@ -10,7 +10,7 @@ from configparser import ConfigParser
 import os
 import speech_recognition as sr
 import sounddevice # to avoid lots of ALSA error
-from multiprocessing import Array
+from multiprocessing import Array, Value
 
 def setup_camera(parser):
     if not parser["Components.enabled"].getboolean("Camera"):
@@ -133,10 +133,10 @@ shared_array = Array(
     ]
 )
 
-shared_array_voice = Array(
+shared_value = Value(
     'i', 0
 )
-carController.add_voice_array(shared_array_voice)
+carController.add_voice_value(shared_value)
 
 carController.add_array(shared_array)
 
@@ -180,7 +180,7 @@ try:
                         break
 
                 try:
-                    shared_array_voice[0] = carController.get_commands_to_numbers()[spokenWords.lower()]
+                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords.lower()]
                 except KeyError:
                     continue
 
