@@ -141,7 +141,7 @@ class CarControl:
             servo.setup()
 
         while not flag.value:
-            command: str = self._shared_value.value
+            command: str = self._get_voice_command(self._shared_value.value)
             if command == self._exitCommand:
                 self._exit_program(flag)
                 break
@@ -158,6 +158,8 @@ class CarControl:
 
         self._car.cleanup()
 
+    def _get_voice_command(self, num: int) -> str:
+        return self._commands_to_numbers[num]
 
     def _start_listening_for_xbox_commands(self, shared_array, flag):
         self._print_button_explanation()
