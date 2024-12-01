@@ -86,7 +86,7 @@ class CarHandling:
 		if command in list(self._commands_to_gpio_values.keys()):
 			newGpioValues = self._commands_to_gpio_values[command]
 			self._adjust_gpio_values(newGpioValues)
-		elif command in ["drive forward", "reverse car"]:
+		elif command in ["go forward", "go slower"]:
 			print("Adjusting speed")
 			self._adjust_speed(command)
 
