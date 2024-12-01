@@ -134,7 +134,7 @@ shared_array = Array(
 )
 
 shared_array_voice = Array(
-    'u', ""
+    'i', 0
 )
 carController.add_voice_array(shared_array_voice)
 
@@ -179,7 +179,10 @@ try:
                         print(f"Could not request results from Google Speech Recognition; {e}")
                         break
 
-                shared_array_voice[0] = spokenWords.lower()
+                try:
+                    shared_array_voice[0] = carController.get_commands_to_numbers()[spokenWords.lower()]
+                except KeyError:
+                    continue
 
             sleep(0.5)
 

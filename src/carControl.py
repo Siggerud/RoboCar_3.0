@@ -23,7 +23,8 @@ class CarControl:
         self._buttonToObjectDict = {
         }
 
-        self._commandToObjects: dict = {}
+        self._commandToObjects: dict[str: object] = {}
+        self._commands_to_numbers: dict[str: int] = {}
         self._exitCommand: str = "cancel program" #TODO: make this an input to the class
 
         self.shared_array = None
@@ -50,7 +51,14 @@ class CarControl:
     def add_array(self, array):
         self.shared_array = array
 
+    def get_commands_to_numbers(self) -> dict[str: int]:
+        return self._commands_to_numbers
+
     def start(self):
+        # TODO: print commands
+        self._map_all_objects_to_commands() #TODO: move to init method
+        self._populate_commands_to_numbers() #TODO: move to init method
+
         if self._camera:
             self._get_camera_ready() # this needs to be first method called
 
@@ -121,9 +129,12 @@ class CarControl:
         self._processes.append(process)
         process.start()
 
+    def _populate_commands_to_numbers(self):
+        for index, command in enumerate(list(self._commandToObjects.keys())):
+            self._commands_to_numbers[command] = index
+
     def _start_listening_for_voice_commands(self, shared_array, flag):
-        #TODO: print commands
-        self._map_all_objects_to_commands()
+
 
         self._car.setup()
         for servo in self._servos:
