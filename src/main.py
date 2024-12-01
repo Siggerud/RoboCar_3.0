@@ -182,7 +182,7 @@ try:
                         break
 
                 try:
-                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords.lower()]
+                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords.lower().strip()]
                     shared_value[1] = 1 # set 1 to signal that a new command is given
                 except KeyError:
                     continue
