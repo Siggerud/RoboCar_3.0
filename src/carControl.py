@@ -132,8 +132,11 @@ class CarControl:
         process.start()
 
     def _populate_commands_to_numbers(self):
+        # add commands from all objects
         for index, command in enumerate(list(self._commandToObjects.keys())):
             self._commands_to_numbers[command] = index
+
+        # add exit command to dictionary
         self._commands_to_numbers[self._exitCommand] = index + 1
 
     def _populate_numbers_to_commands(self):
@@ -145,15 +148,15 @@ class CarControl:
             servo.setup()
 
         while not flag.value:
-            command: str = self._get_voice_command(self._shared_value.value)
-            if command == self._exitCommand:
-                self._exit_program(flag)
-                break
+            newCommand = bool(shared_value[1]) # check if there's a new command
+            if newCommand:
+                command: str = self._get_voice_command(self._shared_value[0])
+                if command == self._exitCommand:
+                    self._exit_program(flag)
+                    break
 
-            try:
                 self._commandToObjects[command].handle_voice_command(command)
-            except KeyError:
-                continue
+                self._shared_value[1] = 0 # signal that command is read
 
             sleep(0.5)
 

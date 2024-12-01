@@ -133,8 +133,10 @@ shared_array = Array(
     ]
 )
 
-shared_value = Value(
-    'i', 0
+shared_value = Array(
+    'i', [0, # command
+          1 # new command - boolean
+          ]
 )
 carController.add_voice_value(shared_value)
 
@@ -180,7 +182,8 @@ try:
                         break
 
                 try:
-                    shared_value.value = carController.get_commands_to_numbers()[spokenWords.lower()]
+                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords.lower()]
+                    shared_value[1] = 1 # set 1 to signal that a new command is given
                 except KeyError:
                     continue
 
