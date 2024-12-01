@@ -139,8 +139,6 @@ class CarControl:
         self._numbers_to_commands = {num: command for command, num in self._commands_to_numbers.items()}
 
     def _start_listening_for_voice_commands(self, shared_value, flag):
-
-
         self._car.setup()
         for servo in self._servos:
             servo.setup()
@@ -164,7 +162,7 @@ class CarControl:
         self._car.cleanup()
 
     def _get_voice_command(self, num: int) -> str:
-        return self._commands_to_numbers[num]
+        return self._numbers_to_commands[num]
 
     def _start_listening_for_xbox_commands(self, shared_array, flag):
         self._print_button_explanation()
