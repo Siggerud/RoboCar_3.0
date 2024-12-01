@@ -133,7 +133,13 @@ shared_array = Array(
     ]
 )
 
+shared_array_voice = Array(
+    'u', ""
+)
+carController.add_voice_array(shared_array_voice)
+
 carController.add_array(shared_array)
+
 
 # start car
 carController.start()
@@ -154,7 +160,7 @@ try:
         # listening the speech and store in audio_text variable
         with sr.Microphone(device_index=1) as source:
             r.adjust_for_ambient_noise(source)
-            while True:
+            while not flag.value:
                 # recoginze_() method will throw a request
                 # error if the API is unreachable,
                 # hence using exception handling
@@ -173,24 +179,7 @@ try:
                         print(f"Could not request results from Google Speech Recognition; {e}")
                         break
 
-                if spokenWords.lower() == "light up green":
-                    print("green")
-                    # GPIO.output(greenLightPin, True)
-                    # GPIO.output(redLightPin, False)
-                elif spokenWords.lower() == "light up red":
-                    print("red")
-                    # GPIO.output(redLightPin, True)
-                    # GPIO.output(greenLightPin, False)
-                elif spokenWords.lower() == "turn off lights":
-                    print("off")
-                    # GPIO.output(redLightPin, False)
-                    # GPIO.output(greenLightPin, False)
-                elif spokenWords.lower() == "turn on lights":
-                    print("on")
-                    # GPIO.output(redLightPin, True)
-                    # GPIO.output(greenLightPin, True)
-                elif spokenWords.lower() == "cancel program":
-                    break
+                shared_array_voice[0] = spokenWords.lower()
 
             sleep(0.5)
 

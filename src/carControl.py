@@ -23,7 +23,11 @@ class CarControl:
         self._buttonToObjectDict = {
         }
 
+        self._commandToObjects: dict = {}
+        self._exitCommand: str = "cancel program" #TODO: make this an input to the class
+
         self.shared_array = None
+        self._shared_array_voice = None
         self.shared_flag = Value('b', False)
 
     def add_arduino_communicator(self, arduinoCommunicator):
@@ -107,6 +111,35 @@ class CarControl:
         process = Process(target=self._start_listening_for_xbox_commands, args=(self.shared_array, self.shared_flag))
         self._processes.append(process)
         process.start()
+
+    def _start_listening_for_voice_commands(self, shared_array, flag):
+        #TODO: print commands
+        self._map_all_objects_to_commands()
+
+        self._car.setup()
+        for servo in self._servos:
+            servo.setup()
+
+        while not flag.value:
+            command: str = self._get_voice_command(shared_array)
+            if command == self._exitCommand:
+                self._exit_program(flag)
+                break
+
+            try:
+                self._commandToObjects[command].handle_voice_command(command)
+            except KeyError:
+                continue
+
+            #self._cameraHelper.update_control_values_for_video_feed(shared_array)
+
+        for servo in self._servos:
+            servo.cleanup()
+
+        self._car.cleanup()
+
+    def _get_voice_command(self, array) -> str:
+        return array[0]
 
     def _start_listening_for_xbox_commands(self, shared_array, flag):
         self._print_button_explanation()
@@ -194,6 +227,13 @@ class CarControl:
         print(f"Double tap {self._xboxControl.get_exit_button()} to exit")
 
     def _map_all_objects_to_buttons(self):
+        self._add_object_to_commands(self._car.get_car_commands(), self._car)
+        for servo in self._servos:
+            self._add_object_to_commands(servo.get_servo_commands(), servo)
+
+        self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper)
+
+    def _map_all_objects_to_commands(self):
         if self._car:
             self._add_object_to_buttons(self._car.get_car_buttons(), self._car)
 
@@ -203,6 +243,10 @@ class CarControl:
 
         if self._cameraHelper:
             self._add_object_to_buttons(self._cameraHelper.get_camera_buttons(), self._cameraHelper)
+
+    def _add_object_to_commands(self, commandDict, roboObject):
+        for command in list(commandDict.values()):
+            self._commandToObjects[command] = roboObject
 
     def _add_object_to_buttons(self, buttonDict, roboObject):
         for button in list(buttonDict.values()):
@@ -220,6 +264,9 @@ class CarControl:
             print("Succesful connection to forwarded X11 server")
 
         return not returnCode
+
+    def add_voice_array(self, shared_array_voice):
+        self._shared_array_voice = shared_array_voice
 
 
 class X11ForwardingError(Exception):

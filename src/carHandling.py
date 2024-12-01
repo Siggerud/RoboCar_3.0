@@ -37,9 +37,21 @@ class CarHandling:
 			"Reverse": "LT"
 		}
 
+		# key is description and value is the commands
+		self._commands = {
+			"Turns car left": "turn left",
+			"Turns car right": "turn right",
+			"Drives car forward": "drive forward",
+			"Drives car backwards": "reverse car",
+			"Turns speed higher": "go faster",
+			"Turns speed lower": "go slower",
+			"Stops car": "stop now"
+		}
+
 		self._turnButtons = list(self._controlsDictTurnButtons.values())
 
 		self._gasAndReverseButtons = list(self._controlsDictThrottle.values())
+
 
 	def setup(self):
 		GPIO.setmode(GPIO.BOARD)
@@ -59,6 +71,9 @@ class CarHandling:
 
 		self._gpioThrottle = {True: GPIO.HIGH, False: GPIO.LOW}
 
+	def handle_voice_command(self, command):
+		print(command)
+
 	def handle_xbox_input(self, button, pressValue):
 		if button in self._turnButtons:
 			self._prepare_car_for_turning(button, pressValue)
@@ -72,6 +87,9 @@ class CarHandling:
 		self._pwmB.stop()
 
 		GPIO.cleanup()
+
+	def get_car_commands(self) -> dict[str: str]:
+		return self._commands
 
 	def get_car_buttons(self):
 		completeDict = dict(chain(self._controlsDictThrottle.items(), self._controlsDictTurnButtons.items()))

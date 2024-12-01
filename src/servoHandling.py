@@ -52,6 +52,9 @@ class ServoHandling:
     def get_servo_buttons(self):
         return self._controlsDictServo
 
+    def get_servo_commands(self):
+        return {}
+
     def get_plane(self):
         return self._plane
 
