@@ -56,7 +56,8 @@ class CarControl:
 
             self._activate_camera()
 
-        self._activate_car_handling()
+        #self._activate_car_handling()
+        self._activate_voice_command_handling()
 
     def cleanup(self):
         # close all threads
@@ -109,6 +110,14 @@ class CarControl:
 
     def _activate_car_handling(self):
         process = Process(target=self._start_listening_for_xbox_commands, args=(self.shared_array, self.shared_flag))
+        self._processes.append(process)
+        process.start()
+
+    def _activate_voice_command_handling(self):
+        process = Process(
+            target=self._start_listening_for_voice_commands,
+            args=(self._shared_array_voice, self.shared_flag)
+        )
         self._processes.append(process)
         process.start()
 
@@ -226,14 +235,14 @@ class CarControl:
 
         print(f"Double tap {self._xboxControl.get_exit_button()} to exit")
 
-    def _map_all_objects_to_buttons(self):
+    def _map_all_objects_to_commands(self):
         self._add_object_to_commands(self._car.get_car_commands(), self._car)
         for servo in self._servos:
             self._add_object_to_commands(servo.get_servo_commands(), servo)
 
         self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper)
 
-    def _map_all_objects_to_commands(self):
+    def _map_all_objects_to_buttons(self):
         if self._car:
             self._add_object_to_buttons(self._car.get_car_buttons(), self._car)
 
