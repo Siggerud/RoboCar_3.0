@@ -82,6 +82,7 @@ class CarHandling:
 		self._gpioThrottle = {True: GPIO.HIGH, False: GPIO.LOW}
 
 	def handle_voice_command(self, command):
+		print("Command: " + command)
 		if command in list(self._commands_to_gpio_values.keys()):
 			newGpioValues = self._commands_to_gpio_values[command]
 			self._adjust_gpio_values(newGpioValues)
