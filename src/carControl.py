@@ -236,6 +236,7 @@ class CarControl:
         print(f"Double tap {self._xboxControl.get_exit_button()} to exit")
 
     def _map_all_objects_to_commands(self):
+        print(f"self._car type: {type(self._car)}, dir(self._car): {dir(self._car)}")
         self._add_object_to_commands(self._car.get_car_commands(), self._car)
         for servo in self._servos:
             self._add_object_to_commands(servo.get_servo_commands(), servo)
