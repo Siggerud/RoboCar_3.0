@@ -25,6 +25,7 @@ class CarControl:
 
         self._commandToObjects: dict[str: object] = {}
         self._commands_to_numbers: dict[str: int] = {}
+        self._numbers_to_commands: dict[int: str] = {}
         self._exitCommand: str = "cancel program" #TODO: make this an input to the class
 
         self.shared_array = None
@@ -58,6 +59,7 @@ class CarControl:
         # TODO: print commands
         self._map_all_objects_to_commands() #TODO: move to init method
         self._populate_commands_to_numbers() #TODO: move to init method
+        self._populate_numbers_to_commands() #TODO: move to init method
 
         if self._camera:
             self._get_camera_ready() # this needs to be first method called
@@ -132,6 +134,9 @@ class CarControl:
     def _populate_commands_to_numbers(self):
         for index, command in enumerate(list(self._commandToObjects.keys())):
             self._commands_to_numbers[command] = index
+
+    def _populate_numbers_to_commands(self):
+        self._numbers_to_commands = {num: command for command, num in self._commands_to_numbers.items()}
 
     def _start_listening_for_voice_commands(self, shared_value, flag):
 
