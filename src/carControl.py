@@ -134,6 +134,7 @@ class CarControl:
     def _populate_commands_to_numbers(self):
         for index, command in enumerate(list(self._commandToObjects.keys())):
             self._commands_to_numbers[command] = index
+        self._commands_to_numbers[self._exitCommand] = index + 1
 
     def _populate_numbers_to_commands(self):
         self._numbers_to_commands = {num: command for command, num in self._commands_to_numbers.items()}
