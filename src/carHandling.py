@@ -136,6 +136,7 @@ class CarHandling:
 				adjustSpeed = True
 
 		if adjustSpeed:
+			print(self._speed)
 			self._change_duty_cycle()
 
 	def _change_duty_cycle(self):
