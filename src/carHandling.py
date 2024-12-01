@@ -48,12 +48,17 @@ class CarHandling:
 			"Stops car": "stop now"
 		}
 
-		self._commands_to_gpio_values: dict[str: list[bool]] = {
-			"turn left": [False, True, True, False],
-			"turn right": [True, False, False, True],
-			"drive forward": [True, True, False, False],
-			"reverse car": [False, False, True, True],
-			"stop now": [False, False, False, False]
+		self._direction_commands: dict = {
+			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False]},
+			"turn right": {"description": "Turns car right", "gpioValues": [True, False, False, True]},
+			"go forward": {"description": "Drives car forward", "gpioValues": [True, True, False, False]},
+			"go backward": {"description": "Reverses car", "gpioValues": [False, False, True, True]},
+			"stop now": {"description": "Stops car", "gpioValues": [False, False, False, False]},
+		}
+
+		self._speed_commands: dict = {
+			"go faster": {"description": "Increases car speed"},
+			"go slower": {"description": "Decrease car speed"}
 		}
 
 		self._speedStep: int = 10 #TODO: add this to config
@@ -83,11 +88,11 @@ class CarHandling:
 
 	def handle_voice_command(self, command):
 		print("Command: " + command)
-		if command in list(self._commands_to_gpio_values.keys()):
-			newGpioValues = self._commands_to_gpio_values[command]
+		if command in list(self._direction_commands.keys()):
+			newGpioValues = self._direction_commands[command]["gpioValues"]
 			self._adjust_gpio_values(newGpioValues)
-		else:
-			print("Adjusting speed")
+		elif command in list(self._speed_commands.keys()):
+			print("Adjusting speed...")
 			self._adjust_speed(command)
 
 	"""
@@ -106,7 +111,10 @@ class CarHandling:
 		GPIO.cleanup()
 
 	def get_car_commands(self) -> dict[str: str]:
-		return self._commands
+		dictWithAllCommands = dict(chain(self._direction_commands.items(), self._speed_commands.items()))
+		allCommands = list(dictWithAllCommands.keys())
+
+		return allCommands
 
 	"""
 	def get_car_buttons(self):

@@ -63,7 +63,7 @@ class CameraHelper:
         return self._controlsDictCamera
 
     def get_camera_commands(self):
-        return {}
+        return []
     def get_HUD_active(self):
         return self._hudActive
 

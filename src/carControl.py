@@ -274,8 +274,8 @@ class CarControl:
         if self._cameraHelper:
             self._add_object_to_buttons(self._cameraHelper.get_camera_buttons(), self._cameraHelper)
 
-    def _add_object_to_commands(self, commandDict, roboObject):
-        for command in list(commandDict.values()):
+    def _add_object_to_commands(self, commands, roboObject):
+        for command in commands:
             self._commandToObjects[command] = roboObject
 
     def _add_object_to_buttons(self, buttonDict, roboObject):
