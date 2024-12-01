@@ -180,7 +180,7 @@ try:
                         break
 
                 try:
-                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords.lower()]
+                    shared_value.value = carController.get_commands_to_numbers()[spokenWords.lower()]
                 except KeyError:
                     continue
 
