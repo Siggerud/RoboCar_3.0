@@ -158,6 +158,7 @@ class Camera:
             self._angleText = "Angle: " + str(int(shared_array[self._arrayDict["servo"]]))
 
         self._hudActive = shared_array[self._arrayDict["HUD"]]
+        print(self._arrayDict["Zoom"])
         self._zoomValue = shared_array[self._arrayDict["Zoom"]]
 
     def _get_turn_value(self, number):
