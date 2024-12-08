@@ -156,9 +156,9 @@ class CarControl:
                 self._commandToObjects[command].handle_voice_command(command)
                 self._shared_value[1] = 0 # signal that command is read
 
-            sleep(0.5)
+            self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
-            #self._cameraHelper.update_control_values_for_video_feed(shared_array)
+            sleep(0.5)
 
         # cleanup objects
         self._servo.cleanup()
