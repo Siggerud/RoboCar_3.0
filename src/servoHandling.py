@@ -78,7 +78,7 @@ class ServoHandling:
                  },
             "look right": {
                 "description": "Turns camera right",
-                "plane": "vertical",
+                "plane": "horizontal",
                 "pwmValue": self._pwmMinValues["horizontal"]
             }
         }
