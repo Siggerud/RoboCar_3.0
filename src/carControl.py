@@ -1,6 +1,5 @@
 import subprocess
 from multiprocessing import Process, Value
-from xboxControl import XboxControl
 from time import sleep
 
 class CarControl:
@@ -8,7 +7,7 @@ class CarControl:
         if not self._check_if_X11_connected():
             raise X11ForwardingError("X11 forwarding not detected.")
 
-        self._xboxControl = XboxControl()
+        #self._xboxControl = XboxControl()
 
         self._car = None
         #self._servoEnabled = False
@@ -32,10 +31,10 @@ class CarControl:
         self.shared_array = None
         self._shared_value = None
         self.shared_flag = Value('b', False)
-
+    """
     def add_arduino_communicator(self, arduinoCommunicator):
         self._arduinoCommunicator = arduinoCommunicator
-
+    """
     def add_car(self, car):
         self._car = car
 
@@ -168,6 +167,7 @@ class CarControl:
     def _get_voice_command(self, num: int) -> str:
         return self._numbers_to_commands[num]
 
+    """
     def _start_listening_for_xbox_commands(self, shared_array, flag):
         self._print_button_explanation()
         self._map_all_objects_to_buttons()
@@ -209,7 +209,7 @@ class CarControl:
 
         print("Exiting car handling")
 
-
+"""
     def _start_camera(self, shared_array, flag):
         self._camera.setup()
 
@@ -218,6 +218,7 @@ class CarControl:
 
         self._camera.cleanup()
 
+    """
     def _start_listening_for_arduino_communication(self, flag):
         self._arduinoCommunicator.setup()
 
@@ -229,7 +230,8 @@ class CarControl:
         # cleanup when flag is set to true
         self._arduinoCommunicator.cleanup()
         print("Exiting arduino")
-
+"""
+    """
     def _print_button_explanation(self):
         print()
         print("Controller layout: ")
@@ -252,7 +254,7 @@ class CarControl:
             print()
 
         print(f"Double tap {self._xboxControl.get_exit_button()} to exit")
-
+"""
     def _map_all_objects_to_commands(self):
 
         self._add_object_to_commands(self._car.get_car_commands(), self._car)
@@ -261,6 +263,7 @@ class CarControl:
 
         self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper)
 
+    """
     def _map_all_objects_to_buttons(self):
         if self._car:
             self._add_object_to_buttons(self._car.get_car_buttons(), self._car)
@@ -271,15 +274,16 @@ class CarControl:
 
         if self._cameraHelper:
             self._add_object_to_buttons(self._cameraHelper.get_camera_buttons(), self._cameraHelper)
-
+"""
     def _add_object_to_commands(self, commands, roboObject):
         for command in commands:
             self._commandToObjects[command] = roboObject
 
+    """
     def _add_object_to_buttons(self, buttonDict, roboObject):
         for button in list(buttonDict.values()):
             self._buttonToObjectDict[button] = roboObject
-
+"""
     def _exit_program(self, flag):
         flag.value = True
         print("Exiting program...")
