@@ -46,6 +46,7 @@ class CameraHelper:
         self._arrayDict = None
 
     def handle_voice_command(self, command):
+        print(command)
         if command in self._hudCommands:
             self._set_hud_on_or_off(self._hudCommands[command]["hudValue"])
 
