@@ -1,3 +1,5 @@
+from itertools import chain
+
 from roboCarHelper import map_value_to_new_scale
 
 class CameraHelper:
@@ -19,29 +21,41 @@ class CameraHelper:
         self._zoomButtonMaxValue = -1
 
         self._hudActive = True
-
+        """
         self._controlsDictCamera = {
             "Zoom": "LSB vertical",
             "HUD": "RB"
         }
-
+        
         self._zoomButton = self._controlsDictCamera["Zoom"]
         self._hudButton = self._controlsDictCamera["HUD"]
-
+        """
         self._turnValue_to_number = {
             "-": 0,
             "Left": 1,
             "Right": 2
         }
 
+        self._hudCommands: dict = {
+            "turn on display": {"description": "Turns on HUD", "hudValue": True},
+            "turn off display": {"description": "Turns off HUD", "hudValue": False}
+        }
+
+        self._zoomCommands: dict = {}
+
         self._arrayDict = None
 
+    def handle_voice_command(self, command):
+        if command in self._hudCommands:
+            self._set_hud_on_or_off(self._hudCommands[command]["hudValue"])
+
+    """
     def handle_xbox_input(self, button, pressValue):
         if button == self._zoomButton:
             self._set_zoom_value(pressValue)
         elif button == self._hudButton and pressValue: # check that button is pushed, not released
             self._set_hud_on_or_off()
-
+    """
     def add_car(self, car):
         self._car = car
 
@@ -59,11 +73,16 @@ class CameraHelper:
         shared_array[self._arrayDict["HUD"]] = float(self._hudActive)
         shared_array[self._arrayDict["Zoom"]] = self._zoomValue
 
+    """
     def get_camera_buttons(self):
         return self._controlsDictCamera
+    """
+    def get_camera_commands(self) -> list:
+        dictWithAllCommands = dict(chain(self._hudCommands.items(), self._zoomCommands.items()))
+        allCommands = list(dictWithAllCommands.keys())
 
-    def get_camera_commands(self):
-        return []
+        return allCommands
+
     def get_HUD_active(self):
         return self._hudActive
 
@@ -72,9 +91,12 @@ class CameraHelper:
 
     def add_array_dict(self, arrayDict):
         self._arrayDict = arrayDict
-
+    """
     def _set_hud_on_or_off(self):
         self._hudActive = not self._hudActive
+    """
+    def _set_hud_on_or_off(self, value):
+        self._hudActive = value
 
     def _set_zoom_value(self, buttonPressValue):
         if self._check_if_button_press_within_valid_range(buttonPressValue):

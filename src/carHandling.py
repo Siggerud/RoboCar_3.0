@@ -37,16 +37,6 @@ class CarHandling:
 			"Reverse": "LT"
 		}
 		"""
-		# key is description and value is the commands
-		self._commands = {
-			"Turns car left": "turn left",
-			"Turns car right": "turn right",
-			"Drives car forward": "drive forward",
-			"Drives car backwards": "reverse car",
-			"Turns speed higher": "go faster",
-			"Turns speed lower": "go slower",
-			"Stops car": "stop now"
-		}
 
 		self._direction_commands: dict = {
 			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False]},

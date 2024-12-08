@@ -3,7 +3,6 @@ from camera import Camera
 from cameraHelper import CameraHelper
 from servoHandling import ServoHandling
 from carControl import CarControl, X11ForwardingError
-from xboxControl import NoControllerDetected
 from roboCarHelper import print_startup_error, convert_from_board_number_to_bcm_number
 from configparser import ConfigParser
 import os
@@ -93,7 +92,7 @@ parser.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 # set up car controller
 try:
     carController = CarControl()
-except (X11ForwardingError, NoControllerDetected) as e:
+except (X11ForwardingError) as e:
     print_startup_error(e)
     exit()
 
@@ -148,6 +147,7 @@ flag = carController.shared_flag
 
 # keep process running until keyboard interrupt
 try:
+    #TODO: make an audio capture class
     # Initialize recognizer class (for recognizing the speech)
     r = sr.Recognizer()
 
