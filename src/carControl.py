@@ -11,7 +11,7 @@ class CarControl:
         self._xboxControl = XboxControl()
 
         self._car = None
-        self._servoEnabled = False
+        #self._servoEnabled = False
         #self._servos = []
         self._servo = None
         self._arduinoCommunicator = None
@@ -79,7 +79,7 @@ class CarControl:
         if self._car:
             self._camera.set_car_enabled()
 
-        if self._servoEnabled:
+        if self._servo:
             self._camera.set_servo_enabled()
 
     def _set_shared_array_and_array_dict(self):
@@ -95,7 +95,7 @@ class CarControl:
             #arrayInput.append(0.0)
             counter += 1
 
-        if self._servoEnabled:
+        if self._servo:
             arrayDict["servo"] = counter
             #arrayInput.append(0.0)
             counter += 1
