@@ -84,7 +84,7 @@ class ServoHandling:
         }
 
         self._lookCenterCommand: dict = {
-            "look center": {
+            "look centre": {
                 "description": "Centers camera"
             }
         }
