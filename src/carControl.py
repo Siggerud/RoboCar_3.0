@@ -12,7 +12,8 @@ class CarControl:
 
         self._car = None
         self._servoEnabled = False
-        self._servos = []
+        #self._servos = []
+        self._servo = None
         self._arduinoCommunicator = None
 
         self._camera = None
@@ -45,9 +46,7 @@ class CarControl:
         self._cameraHelper = cameraHelper
 
     def add_servo(self, servo):
-        self._servos.append(servo)
-        if not self._servoEnabled:
-            self._servoEnabled = True
+        self._servo = servo
 
     def add_array(self, array):
         self.shared_array = array
@@ -143,9 +142,9 @@ class CarControl:
         self._numbers_to_commands = {num: command for command, num in self._commands_to_numbers.items()}
 
     def _start_listening_for_voice_commands(self, shared_value, flag):
+        # setup objects
         self._car.setup()
-        for servo in self._servos:
-            servo.setup()
+        self._servo.setup()
 
         while not flag.value:
             newCommand = bool(shared_value[1]) # check if there's a new command
@@ -162,9 +161,8 @@ class CarControl:
 
             #self._cameraHelper.update_control_values_for_video_feed(shared_array)
 
-        for servo in self._servos:
-            servo.cleanup()
-
+        # cleanup objects
+        self._servo.cleanup()
         self._car.cleanup()
 
     def _get_voice_command(self, num: int) -> str:
@@ -256,10 +254,10 @@ class CarControl:
         print(f"Double tap {self._xboxControl.get_exit_button()} to exit")
 
     def _map_all_objects_to_commands(self):
-        print(f"self._car type: {type(self._car)}, dir(self._car): {dir(self._car)}")
+
         self._add_object_to_commands(self._car.get_car_commands(), self._car)
-        for servo in self._servos:
-            self._add_object_to_commands(servo.get_servo_commands(), servo)
+
+        self._add_object_to_commands(self._servo.get_servo_commands(), self._servo)
 
         self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper)
 

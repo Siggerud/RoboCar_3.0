@@ -5,7 +5,6 @@ from servoHandling import ServoHandling
 from carControl import CarControl, X11ForwardingError
 from xboxControl import NoControllerDetected
 from roboCarHelper import print_startup_error, convert_from_board_number_to_bcm_number
-from time import sleep
 from configparser import ConfigParser
 import os
 import speech_recognition as sr
@@ -27,28 +26,30 @@ def setup_camera(parser):
     return camera
 
 
-def setup_servo(parser, plane):
-    if plane == "horizontal":
-        if not parser["Components.enabled"].getboolean("ServoHorizontal"):
-            return None
-    elif plane == "vertical":
-        if not parser["Components.enabled"].getboolean("ServoVertical"):
-            return None
+def setup_servo(parser):
+    if not parser["Components.enabled"].getboolean("Servo"):
+        return None
 
-    servoData = parser[f"Servo.handling.specs.{plane}"]
+    servoDataVertical = parser[f"Servo.handling.specs.horizontal"]
 
-    servoPin = servoData.getint("ServoPin")
-    minAngle = servoData.getint("MinAngle")
-    maxAngle = servoData.getint("MaxAngle")
+    servoPinHorizontal = servoDataVertical.getint("ServoPin")
+    minAngleHorizontal = servoDataVertical.getint("MinAngle")
+    maxAngleHorizontal = servoDataVertical.getint("MaxAngle")
 
-    servoPin = servoPin
-    servoPin = convert_from_board_number_to_bcm_number(servoPin)
+    servoPinHorizontal = convert_from_board_number_to_bcm_number(servoPinHorizontal)
+
+    servoDataVertical = parser[f"Servo.handling.specs.vertical"]
+
+    servoPinVertical = servoDataVertical.getint("ServoPin")
+    minAngleVertical = servoDataVertical.getint("MinAngle")
+    maxAngleVertical = servoDataVertical.getint("MaxAngle")
+
+    servoPinVertical = convert_from_board_number_to_bcm_number(servoPinVertical)
 
     servo = ServoHandling(
-        servoPin,
-        plane,
-        minAngle,
-        maxAngle
+        (servoPinHorizontal, servoPinVertical),
+        (minAngleHorizontal, minAngleVertical),
+        (maxAngleHorizontal, maxAngleVertical)
     )
 
     return servo
@@ -100,8 +101,7 @@ car = setup_car(parser)
 
 
 # define servos aboard car
-servoHorizontal = setup_servo(parser, "horizontal")
-servoVertical = setup_servo(parser, "vertical")
+servo = setup_servo(parser)
 
 # setup camera
 camera = setup_camera(parser)
@@ -109,16 +109,13 @@ camera = setup_camera(parser)
 # add components
 if car:
     carController.add_car(car)
-if servoHorizontal:
-    carController.add_servo(servoHorizontal)
-
-if servoVertical:
-    carController.add_servo(servoVertical)
+if servo:
+    carController.add_servo(servo)
 
 if camera:
     cameraHelper = CameraHelper()
     cameraHelper.add_car(car)
-    cameraHelper.add_servo(servoHorizontal)
+    #cameraHelper.add_servo(servoHorizontal)
 
     carController.add_camera(camera)
     carController.add_camera_helper(cameraHelper)
