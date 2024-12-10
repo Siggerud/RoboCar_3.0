@@ -136,9 +136,7 @@ class CameraHelper:
         stepValue: float = 0.1
         zoomCommands: dict = {}
         while zoomValue <= self._maxZoomValue:
-            integer, decimal = str(zoomValue).split(".") # dividing the float number into the whole number and the first decimal
-            print(integer)
-            print(decimal)
+            integer, decimal = str(round(zoomValue, 1)).split(".") # dividing the float number into the whole number and the first decimal
             zoomCommands[f"zoom {self._number_to_word[integer]} point {self._number_to_word[decimal]}"] = zoomValue
 
             zoomValue += stepValue
