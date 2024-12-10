@@ -117,13 +117,18 @@ class ServoHandling:
                              )
         elif command in self._lookCenterCommand:
             self._center_servo_positions()
+        elif command in self._exactAngleCommands:
+            self._move_servo(self._exactAngleCommands[command]["plane"],
+                             self._exactAngleCommands[command]["pwmValue"]
+                            )
 
-    def get_servo_commands(self):
+    def get_servo_commands(self) -> list[str]:
         #TODO: add this method to robocarhelper
-        dictWithAllCommands = dict(chain(self._lookOffsetCommands.items(), self._lookCenterCommand.items()))
-        allCommands = list(dictWithAllCommands.keys())
+        combinedKeys: list = []
+        for dict in [self._lookOffsetCommands, self._lookCenterCommand, self._exactAngleCommands]:
+            combinedKeys.extend(list(dict.keys()))
 
-        return allCommands
+        return combinedKeys
 
     def _center_servo_positions(self):
         for plane in list(self._servoPins.keys()):
@@ -136,8 +141,33 @@ class ServoHandling:
     def _get_exact_angle_commands(self) -> dict:
         exactAngleCommands: dict = {}
 
-        for angle in range(1, abs(self._minAngles["horizontal"]) + 1): # min angle is negative, so we take the absolute value
-            exactAngleCommands[f"look {angle} degrees right"] = self._angle_to_pwm((-1) * angle, "horizontal")
+        # looking right commands
+        for angle in range(self._minAngles["horizontal"], 0):
+            exactAngleCommands[f"look {angle} degrees right"] = {
+                "plane": "horizontal",
+                "pwmValue": self._angle_to_pwm(angle, "horizontal")
+            }
+
+        # looking left commands
+        for angle in range(1, self._maxAngles["horizontal"] + 1):
+            exactAngleCommands[f"look {angle} degrees left"] = {
+                "plane": "horizontal",
+                "pwmValue": self._angle_to_pwm(angle, "horizontal")
+            }
+
+        # looking down commands
+        for angle in range(self._minAngles["vertical"], 0):
+            exactAngleCommands[f"look {angle} degrees down"] = {
+                "plane": "vertical",
+                "pwmValue": self._angle_to_pwm(angle, "vertical")
+            }
+
+        # looking up commands
+        for angle in range(1, self._maxAngles["vertical"] + 1):
+            exactAngleCommands[f"look {angle} degrees down"] = {
+                "plane": "vertical",
+                "pwmValue": self._angle_to_pwm(angle, "vertical")
+            }
 
         return exactAngleCommands
 
