@@ -115,6 +115,7 @@ class CameraHelper:
     def get_HUD_active(self):
         return self._hudActive
 
+
     def get_zoom_value(self):
         return self._zoomValue
 
@@ -136,6 +137,8 @@ class CameraHelper:
         zoomCommands: dict = {}
         while zoomValue <= self._maxZoomValue:
             integer, decimal = str(zoomValue).split(".") # dividing the float number into the whole number and the first decimal
+            print(integer)
+            print(decimal)
             zoomCommands[f"zoom {self._number_to_word[integer]} point {self._number_to_word[decimal]}"] = zoomValue
 
             zoomValue += stepValue
