@@ -84,6 +84,13 @@ def setup_car(parser):
 
     return car
 
+def clean_up_spoken_words(spokenWords):
+    spokenWords = spokenWords.lower().trim()
+
+    if "°" in spokenWords: # change out degree symbol
+        spokenWords = spokenWords.replace("°", "degrees")
+    
+    return spokenWords
 
 # set up parser to read input values
 parser = ConfigParser()
@@ -178,8 +185,10 @@ try:
                         print(f"Could not request results from Google Speech Recognition; {e}")
                         break
 
+                spokenWords = clean_up_spoken_words(spokenWords)
+
                 try:
-                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords.lower().strip()]
+                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords]
                     shared_value[1] = 1 # set 1 to signal that a new command is given
                 except KeyError:
                     continue
