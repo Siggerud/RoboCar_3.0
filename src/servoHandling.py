@@ -142,7 +142,7 @@ class ServoHandling:
         return exactAngleCommands
 
     def _angle_to_pwm(self, angle, plane) -> float:
-        map_value_to_new_scale(
+        pwmValue = map_value_to_new_scale(
             angle,
             self._pwmMinValues[plane],
             self._pwmMaxValues[plane],
@@ -150,6 +150,8 @@ class ServoHandling:
             self._minAngles[plane],
             self._maxAngles[plane]
         )
+
+        return pwmValue
 
     def get_current_servo_angle(self):
         current_servo_angle = int(map_value_to_new_scale(
