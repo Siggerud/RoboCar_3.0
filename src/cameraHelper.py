@@ -41,32 +41,8 @@ class CameraHelper:
             "turn off display": {"description": "Turns off HUD", "hudValue": False}
         }
 
-        self._number_to_word = {
-            "0": "zero",
-            "1": "one",
-            "2": "two",
-            "3": "three",
-            "4": "four",
-            "5": "five",
-            "6": "six",
-            "7": "seven",
-            "8": "eight",
-            "9": "nine",
-            "10": "ten",
-            "11": "eleven",
-            "12": "twelve",
-            "13": "thirteen",
-            "14": "fourteen",
-            "15": "fifteen",
-            "16": "sixteen",
-            "17": "seventeen",
-            "18": "eighteen",
-            "19": "nineteen",
-            "20": "twenty"
-        }
-
         self._zoomCommands: dict = self._set_zoom_commands()
-        print(self._zoomCommands)
+
         self._arrayDict = None
 
 
@@ -136,7 +112,7 @@ class CameraHelper:
         stepValue: float = 0.1
         zoomCommands: dict = {}
         while zoomValue <= self._maxZoomValue:
-            zoomCommands[f"zoom {round(zoomValue, 1)}"] = zoomValue # round zoomValue to avoid floating numbers with many decimals
+            zoomCommands[f"zoom {round(zoomValue, 1)}"] = round(zoomValue, 1) # round zoomValue to avoid floating numbers with many decimals
 
             zoomValue += stepValue
 

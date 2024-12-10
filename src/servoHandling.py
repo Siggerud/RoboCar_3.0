@@ -5,6 +5,16 @@ import pigpio
 
 class ServoHandling:
     def __init__(self, servoPins, minAngles, maxAngles):
+        self._minAngles: dict = {
+            "horizontal": minAngles[0],
+            "vertical": minAngles[1]
+        }
+
+        self._maxAngles: dict = {
+            "horizontal": maxAngles[0],
+            "vertical": maxAngles[1]
+        }
+
         self._pigpioPwm = pigpio.pi()
 
         self._pwmAbsoluteMin: int = 500  # value all the way to the right
@@ -89,6 +99,9 @@ class ServoHandling:
             }
         }
 
+        self._exactAngleCommands: dict = self._get_exact_angle_commands()
+        print(self._exactAngleCommands)
+
     def setup(self):
         for pin in list(self._servoPins.values()):
             self._pigpioPwm.set_mode(pin, pigpio.OUTPUT)
@@ -105,6 +118,13 @@ class ServoHandling:
         elif command in self._lookCenterCommand:
             self._center_servo_positions()
 
+    def get_servo_commands(self):
+        #TODO: add this method to robocarhelper
+        dictWithAllCommands = dict(chain(self._lookOffsetCommands.items(), self._lookCenterCommand.items()))
+        allCommands = list(dictWithAllCommands.keys())
+
+        return allCommands
+
     def _center_servo_positions(self):
         for plane in list(self._servoPins.keys()):
             self._move_servo(plane, self._servoPwmNeutralValue)
@@ -113,28 +133,23 @@ class ServoHandling:
         self._pigpioPwm.set_servo_pulsewidth(self._servoPins[plane], pwmValue) # move servo in given plane
         self._currentPwmValue[plane] = pwmValue # update the current pwm value for given plane
 
-    """
-    def get_servo_buttons(self):
-        return self._controlsDictServo
-    """
+    def _get_exact_angle_commands(self) -> dict:
+        exactAngleCommands: dict = {}
 
-    """
-        def handle_xbox_input(self, button, pressValue):
-            if button == self._moveServoButton:
-                self._prepare_for_servo_movement(pressValue)
-                self._move_servo()
-        """
-    def get_servo_commands(self):
-        #TODO: add this method to robocarhelper
-        dictWithAllCommands = dict(chain(self._lookOffsetCommands.items(), self._lookCenterCommand.items()))
-        allCommands = list(dictWithAllCommands.keys())
+        for angle in range(1, abs(self._minAngles["horizontal"]) + 1): # min angle is negative, so we take the absolute value
+            exactAngleCommands[f"look {angle} degrees left"] = self._angle_to_pwm(angle)
 
-        return allCommands
 
-    """
-    def get_plane(self):
-        return self._plane
-    """
+    def _angle_to_pwm(self, angle, plane) -> float:
+        map_value_to_new_scale(
+            angle,
+            self._pwmMinValues[plane],
+            self._pwmMaxValues[plane],
+            1,
+            self._minAngles[plane],
+            self._maxAngles[plane]
+        )
+
     def get_current_servo_angle(self):
         current_servo_angle = int(map_value_to_new_scale(
             self._servoPwmValue,
@@ -147,29 +162,7 @@ class ServoHandling:
 
         return current_servo_angle
 
-    """
-    def _move_servo(self):
-        if self._servoValueChanged:
-            ServoHandling.pigpioPwm.set_servo_pulsewidth(self._servoPin, self._servoPwmValue)
-    """
-    """
-    def _get_servo_button_corresponding_to_axis(self, plane):
-        if plane == "horizontal":
-            return "RSB horizontal"
-        elif plane == "vertical":
-            return "RSB vertical"
-    """
-    """
-    def _prepare_for_servo_movement(self, buttonPressValue):
-        stickValue = round(buttonPressValue, 1)
-
-        if stickValue == self._lastServoStickValue:
-            self._servoValueChanged = False
-        else:
-            self._servoValueChanged = True
-            self._servoPwmValue = map_value_to_new_scale(stickValue, self._pwmMinServo, self._pwmMaxServo, 1)
-            self._lastServoStickValue = stickValue
-    """
     def cleanup(self):
+        self._center_servo_positions() # center camera when exiting
         for pin in list(self._servoPins.values()):
             self._pigpioPwm.set_PWM_dutycycle(pin, 0)

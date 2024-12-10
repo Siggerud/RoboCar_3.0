@@ -167,49 +167,6 @@ class CarControl:
     def _get_voice_command(self, num: int) -> str:
         return self._numbers_to_commands[num]
 
-    """
-    def _start_listening_for_xbox_commands(self, shared_array, flag):
-        self._print_button_explanation()
-        self._map_all_objects_to_buttons()
-
-        if self._car:
-            self._car.setup()
-
-        if self._servoEnabled:
-            for servo in self._servos:
-                servo.setup()
-
-        while not flag.value:
-            for event in self._xboxControl.get_controller_events():
-                button, pressValue = self._xboxControl.get_button_and_press_value_from_event(event)
-                if self._xboxControl.check_for_exit_event(button):
-                    self._exit_program(flag)
-                    break
-
-                # get the object to take action based on the button pushed
-                try:
-                    self._buttonToObjectDict[button].handle_xbox_input(button, pressValue)
-                except KeyError: # if key does not correspond to object, then go to next event
-                    continue
-
-                if self._cameraHelper:
-                    self._cameraHelper.update_control_values_for_video_feed(shared_array)
-
-            # sleep between event handlings to not overload cpu, sleep value is derived from experiments
-            sleep(0.002)
-
-        if self._car:
-            self._car.cleanup()
-
-        if self._servoEnabled:
-            for servo in self._servos:
-                servo.cleanup()
-
-        self._xboxControl.cleanup()
-
-        print("Exiting car handling")
-
-"""
     def _start_camera(self, shared_array, flag):
         self._camera.setup()
 
@@ -218,43 +175,6 @@ class CarControl:
 
         self._camera.cleanup()
 
-    """
-    def _start_listening_for_arduino_communication(self, flag):
-        self._arduinoCommunicator.setup()
-
-        while not flag.value:
-            # start the communicator
-            self._arduinoCommunicator.start()
-            sleep(0.01)  # sleep too not use too much CPU resources
-
-        # cleanup when flag is set to true
-        self._arduinoCommunicator.cleanup()
-        print("Exiting arduino")
-"""
-    """
-    def _print_button_explanation(self):
-        print()
-        print("Controller layout: ")
-        if self._car:
-            print("Car controls:")
-            print("Turn left: " + self._car.get_car_buttons()["Left"])
-            print("Turn right: " + self._car.get_car_buttons()["Right"])
-            print("Drive forward: " + self._car.get_car_buttons()["Gas"])
-            print("Reverse: " + self._car.get_car_buttons()["Reverse"])
-            print()
-        if self._servoEnabled:
-            print("Servo controls:")
-            for servo in self._servos:
-                print("Turn servo" + servo.get_plane() + ": " + servo.get_servo_buttons()["Servo"])
-            print()
-        if self._camera:
-            print("Camera controls")
-            print("Zoom camera: " + self._cameraHelper.get_camera_buttons()["Zoom"])
-            print("Turn HUD on or off: " + self._cameraHelper.get_camera_buttons()["HUD"])
-            print()
-
-        print(f"Double tap {self._xboxControl.get_exit_button()} to exit")
-"""
     def _map_all_objects_to_commands(self):
 
         self._add_object_to_commands(self._car.get_car_commands(), self._car)
@@ -263,27 +183,10 @@ class CarControl:
 
         self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper)
 
-    """
-    def _map_all_objects_to_buttons(self):
-        if self._car:
-            self._add_object_to_buttons(self._car.get_car_buttons(), self._car)
-
-        if self._servoEnabled:
-            for servo in self._servos:
-                self._add_object_to_buttons(servo.get_servo_buttons(), servo)
-
-        if self._cameraHelper:
-            self._add_object_to_buttons(self._cameraHelper.get_camera_buttons(), self._cameraHelper)
-"""
     def _add_object_to_commands(self, commands, roboObject):
         for command in commands:
             self._commandToObjects[command] = roboObject
 
-    """
-    def _add_object_to_buttons(self, buttonDict, roboObject):
-        for button in list(buttonDict.values()):
-            self._buttonToObjectDict[button] = roboObject
-"""
     def _exit_program(self, flag):
         flag.value = True
         print("Exiting program...")
