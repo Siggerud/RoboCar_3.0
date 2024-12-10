@@ -12,14 +12,14 @@ class CameraHelper:
         self._turnText = ""
 
         self._zoomValue = 1.0
-        self._lastStickValue = 0
+        #self._lastStickValue = 0
 
         self._minZoomValue = 1.0
-        self._maxZoomValue = 3.0
-
+        self._maxZoomValue = 3.0 #TODO: add this to config file
+        """
         self._zoomButtonMinValue = 0
         self._zoomButtonMaxValue = -1
-
+        """
         self._hudActive = True
         """
         self._controlsDictCamera = {
@@ -41,14 +41,42 @@ class CameraHelper:
             "turn off display": {"description": "Turns off HUD", "hudValue": False}
         }
 
-        self._zoomCommands: dict = {}
+        self._number_to_word = {
+            "0": "zero",
+            "1": "one",
+            "2": "two",
+            "3": "three",
+            "4": "four",
+            "5": "five",
+            "6": "six",
+            "7": "seven",
+            "8": "eight",
+            "9": "nine",
+            "10": "ten",
+            "11": "eleven",
+            "12": "twelve",
+            "13": "thirteen",
+            "14": "fourteen",
+            "15": "fifteen",
+            "16": "sixteen",
+            "17": "seventeen",
+            "18": "eighteen",
+            "19": "nineteen",
+            "20": "twenty"
+        }
+
+        self._zoomCommands: dict = self._set_zoom_commands()
 
         self._arrayDict = None
+
+
 
     def handle_voice_command(self, command):
         print(command)
         if command in self._hudCommands:
-            self._set_hud_on_or_off(self._hudCommands[command]["hudValue"])
+            self._set_hud_value(command)
+        elif command in self._zoomCommands:
+            self._set_zoom_value(command)
 
     """
     def handle_xbox_input(self, button, pressValue):
@@ -96,9 +124,25 @@ class CameraHelper:
     def _set_hud_on_or_off(self):
         self._hudActive = not self._hudActive
     """
-    def _set_hud_on_or_off(self, value):
-        self._hudActive = value
+    def _set_hud_value(self, command):
+        self._hudActive = self._hudCommands[command]["hudValue"]
 
+    def _set_zoom_value(self, command):
+        self._zoomValue = self._zoomCommands[command]
+
+    def _set_zoom_commands(self) -> dict:
+        zoomValue: float = self._minZoomValue
+        stepValue: float = 0.1
+        zoomCommands: dict = {}
+        while zoomValue <= self._maxZoomValue:
+            integer, decimal = str(zoomValue).split(".") # dividing the float number into the whole number and the first decimal
+            zoomCommands[f"zoom {self._number_to_word[integer]} point {self._number_to_word[decimal]}"] = zoomValue
+
+            zoomValue += stepValue
+
+        return zoomCommands
+
+    """
     def _set_zoom_value(self, buttonPressValue):
         if self._check_if_button_press_within_valid_range(buttonPressValue):
             stickValue = round(buttonPressValue, 1)
@@ -114,7 +158,12 @@ class CameraHelper:
                                                      self._zoomButtonMinValue,
                                                      self._zoomButtonMaxValue
                                                      )
+                                                """
+    """
     def _check_if_button_press_within_valid_range(self, buttonPressValue):
         if buttonPressValue >= self._zoomButtonMaxValue and buttonPressValue <= self._zoomButtonMinValue:
             return True
+    
         return False
+    
+    """

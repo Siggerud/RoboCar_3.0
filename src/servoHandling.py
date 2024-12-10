@@ -98,11 +98,11 @@ class ServoHandling:
 
     def handle_voice_command(self, command):
         print(command)
-        if command in list(self._lookOffsetCommands.keys()):
+        if command in self._lookOffsetCommands.keys:
             self._move_servo(self._lookOffsetCommands[command]["plane"],
                              self._lookOffsetCommands[command]["pwmValue"]
                              )
-        elif command in list(self._lookCenterCommand.keys()):
+        elif command in self._lookCenterCommand:
             self._center_servo_positions()
 
     def _center_servo_positions(self):

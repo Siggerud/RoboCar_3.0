@@ -78,10 +78,10 @@ class CarHandling:
 
 	def handle_voice_command(self, command):
 		print("Command: " + command)
-		if command in list(self._direction_commands.keys()):
+		if command in self._direction_commands:
 			newGpioValues = self._direction_commands[command]["gpioValues"]
 			self._adjust_gpio_values(newGpioValues)
-		elif command in list(self._speed_commands.keys()):
+		elif command in self._speed_commands:
 			print("Adjusting speed...")
 			self._adjust_speed(command)
 
