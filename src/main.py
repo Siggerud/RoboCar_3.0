@@ -85,11 +85,11 @@ def setup_car(parser):
     return car
 
 def clean_up_spoken_words(spokenWords):
-    spokenWords = spokenWords.lower().trim()
+    spokenWords = spokenWords.lower().strip()
 
     if "°" in spokenWords: # change out degree symbol
         spokenWords = spokenWords.replace("°", "degrees")
-    
+
     return spokenWords
 
 # set up parser to read input values
