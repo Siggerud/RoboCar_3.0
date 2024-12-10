@@ -143,7 +143,7 @@ class ServoHandling:
 
         # looking right commands
         for angle in range(self._minAngles["horizontal"], 0):
-            exactAngleCommands[f"look {angle} degrees right"] = {
+            exactAngleCommands[f"look {abs(angle)} degrees right"] = { # print the absolute value because the angle is negatie
                 "plane": "horizontal",
                 "pwmValue": self._angle_to_pwm(angle, "horizontal")
             }
@@ -157,14 +157,14 @@ class ServoHandling:
 
         # looking down commands
         for angle in range(self._minAngles["vertical"], 0):
-            exactAngleCommands[f"look {angle} degrees down"] = {
+            exactAngleCommands[f"look {abs(angle)} degrees down"] = {
                 "plane": "vertical",
                 "pwmValue": self._angle_to_pwm(angle, "vertical")
             }
 
         # looking up commands
         for angle in range(1, self._maxAngles["vertical"] + 1):
-            exactAngleCommands[f"look {angle} degrees down"] = {
+            exactAngleCommands[f"look {angle} degrees up"] = {
                 "plane": "vertical",
                 "pwmValue": self._angle_to_pwm(angle, "vertical")
             }
