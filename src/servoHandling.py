@@ -139,6 +139,7 @@ class ServoHandling:
         for angle in range(1, abs(self._minAngles["horizontal"]) + 1): # min angle is negative, so we take the absolute value
             exactAngleCommands[f"look {angle} degrees left"] = self._angle_to_pwm(angle, "horizontal")
 
+        return exactAngleCommands
 
     def _angle_to_pwm(self, angle, plane) -> float:
         map_value_to_new_scale(
