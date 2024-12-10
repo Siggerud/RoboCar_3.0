@@ -137,7 +137,7 @@ class ServoHandling:
         exactAngleCommands: dict = {}
 
         for angle in range(1, abs(self._minAngles["horizontal"]) + 1): # min angle is negative, so we take the absolute value
-            exactAngleCommands[f"look {angle} degrees left"] = self._angle_to_pwm(angle, "horizontal")
+            exactAngleCommands[f"look {angle} degrees right"] = self._angle_to_pwm((-1) * angle, "horizontal")
 
         return exactAngleCommands
 
