@@ -3,49 +3,26 @@ from multiprocessing import Process, Value
 from time import sleep
 
 class CarControl:
-    def __init__(self):
+    def __init__(self, car, servo, camera, cameraHelper):
         if not self._check_if_X11_connected():
             raise X11ForwardingError("X11 forwarding not detected.")
 
-        #self._xboxControl = XboxControl()
+        self._car = car
+        self._servo = servo
 
-        self._car = None
-        #self._servoEnabled = False
-        #self._servos = []
-        self._servo = None
-        self._arduinoCommunicator = None
-
-        self._camera = None
-        self._cameraHelper = None
+        self._camera = camera
+        self._cameraHelper = cameraHelper
 
         self._processes = []
 
-        self._buttonToObjectDict = {
-        }
-
-        self._commandToObjects: dict[str: object] = {}
-        self._commands_to_numbers: dict[str: int] = {}
-        self._numbers_to_commands: dict[int: str] = {}
+        self._commandToObjects: dict[str: object] = self._get_all_objects_mapped_to_commands()
+        self._commands_to_numbers: dict[str: int] = self._get_commands_to_numbers()
+        self._numbers_to_commands: dict[int: str] = self._get_numbers_to_commands()
         self._exitCommand: str = "cancel program" #TODO: make this an input to the class
 
         self.shared_array = None
         self._shared_value = None
         self.shared_flag = Value('b', False)
-    """
-    def add_arduino_communicator(self, arduinoCommunicator):
-        self._arduinoCommunicator = arduinoCommunicator
-    """
-    def add_car(self, car):
-        self._car = car
-
-    def add_camera(self, camera):
-        self._camera = camera
-
-    def add_camera_helper(self, cameraHelper):
-        self._cameraHelper = cameraHelper
-
-    def add_servo(self, servo):
-        self._servo = servo
 
     def add_array(self, array):
         self.shared_array = array
@@ -55,9 +32,6 @@ class CarControl:
 
     def start(self):
         # TODO: print commands
-        self._map_all_objects_to_commands() #TODO: move to init method
-        self._populate_commands_to_numbers() #TODO: move to init method
-        self._populate_numbers_to_commands() #TODO: move to init method
 
         if self._camera:
             self._get_camera_ready() # this needs to be first method called
@@ -116,11 +90,6 @@ class CarControl:
         self._processes.append(process)
         process.start()
 
-    def _activate_car_handling(self):
-        process = Process(target=self._start_listening_for_xbox_commands, args=(self.shared_array, self.shared_flag))
-        self._processes.append(process)
-        process.start()
-
     def _activate_voice_command_handling(self):
         process = Process(
             target=self._start_listening_for_voice_commands,
@@ -129,16 +98,22 @@ class CarControl:
         self._processes.append(process)
         process.start()
 
-    def _populate_commands_to_numbers(self):
+    def _get_commands_to_numbers(self) -> dict:
+        commandsToNumbers: dict = {}
+
         # add commands from all objects
         for index, command in enumerate(list(self._commandToObjects.keys())):
-            self._commands_to_numbers[command] = index
+            commandsToNumbers[command] = index
 
         # add exit command to dictionary
-        self._commands_to_numbers[self._exitCommand] = index + 1
+        commandsToNumbers[self._exitCommand] = index + 1
 
-    def _populate_numbers_to_commands(self):
-        self._numbers_to_commands = {num: command for command, num in self._commands_to_numbers.items()}
+        return commandsToNumbers
+
+    def _get_numbers_to_commands(self) -> dict:
+        numbersToCommands: dict = {num: command for command, num in self._commands_to_numbers.items()}
+
+        return numbersToCommands
 
     def _start_listening_for_voice_commands(self, shared_value, flag):
         # setup objects
@@ -175,17 +150,26 @@ class CarControl:
 
         self._camera.cleanup()
 
-    def _map_all_objects_to_commands(self):
+    def _get_all_objects_mapped_to_commands(self) -> dict:
+        objectsToCommands: dict = {}
 
-        self._add_object_to_commands(self._car.get_car_commands(), self._car)
+        # add car commands
+        objectsToCommands.update(self._add_object_to_commands(self._car.get_car_commands(), self._car))
 
-        self._add_object_to_commands(self._servo.get_servo_commands(), self._servo)
+        # add servo commands
+        objectsToCommands.update((self._servo.get_servo_commands(), self._servo))
 
-        self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper)
+        # add camera commands
+        objectsToCommands.update((self._cameraHelper.get_camera_commands(), self._cameraHelper))
 
-    def _add_object_to_commands(self, commands, roboObject):
+        return objectsToCommands
+
+    def _add_object_to_commands(self, commands: list[str], roboObject: object) -> dict:
+        objectToCommands: dict = {}
         for command in commands:
-            self._commandToObjects[command] = roboObject
+            objectToCommands[command] = roboObject
+
+        return objectToCommands
 
     def _exit_program(self, flag):
         flag.value = True

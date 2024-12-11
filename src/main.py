@@ -101,15 +101,7 @@ def clean_up_spoken_words(spokenWords):
 parser = ConfigParser()
 parser.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
-# set up car controller
-try:
-    carController = CarControl()
-except (X11ForwardingError) as e:
-    print_startup_error(e)
-    exit()
-
 car = setup_car(parser)
-
 
 # define servos aboard car
 servo = setup_servo(parser)
@@ -117,19 +109,17 @@ servo = setup_servo(parser)
 # setup camera
 camera = setup_camera(parser)
 
-# add components
-if car:
-    carController.add_car(car)
-if servo:
-    carController.add_servo(servo)
 
-if camera:
-    cameraHelper = CameraHelper()
-    cameraHelper.add_car(car)
-    #cameraHelper.add_servo(servoHorizontal)
 
-    carController.add_camera(camera)
-    carController.add_camera_helper(cameraHelper)
+cameraHelper = CameraHelper()
+cameraHelper.add_car(car)
+
+# set up car controller
+try:
+    carController = CarControl(car, servo, camera, cameraHelper)
+except (X11ForwardingError) as e:
+    print_startup_error(e)
+    exit()
 
 shared_array = Array(
     'd', [
