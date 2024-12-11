@@ -7,6 +7,14 @@ def map_value_to_new_scale(inputValue, newScaleMinValue, newScaleMaxValue, value
 
     return valueMapped
 
+
+def chain_together_dict_keys(dicts: list[dict]) -> list[str]:
+    combinedKeys: list = []
+    for dict in dicts:
+        combinedKeys.extend(list(dict.keys()))
+
+    return combinedKeys
+
 def print_startup_error(error):
     print("Something went wrong during startup. Exiting...")
     print(error)

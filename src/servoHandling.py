@@ -1,6 +1,4 @@
-from itertools import chain
-
-from roboCarHelper import map_value_to_new_scale
+from roboCarHelper import map_value_to_new_scale, chain_together_dict_keys
 import pigpio
 
 class ServoHandling:
@@ -100,7 +98,6 @@ class ServoHandling:
         }
 
         self._exactAngleCommands: dict = self._get_exact_angle_commands()
-        print(self._exactAngleCommands)
 
     def setup(self):
         for pin in list(self._servoPins.values()):
@@ -123,12 +120,10 @@ class ServoHandling:
                             )
 
     def get_servo_commands(self) -> list[str]:
-        #TODO: add this method to robocarhelper
-        combinedKeys: list = []
-        for dict in [self._lookOffsetCommands, self._lookCenterCommand, self._exactAngleCommands]:
-            combinedKeys.extend(list(dict.keys()))
-
-        return combinedKeys
+        return chain_together_dict_keys([self._lookOffsetCommands,
+                                         self._lookCenterCommand,
+                                         self._exactAngleCommands]
+                                        )
 
     def _center_servo_positions(self):
         for plane in list(self._servoPins.keys()):

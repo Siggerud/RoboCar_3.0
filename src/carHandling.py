@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
-from roboCarHelper import map_value_to_new_scale
-from itertools import chain
+from roboCarHelper import map_value_to_new_scale, chain_together_dict_keys
 
 class CarHandling:
 	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT):
@@ -51,6 +50,8 @@ class CarHandling:
 			"go slower": {"description": "Decrease car speed"}
 		}
 
+		self._exact_speed_commands: dict = self._set_exact_speed_commands()
+
 		self._speedStep: int = 10 #TODO: add this to config
 
 		#self._turnButtons = list(self._controlsDictTurnButtons.values())
@@ -81,19 +82,11 @@ class CarHandling:
 		if command in self._direction_commands:
 			newGpioValues = self._direction_commands[command]["gpioValues"]
 			self._adjust_gpio_values(newGpioValues)
-		elif command in self._speed_commands:
+		elif command in self._speed_commands or command in self._exact_speed_commands:
 			print("Adjusting speed...")
 			self._adjust_speed(command)
 
-	"""
-	def handle_xbox_input(self, button, pressValue):
-		if button in self._turnButtons:
-			self._prepare_car_for_turning(button, pressValue)
-			self._move_car()
-		elif button in self._gasAndReverseButtons:
-			self._prepare_car_for_throttle(button, pressValue)
-			self._move_car()
-	"""
+
 	def cleanup(self):
 		self._pwmA.stop()
 		self._pwmB.stop()
@@ -101,17 +94,10 @@ class CarHandling:
 		GPIO.cleanup()
 
 	def get_car_commands(self) -> dict[str: str]:
-		dictWithAllCommands = dict(chain(self._direction_commands.items(), self._speed_commands.items()))
-		allCommands = list(dictWithAllCommands.keys())
+		return chain_together_dict_keys([self._direction_commands,
+										 self._speed_commands,
+										 self._exact_speed_commands])
 
-		return allCommands
-
-	"""
-	def get_car_buttons(self):
-		completeDict = dict(chain(self._controlsDictThrottle.items(), self._controlsDictTurnButtons.items()))
-
-		return completeDict
-	"""
 	def get_current_speed(self):
 		return int(self._speed)
 
@@ -122,6 +108,13 @@ class CarHandling:
 			return "Right"
 		else:
 			return "-"
+
+	def _set_exact_speed_commands(self) -> dict:
+		speedCommands: dict = {}
+		for speed in range(self._pwmMinTT, self._pwmMaxTT + 1):
+			speedCommands[f"speed {speed}"] = speed
+
+		return speedCommands
 
 	def _adjust_speed(self, command: str):
 		adjustSpeed: bool = False
@@ -134,6 +127,11 @@ class CarHandling:
 			if (self._speed - self._speedStep) >= self._pwmMinTT:
 				self._speed += self._speedStep
 				adjustSpeed = True
+		else:
+			newSpeed = self._exact_speed_commands[command]
+			if newSpeed != self._speed:
+				adjustSpeed = True
+				self._speed = newSpeed
 
 		if adjustSpeed:
 			print(self._speed)
@@ -151,72 +149,8 @@ class CarHandling:
 		GPIO.output(self._leftBackward, self._gpioThrottle[leftBackwardValue])
 		GPIO.output(self._rightBackward, self._gpioThrottle[rightBackwardValue])
 
-	"""
-	def _move_car(self):
-		if self._goForward:
-			if not self._turnLeft and not self._turnRight:
-				gpioValues = [True, True, False, False]
-			elif self._turnLeft:
-				gpioValues = [False, True, False, False]
-			elif self._turnRight:
-				gpioValues = [True, False, False, False]
-		elif self._goReverse:
-			if not self._turnLeft and not self._turnRight:
-				gpioValues = [False, False, True, True]
-			elif self._turnLeft:
-				gpioValues = [False, False, False, True]
-			elif self._turnRight:
-				gpioValues = [False, False, True, False]
-		elif not self._goReverse and not self._goForward:
-			if not self._turnLeft and not self._turnRight:
-				gpioValues = [False, False, False, False]
-			elif self._turnLeft:
-				gpioValues = [False, True, True, False]
-			elif self._turnRight:
-				gpioValues = [True, False, False, True]
 
-		self._adjust_gpio_values(gpioValues)
-	
-	
-	def _prepare_car_for_turning(self, button, buttonState):
-		stopTurning = False
 
-		if button == "D-PAD left" and buttonState == 1:
-			self._turnLeft = True
-			self._turnRight = False
-		elif button == "D-PAD right" and buttonState == 1:
-			self._turnLeft = False
-			self._turnRight = True
-		else:
-			self._turnLeft = False
-			self._turnRight = False
-			stopTurning = True
 
-		if not stopTurning:
-			if not self._goForward and not self._goReverse:
-				self._change_duty_cycle([self._pwmA, self._pwmB], self._pwmMaxTT)
 
-	def _prepare_car_for_throttle(self, button, buttonPressValue):
-		speed = map_value_to_new_scale(
-			buttonPressValue,
-			self._pwmMinTT,
-			self._pwmMaxTT,
-			2
-		)
-		if speed > self._pwmMinTT + 1: # only change speed if over the treshold
-			if button == "RT":
-				self._goForward = True
-				self._goReverse = False
-			elif button == "LT":
-				self._goForward = False
-				self._goReverse = True
-		else:
-			speed = 0
-
-			self._goForward = False
-			self._goReverse = False
-		#TODO: only change if speed has changed
-		self._change_duty_cycle([self._pwmA, self._pwmB], speed)
-		self._speed = speed
-		"""
 
