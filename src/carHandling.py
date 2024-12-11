@@ -13,7 +13,7 @@ class CarHandling:
 		self._pwmMinTT = pwmMinTT
 		self._pwmMaxTT = pwmMaxTT
 
-		self._speed = 0
+		self._speed = self._pwmMinTT
 
 		self._turnLeft = False
 		self._turnRight = False
@@ -125,7 +125,7 @@ class CarHandling:
 				adjustSpeed = True
 		elif command == "go slower":
 			if (self._speed - self._speedStep) >= self._pwmMinTT:
-				self._speed += self._speedStep
+				self._speed -= self._speedStep
 				adjustSpeed = True
 		else:
 			newSpeed = self._exact_speed_commands[command]
