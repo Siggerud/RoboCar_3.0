@@ -157,10 +157,10 @@ class CarControl:
         objectsToCommands.update(self._add_object_to_commands(self._car.get_car_commands(), self._car))
 
         # add servo commands
-        objectsToCommands.update((self._servo.get_servo_commands(), self._servo))
+        objectsToCommands.update(self._add_object_to_commands(self._servo.get_servo_commands(), self._servo))
 
         # add camera commands
-        objectsToCommands.update((self._cameraHelper.get_camera_commands(), self._cameraHelper))
+        objectsToCommands.update(self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper))
 
         return objectsToCommands
 
