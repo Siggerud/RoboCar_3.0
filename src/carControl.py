@@ -15,10 +15,11 @@ class CarControl:
 
         self._processes = []
 
+        self._exitCommand: str = "cancel program"  # TODO: make this an input to the class
+
         self._commandToObjects: dict[str: object] = self._get_all_objects_mapped_to_commands()
         self._commands_to_numbers: dict[str: int] = self._get_commands_to_numbers()
         self._numbers_to_commands: dict[int: str] = self._get_numbers_to_commands()
-        self._exitCommand: str = "cancel program" #TODO: make this an input to the class
 
         self.shared_array = None
         self._shared_value = None
@@ -38,7 +39,6 @@ class CarControl:
 
             self._activate_camera()
 
-        #self._activate_car_handling()
         self._activate_voice_command_handling()
 
     def cleanup(self):
