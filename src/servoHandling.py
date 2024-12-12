@@ -68,6 +68,10 @@ class ServoHandling:
             "vertical": 0
         }
 
+        self._angleToPwmValues: dict = self._get_angle_mapped_to_pwm_values()
+        self._pwmToAngleValues: dict = self._get_pwm_mapped_to_angle_values()
+
+        #TODO: make these read pwm values from angleToPwm dict instead and delete the pwmMax and min dicts
         self._lookOffsetCommands: dict = {
             "look up": {
                 "description": "Turns camera up",
@@ -133,6 +137,23 @@ class ServoHandling:
         self._pigpioPwm.set_servo_pulsewidth(self._servoPins[plane], pwmValue) # move servo in given plane
         self._currentPwmValue[plane] = pwmValue # update the current pwm value for given plane
 
+    # map all possible angles to a dict
+    def _get_angle_mapped_to_pwm_values(self) -> dict[int: float]:
+        angleToPwmValues: dict = {}
+
+        minAngle = min(self._minAngles.values())
+        maxAngle = max(self._maxAngles.values())
+        for angle in range(minAngle, maxAngle + 1):
+            angleToPwmValues[angle] = self._angle_to_pwm(angle)
+
+        return angleToPwmValues
+
+    # map all possible pwm values to a dict
+    def _get_pwm_mapped_to_angle_values(self) -> dict[float: int]:
+        pwmToAngles: dict = {pwm: angle for angle, pwm in self._angleToPwmValues.items()}
+
+        return pwmToAngles
+
     def _get_exact_angle_commands(self) -> dict:
         exactAngleCommands: dict = {}
 
@@ -140,55 +161,46 @@ class ServoHandling:
         for angle in range(self._minAngles["horizontal"], 0):
             exactAngleCommands[f"{abs(angle)} degrees right"] = { # print the absolute value because the angle is negatie
                 "plane": "horizontal",
-                "pwmValue": self._angle_to_pwm(angle, "horizontal")
+                "pwmValue": self._angleToPwmValues[angle]
             }
 
         # looking left commands
         for angle in range(1, self._maxAngles["horizontal"] + 1):
             exactAngleCommands[f"{angle} degrees left"] = {
                 "plane": "horizontal",
-                "pwmValue": self._angle_to_pwm(angle, "horizontal")
+                "pwmValue": self._angleToPwmValues[angle]
             }
 
         # looking down commands
         for angle in range(self._minAngles["vertical"], 0):
             exactAngleCommands[f"{abs(angle)} degrees down"] = {
                 "plane": "vertical",
-                "pwmValue": self._angle_to_pwm(angle, "vertical")
+                "pwmValue": self._angleToPwmValues[angle]
             }
 
         # looking up commands
         for angle in range(1, self._maxAngles["vertical"] + 1):
             exactAngleCommands[f"{angle} degrees up"] = {
                 "plane": "vertical",
-                "pwmValue": self._angle_to_pwm(angle, "vertical")
+                "pwmValue": self._angleToPwmValues[angle]
             }
 
         return exactAngleCommands
 
-    def _angle_to_pwm(self, angle, plane) -> float:
+    def _angle_to_pwm(self, angle) -> float:
         pwmValue = map_value_to_new_scale(
-            angle,
-            self._pwmMinValues[plane],
-            self._pwmMaxValues[plane],
-            1,
-            self._minAngles[plane],
-            self._maxAngles[plane]
-        )
+                angle,
+                self._pwmAbsoluteMin,
+                self._pwmAbsoluteMax,
+                1,
+                - 90,
+                90
+            )
 
         return pwmValue
 
-    def get_current_servo_angle(self):
-        current_servo_angle = int(map_value_to_new_scale(
-            self._servoPwmValue,
-            self._minAngle,
-            self._maxAngle,
-            0,
-            self._pwmMinServo,
-            self._pwmMaxServo)
-        )
-
-        return current_servo_angle
+    def get_current_servo_angle(self, plane) -> int:
+        return self._pwmToAngleValues[self._currentPwmValue[plane]]
 
     def cleanup(self):
         self._center_servo_positions() # center camera when exiting

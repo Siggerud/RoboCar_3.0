@@ -109,10 +109,10 @@ servo = setup_servo(parser)
 # setup camera
 camera = setup_camera(parser)
 
-
-
+# add objects to camerahelper
 cameraHelper = CameraHelper()
 cameraHelper.add_car(car)
+cameraHelper.add_servo(servo)
 
 # set up car controller
 try:
@@ -125,7 +125,8 @@ shared_array = Array(
     'd', [
         0.0, #speed
         0.0, #turn
-        0.0, # servo
+        0.0, #horizontal servo
+        0.0, #vertical servo
         0.0, #HUD
         1.0 #zoom
     ]
@@ -133,7 +134,7 @@ shared_array = Array(
 
 shared_value = Array(
     'i', [0, # command
-          1 # new command - boolean
+          0 # boolean to signal if a new command has been given
           ]
 )
 carController.add_voice_value(shared_value)

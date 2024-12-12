@@ -25,17 +25,6 @@ class CarHandling:
 
 		self._pwmA = None
 		self._pwmB = None
-		"""
-		self._controlsDictTurnButtons = {
-			"Left": "D-PAD left",
-			"Right": "D-PAD right",
-		}
-		
-		self._controlsDictThrottle = {
-			"Gas": "RT",
-			"Reverse": "LT"
-		}
-		"""
 
 		self._direction_commands: dict = {
 			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False]},
@@ -53,11 +42,6 @@ class CarHandling:
 		self._exact_speed_commands: dict = self._set_exact_speed_commands()
 
 		self._speedStep: int = 10 #TODO: add this to config
-
-		#self._turnButtons = list(self._controlsDictTurnButtons.values())
-
-		#self._gasAndReverseButtons = list(self._controlsDictThrottle.values())
-
 
 	def setup(self):
 		GPIO.setmode(GPIO.BOARD)
