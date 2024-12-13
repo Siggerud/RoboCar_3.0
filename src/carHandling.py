@@ -27,8 +27,8 @@ class CarHandling:
 		self._pwmB = None
 
 		self._direction_commands: dict = {
-			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "left"},
-			"turn right": {"description": "Turns car right", "gpioValues": [True, False, False, True], "direction": "right"},
+			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "Left"},
+			"turn right": {"description": "Turns car right", "gpioValues": [True, False, False, True], "direction": "Right"},
 			"go forward": {"description": "Drives car forward", "gpioValues": [True, True, False, False], "direction": "-"},
 			"go backward": {"description": "Reverses car", "gpioValues": [False, False, True, True], "direction": "-"},
 			"stop now": {"description": "Stops car", "gpioValues": [False, False, False, False], "direction": "-"},
