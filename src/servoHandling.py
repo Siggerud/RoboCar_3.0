@@ -15,8 +15,8 @@ class ServoHandling:
 
         self._pigpioPwm = pigpio.pi()
 
-        self._pwmAbsoluteMin: int = 500  # value all the way to the right
-        self._pwmAbsoluteMax: int = 2500  # value all the way to the left
+        self._pwmAbsoluteMin: int = 500  # value all the way to the right or down
+        self._pwmAbsoluteMax: int = 2500  # value all the way to the left or up
 
         self._servoPins: dict = {
             "horizontal": servoPins[0],
@@ -76,22 +76,26 @@ class ServoHandling:
             "look up": {
                 "description": "Turns camera up",
                 "plane": "vertical",
-                "pwmValue": self._pwmMaxValues["vertical"]
+                "pwmValue": self._angleToPwmValues[self._pwmMaxValues["vertical"]]
+                #"pwmValue": self._pwmMaxValues["vertical"]
             },
             "look down":
                 {"description": "Turns camera down",
                  "plane": "vertical",
-                 "pwmValue": self._pwmMinValues["vertical"]
+                 "pwmValue": self._angleToPwmValues[self._pwmMinValues["vertical"]]
+                 #"pwmValue": self._pwmMinValues["vertical"]
                  },
             "look left":
                 {"description": "Turns camera left",
                  "plane": "horizontal",
-                 "pwmValue": self._pwmMaxValues["horizontal"]
+                 "pwmValue": self._angleToPwmValues[self._pwmMaxValues["horizontal"]]
+                 #"pwmValue": self._pwmMaxValues["horizontal"]
                  },
             "look right": {
                 "description": "Turns camera right",
                 "plane": "horizontal",
-                "pwmValue": self._pwmMinValues["horizontal"]
+                "pwmValue": self._angleToPwmValues[self._pwmMinValues["horizontal"]]
+                #"pwmValue": self._pwmMinValues["horizontal"]
             }
         }
 

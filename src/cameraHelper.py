@@ -54,7 +54,6 @@ class CameraHelper:
         if self._car:
             shared_array[self._arrayDict["speed"]] = self._car.get_current_speed()
             shared_array[self._arrayDict["turn"]] = self._turnValue_to_number[self._car.get_current_turn_value()]
-            print("Turn value " + self._car.get_current_turn_value())
 
         shared_array[self._arrayDict["HUD"]] = float(self._hudActive)
         shared_array[self._arrayDict["Zoom"]] = self._zoomValue
