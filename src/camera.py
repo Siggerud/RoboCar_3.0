@@ -62,6 +62,7 @@ class Camera:
 
         # resize image when zooming
         if self._zoomValue != 1.0:
+            print("zooming")
             im = self._get_zoomed_image(im)
 
         # add fps and control values to cam feed
@@ -111,7 +112,7 @@ class Camera:
 
         regionOfInterest = image[self._centerY - halfZoomDisplayHeight:self._centerY + halfZoomDisplayHeight,
                            self._centerX - halfZoomDisplayWidth:self._centerX + halfZoomDisplayWidth]
-
+        print("resize")
         im = cv2.resize(regionOfInterest, (self._dispW, self._dispH), cv2.INTER_LINEAR)
 
         return im
