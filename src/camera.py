@@ -149,7 +149,6 @@ class Camera:
                 counter += 1
 
                 turnValue = self._get_turn_value(shared_array[self._arrayDict["turn"]])
-                print(turnValue)
                 turnText = f"Turn: {turnValue}"
                 cv2.putText(image, turnText, self._get_origin(counter), self._font, self._scale, self._colour,
                             self._thickness)
