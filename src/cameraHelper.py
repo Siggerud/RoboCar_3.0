@@ -15,20 +15,9 @@ class CameraHelper:
 
         self._minZoomValue = 1.0
         self._maxZoomValue = 3.0 #TODO: add this to config file
-        """
-        self._zoomButtonMinValue = 0
-        self._zoomButtonMaxValue = -1
-        """
+
         self._hudActive = True
-        """
-        self._controlsDictCamera = {
-            "Zoom": "LSB vertical",
-            "HUD": "RB"
-        }
-        
-        self._zoomButton = self._controlsDictCamera["Zoom"]
-        self._hudButton = self._controlsDictCamera["HUD"]
-        """
+
         self._turnValue_to_number = {
             "-": 0,
             "Left": 1,

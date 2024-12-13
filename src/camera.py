@@ -60,6 +60,9 @@ class Camera:
         # set HUD active or inactive
         self._set_HUD_active_value(shared_array)
 
+        # set zoom value
+        self._set_zoom_value(shared_array)
+
         # resize image when zooming
         if self._zoomValue != 1.0:
             print("zooming")
@@ -125,8 +128,7 @@ class Camera:
         # add external control values if HUD is enabled
         if self._hudActive:
             counter = 0
-            zoomValue = str(shared_array[self._arrayDict["Zoom"]])
-            cv2.putText(image, "Zoom: " + zoomValue + "x", self._get_origin(counter), self._font, self._scale,
+            cv2.putText(image, f"Zoom: {self._zoomValue}x", self._get_origin(counter), self._font, self._scale,
                         self._colour,
                         self._thickness)
             counter += 1
@@ -157,6 +159,9 @@ class Camera:
 
     def _set_HUD_active_value(self, shared_array):
         self._hudActive = shared_array[self._arrayDict["HUD"]]
+
+    def _set_zoom_value(self, shared_array):
+        self._zoomValue = shared_array[self._arrayDict["Zoom"]]
 
     def _get_turn_value(self, number):
         return self._number_to_turnValue[number]
