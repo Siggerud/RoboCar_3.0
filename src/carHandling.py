@@ -27,17 +27,19 @@ class CarHandling:
 		self._pwmB = None
 
 		self._direction_commands: dict = {
-			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False]},
-			"turn right": {"description": "Turns car right", "gpioValues": [True, False, False, True]},
-			"go forward": {"description": "Drives car forward", "gpioValues": [True, True, False, False]},
-			"go backward": {"description": "Reverses car", "gpioValues": [False, False, True, True]},
-			"stop now": {"description": "Stops car", "gpioValues": [False, False, False, False]},
+			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "left"},
+			"turn right": {"description": "Turns car right", "gpioValues": [True, False, False, True], "direction": "right"},
+			"go forward": {"description": "Drives car forward", "gpioValues": [True, True, False, False], "direction": "-"},
+			"go backward": {"description": "Reverses car", "gpioValues": [False, False, True, True], "direction": "-"},
+			"stop now": {"description": "Stops car", "gpioValues": [False, False, False, False], "direction": "-"},
 		}
 
 		self._speed_commands: dict = {
 			"go faster": {"description": "Increases car speed"},
 			"go slower": {"description": "Decrease car speed"}
 		}
+
+		self._direction: str = "-"
 
 		self._exact_speed_commands: dict = self._set_exact_speed_commands()
 
@@ -66,6 +68,7 @@ class CarHandling:
 		if command in self._direction_commands:
 			newGpioValues = self._direction_commands[command]["gpioValues"]
 			self._adjust_gpio_values(newGpioValues)
+			self._adjust_direction_value(self._direction_commands[command]["direction"])
 		elif command in self._speed_commands or command in self._exact_speed_commands:
 			print("Adjusting speed...")
 			self._adjust_speed(command)
@@ -86,12 +89,7 @@ class CarHandling:
 		return int(self._speed)
 
 	def get_current_turn_value(self):
-		if self._turnLeft:
-			return "Left"
-		elif self._turnRight:
-			return "Right"
-		else:
-			return "-"
+		return self._direction
 
 	def _set_exact_speed_commands(self) -> dict:
 		speedCommands: dict = {}
@@ -99,6 +97,9 @@ class CarHandling:
 			speedCommands[f"speed {speed}"] = speed
 
 		return speedCommands
+
+	def _adjust_direction_value(self, direction):
+		self._direction = direction
 
 	def _adjust_speed(self, command: str):
 		adjustSpeed: bool = False
