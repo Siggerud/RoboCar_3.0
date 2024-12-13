@@ -65,7 +65,6 @@ class Camera:
 
         # resize image when zooming
         if self._zoomValue != 1.0:
-            print("zooming")
             im = self._get_zoomed_image(im)
 
         # add fps and control values to cam feed
@@ -115,7 +114,7 @@ class Camera:
 
         regionOfInterest = image[self._centerY - halfZoomDisplayHeight:self._centerY + halfZoomDisplayHeight,
                            self._centerX - halfZoomDisplayWidth:self._centerX + halfZoomDisplayWidth]
-        print("resize")
+
         im = cv2.resize(regionOfInterest, (self._dispW, self._dispH), cv2.INTER_LINEAR)
 
         return im
@@ -149,7 +148,9 @@ class Camera:
                             self._thickness)
                 counter += 1
 
-                turnText = f"Turn: {self._get_turn_value(shared_array[self._arrayDict['turn']])}"
+                turnValue = self._get_turn_value(shared_array[self._arrayDict["turn"]])
+                print(turnValue)
+                turnText = f"Turn: {turnValue}"
                 cv2.putText(image, turnText, self._get_origin(counter), self._font, self._scale, self._colour,
                             self._thickness)
                 counter += 1
