@@ -76,25 +76,25 @@ class ServoHandling:
             "look up": {
                 "description": "Turns camera up",
                 "plane": "vertical",
-                "pwmValue": self._angleToPwmValues[self._pwmMaxValues["vertical"]]
+                "pwmValue": self._angleToPwmValues[self._maxAngles["vertical"]]
                 #"pwmValue": self._pwmMaxValues["vertical"]
             },
             "look down":
                 {"description": "Turns camera down",
                  "plane": "vertical",
-                 "pwmValue": self._angleToPwmValues[self._pwmMinValues["vertical"]]
+                 "pwmValue": self._angleToPwmValues[self._minAngles["vertical"]]
                  #"pwmValue": self._pwmMinValues["vertical"]
                  },
             "look left":
                 {"description": "Turns camera left",
                  "plane": "horizontal",
-                 "pwmValue": self._angleToPwmValues[self._pwmMaxValues["horizontal"]]
+                 "pwmValue": self._angleToPwmValues[self._maxAngles["horizontal"]]
                  #"pwmValue": self._pwmMaxValues["horizontal"]
                  },
             "look right": {
                 "description": "Turns camera right",
                 "plane": "horizontal",
-                "pwmValue": self._angleToPwmValues[self._pwmMinValues["horizontal"]]
+                "pwmValue": self._angleToPwmValues[self._minAngles["horizontal"]]
                 #"pwmValue": self._pwmMinValues["horizontal"]
             }
         }
