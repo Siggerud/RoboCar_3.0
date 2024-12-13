@@ -33,8 +33,11 @@ class AudioHandler:
 
             spokenWords = self._clean_up_spoken_words(spokenWords)
 
-            shared_value[0] = self._commandsToNumbers[spokenWords]
-            shared_value[1] = 1  # set 1 to signal that a new command is given
+            try:
+                shared_value[0] = self._commandsToNumbers[spokenWords]
+                shared_value[1] = 1  # set 1 to signal that a new command is given
+            except KeyError:
+                pass
 
 
     def _clean_up_spoken_words(self, spokenWords):
