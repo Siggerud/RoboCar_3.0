@@ -3,7 +3,7 @@ import sounddevice # to avoid lots of ALSA error
 
 class AudioHandler:
     def __init__(self, commandsToNumbers):
-        self._recognizer = sr.recognizer()
+        self._recognizer = sr.Recognizer()
         self._commandsToNumbers = commandsToNumbers
 
     def set_audio_command(self, shared_value):
