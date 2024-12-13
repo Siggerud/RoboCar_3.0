@@ -6,9 +6,10 @@ from carControl import CarControl, X11ForwardingError
 from roboCarHelper import print_startup_error, convert_from_board_number_to_bcm_number
 from configparser import ConfigParser
 import os
+from multiprocessing import Array
+from audioHandler import AudioHandler
 import speech_recognition as sr
 import sounddevice # to avoid lots of ALSA error
-from multiprocessing import Array, Value
 
 def setup_camera(parser):
     if not parser["Components.enabled"].getboolean("Camera"):
@@ -146,9 +147,13 @@ carController.start()
 
 flag = carController.shared_flag
 
+audioHandler = AudioHandler(carController.get_commands_to_numbers())
 
 # keep process running until keyboard interrupt
 try:
+    while not flag.value:
+        audioHandler.set_audio_command(shared_value)
+    """
     #TODO: make an audio capture class
     # Initialize recognizer class (for recognizing the speech)
     r = sr.Recognizer()
@@ -186,7 +191,8 @@ try:
                     shared_value[1] = 1 # set 1 to signal that a new command is given
                 except KeyError:
                     continue
-
+    
+    """
 
 except KeyboardInterrupt:
     flag.value = True # set event to stop all active processes

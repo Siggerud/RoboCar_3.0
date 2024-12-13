@@ -23,44 +23,6 @@ class ServoHandling:
             "vertical": servoPins[1]
         }
 
-        self._pwmMinValues: dict = {
-            "horizontal": map_value_to_new_scale(
-                minAngles[0],
-                self._pwmAbsoluteMin,
-                self._pwmAbsoluteMax,
-                1,
-                -90,
-                90
-            ),
-            "vertical": map_value_to_new_scale(
-                minAngles[1],
-                self._pwmAbsoluteMin,
-                self._pwmAbsoluteMax,
-                1,
-                -90,
-                90
-            )
-        }
-
-        self._pwmMaxValues: dict = {
-            "horizontal": map_value_to_new_scale(
-                maxAngles[0],
-                self._pwmAbsoluteMin,
-                self._pwmAbsoluteMax,
-                1,
-                - 90,
-                90
-            ),
-            "vertical": map_value_to_new_scale(
-                maxAngles[1],
-                self._pwmAbsoluteMin,
-                self._pwmAbsoluteMax,
-                1,
-                - 90,
-                90
-            )
-        }
-
         self._servoPwmNeutralValue: int = 1500  # neutral (0 degrees)
 
         self._currentPwmValue: dict = {
@@ -71,31 +33,26 @@ class ServoHandling:
         self._angleToPwmValues: dict = self._get_angle_mapped_to_pwm_values()
         self._pwmToAngleValues: dict = self._get_pwm_mapped_to_angle_values()
 
-        #TODO: make these read pwm values from angleToPwm dict instead and delete the pwmMax and min dicts
         self._lookOffsetCommands: dict = {
             "look up": {
                 "description": "Turns camera up",
                 "plane": "vertical",
                 "pwmValue": self._angleToPwmValues[self._maxAngles["vertical"]]
-                #"pwmValue": self._pwmMaxValues["vertical"]
             },
             "look down":
                 {"description": "Turns camera down",
                  "plane": "vertical",
                  "pwmValue": self._angleToPwmValues[self._minAngles["vertical"]]
-                 #"pwmValue": self._pwmMinValues["vertical"]
                  },
             "look left":
                 {"description": "Turns camera left",
                  "plane": "horizontal",
                  "pwmValue": self._angleToPwmValues[self._maxAngles["horizontal"]]
-                 #"pwmValue": self._pwmMaxValues["horizontal"]
                  },
             "look right": {
                 "description": "Turns camera right",
                 "plane": "horizontal",
                 "pwmValue": self._angleToPwmValues[self._minAngles["horizontal"]]
-                #"pwmValue": self._pwmMinValues["horizontal"]
             }
         }
 
