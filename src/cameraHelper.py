@@ -12,7 +12,6 @@ class CameraHelper:
         self._turnText = ""
 
         self._zoomValue = 1.0
-        #self._lastStickValue = 0
 
         self._minZoomValue = 1.0
         self._maxZoomValue = 3.0 #TODO: add this to config file

@@ -24,7 +24,6 @@ def setup_camera(parser):
 
     return camera
 
-
 def setup_servo(parser):
     if not parser["Components.enabled"].getboolean("Servo"):
         return None

@@ -57,29 +57,10 @@ class CarControl:
             self._camera.set_servo_enabled()
 
     def _set_shared_array_and_array_dict(self):
-        #TODO: drop the if conditions, and just write the
         arrayDict: dict = {}
         cameraInputs: list = ["speed", "turn", "horizontal servo", "vertical servo", "HUD", "Zoom"]
         for index, cameraInput in enumerate(cameraInputs):
             arrayDict[cameraInput] = index
-
-        arrayDict = {}
-        counter = 0
-        if self._car:
-            arrayDict["speed"] = counter
-            counter += 1
-
-            arrayDict["turn"] = counter
-            counter += 1
-
-        if self._servo:
-            arrayDict["servo"] = counter
-            counter += 1
-
-        arrayDict["HUD"] = counter
-        counter += 1
-
-        arrayDict["Zoom"] = counter
 
         self._camera.add_array_dict(arrayDict)
         self._cameraHelper.add_array_dict(arrayDict)
