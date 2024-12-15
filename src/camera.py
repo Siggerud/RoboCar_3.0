@@ -2,7 +2,6 @@ import cv2
 import os
 os.environ["LIBCAMERA_LOG_LEVELS"] = "3" #disable info and warning logging
 from picamera2 import Picamera2
-from libcamera import Transform
 from time import time
 
 class Camera:
@@ -45,8 +44,7 @@ class Camera:
 
         # set resolution, format and rotation of camera feed
         config = self._picam2.create_preview_configuration(
-            {"size": (self._dispW, self._dispH), "format": "RGB888"},
-            transform=Transform(vflip=self._rotation)
+            {"size": (self._dispW, self._dispH), "format": "RGB888"}
         )
         self._picam2.configure(config)
         self._picam2.start()
@@ -56,6 +54,10 @@ class Camera:
 
         # get raw image
         im = self._picam2.capture_array()
+
+        # flip image if specified by user
+        if self._rotation:
+            im = cv2.flip(im, -1)
 
         # set HUD active or inactive
         self._set_HUD_active_value(shared_array)

@@ -164,6 +164,7 @@ class ServoHandling:
         return self._pwmToAngleValues[self._currentPwmValue[plane]]
 
     def cleanup(self):
+        print("Cleaning up servo")
         self._center_servo_positions() # center camera when exiting
         for pin in list(self._servoPins.values()):
             self._pigpioPwm.set_PWM_dutycycle(pin, 0)

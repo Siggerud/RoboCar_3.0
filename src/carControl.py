@@ -114,7 +114,7 @@ class CarControl:
             self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
             sleep(0.5)
-        print("cleaning up servo")
+
         # cleanup objects
         self._servo.cleanup()
         self._car.cleanup()

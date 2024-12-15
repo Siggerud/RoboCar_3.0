@@ -22,12 +22,12 @@ phototransistor.
 ## Prerequisites
 
 ### Setup Pi OS
-Dowload and install the bookworm version to run this projectd
+Dowload and install the bookworm version to run this project
 
 ### Setting up remote connection
 1. Enable your VNC connection by first opening the configuration settings
 ```
-sudo raspi config
+sudo raspi-config
 ```
 Enable Interface options -> VNC Enable
 
@@ -41,6 +41,13 @@ Look under wlan0 and find the adress after inet.
 Use the ip adress you found earlier to connect to your raspberry pi. Your pi needs to
 be on the same network as the station you are connecting to it remotely from.
 
+### Enable ssh
+
+```
+sudo systemctl start ssh
+sudo systemctl enable ssh
+```
+
 ### Downloading necessary libraries
 Due to some versions of libraries that might not work
 correctly together when installed through pip, we need to use
@@ -51,9 +58,7 @@ sudo apt install -y libcamera-apps libcamera-dev libatlas-base-dev python3-kms++
 sudo apt install -y libhdf5-dev libhdf5-103 libjpeg-dev libjasper-dev
 
 pip3 install picamera2
-pip3 install pygame
 pip3 install opencv-python
-pip3 install pyserial
 ```
 
 ### Setting up pigpio

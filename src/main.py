@@ -8,8 +8,6 @@ from configparser import ConfigParser
 import os
 from multiprocessing import Array
 from audioHandler import AudioHandler
-import speech_recognition as sr
-import sounddevice # to avoid lots of ALSA error
 
 def setup_camera(parser):
     if not parser["Components.enabled"].getboolean("Camera"):
@@ -145,54 +143,16 @@ carController.add_array(shared_array)
 # start car
 carController.start()
 
-flag = carController.shared_flag
-
+#TODO: set up audioHandler by config file
+# initialize audio handler
 audioHandler = AudioHandler(carController.get_commands_to_numbers())
+
+flag = carController.shared_flag
 
 # keep process running until keyboard interrupt
 try:
     while not flag.value:
         audioHandler.set_audio_command(shared_value)
-    """
-    #TODO: make an audio capture class
-    # Initialize recognizer class (for recognizing the speech)
-    r = sr.Recognizer()
-
-    listenTime = 3
-    while not flag.value:  # listen for any processes setting the event
-        spokenWords = ""
-
-        # Reading Microphone as source
-        # listening the speech and store in audio_text variable
-        with sr.Microphone(device_index=1) as source:
-            r.adjust_for_ambient_noise(source)
-            while not flag.value:
-                # recoginze_() method will throw a request
-                # error if the API is unreachable,
-                # hence using exception handling
-
-                print("Talk")
-                while True:
-                    audio_text = r.listen(source, timeout=None, phrase_time_limit=3)
-                    try:
-                        # using google speech recognition
-                        spokenWords = r.recognize_google(audio_text)
-                        break
-                    except sr.UnknownValueError:
-                        continue
-                    except sr.RequestError as e:
-                        print(f"Could not request results from Google Speech Recognition; {e}")
-                        break
-
-                spokenWords = clean_up_spoken_words(spokenWords)
-
-                try:
-                    shared_value[0] = carController.get_commands_to_numbers()[spokenWords]
-                    shared_value[1] = 1 # set 1 to signal that a new command is given
-                except KeyError:
-                    continue
-    
-    """
 
 except KeyboardInterrupt:
     flag.value = True # set event to stop all active processes
