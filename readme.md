@@ -42,10 +42,18 @@ Use the ip adress you found earlier to connect to your raspberry pi. Your pi nee
 be on the same network as the station you are connecting to it remotely from.
 
 ### Enable ssh
-
+To run the pi from your PC you need to enable ssh
 ```
 sudo systemctl start ssh
+```
+```
 sudo systemctl enable ssh
+```
+
+### Clone this repo
+Navigate to where you want this repo to be located
+```
+git clone https://github.com/Siggerud/RoboCar_3.0.git
 ```
 
 ### Downloading necessary libraries
