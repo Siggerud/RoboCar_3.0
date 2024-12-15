@@ -1,6 +1,4 @@
-from itertools import chain
-
-from roboCarHelper import map_value_to_new_scale
+from roboCarHelper import RobocarHelper
 
 class CameraHelper:
     def __init__(self):
@@ -59,10 +57,10 @@ class CameraHelper:
         shared_array[self._arrayDict["Zoom"]] = self._zoomValue
 
     def get_camera_commands(self) -> list:
-        dictWithAllCommands = dict(chain(self._hudCommands.items(), self._zoomCommands.items()))
-        allCommands = list(dictWithAllCommands.keys())
-
-        return allCommands
+        return RobocarHelper.chain_together_dict_keys([
+            self._hudCommands,
+            self._zoomCommands
+        ])
 
     def get_HUD_active(self):
         return self._hudActive

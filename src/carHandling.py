@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from roboCarHelper import map_value_to_new_scale, chain_together_dict_keys
+from roboCarHelper import RobocarHelper
 
 class CarHandling:
 	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT):
@@ -81,7 +81,7 @@ class CarHandling:
 		GPIO.cleanup()
 
 	def get_car_commands(self) -> dict[str: str]:
-		return chain_together_dict_keys([self._direction_commands,
+		return RobocarHelper.chain_together_dict_keys([self._direction_commands,
 										 self._speed_commands,
 										 self._exact_speed_commands])
 

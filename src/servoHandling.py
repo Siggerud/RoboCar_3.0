@@ -1,4 +1,4 @@
-from roboCarHelper import map_value_to_new_scale, chain_together_dict_keys
+from roboCarHelper import RobocarHelper
 import pigpio
 
 class ServoHandling:
@@ -85,7 +85,7 @@ class ServoHandling:
                             )
 
     def get_servo_commands(self) -> list[str]:
-        return chain_together_dict_keys([self._lookOffsetCommands,
+        return RobocarHelper.chain_together_dict_keys([self._lookOffsetCommands,
                                          self._lookCenterCommand,
                                          self._exactAngleCommands]
                                         )
@@ -149,7 +149,7 @@ class ServoHandling:
         return exactAngleCommands
 
     def _angle_to_pwm(self, angle) -> float:
-        pwmValue = map_value_to_new_scale(
+        pwmValue = RobocarHelper.map_value_to_new_scale(
                 angle,
                 self._pwmAbsoluteMin,
                 self._pwmAbsoluteMax,

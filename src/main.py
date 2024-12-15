@@ -3,7 +3,7 @@ from camera import Camera
 from cameraHelper import CameraHelper
 from servoHandling import ServoHandling
 from carControl import CarControl, X11ForwardingError
-from roboCarHelper import print_startup_error, convert_from_board_number_to_bcm_number
+from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
 import os
 from multiprocessing import Array
@@ -33,7 +33,7 @@ def setup_servo(parser):
     minAngleHorizontal = servoDataVertical.getint("MinAngle")
     maxAngleHorizontal = servoDataVertical.getint("MaxAngle")
 
-    servoPinHorizontal = convert_from_board_number_to_bcm_number(servoPinHorizontal)
+    servoPinHorizontal = RobocarHelper.convert_from_board_number_to_bcm_number(servoPinHorizontal)
 
     servoDataVertical = parser[f"Servo.handling.specs.vertical"]
 
@@ -41,7 +41,7 @@ def setup_servo(parser):
     minAngleVertical = servoDataVertical.getint("MinAngle")
     maxAngleVertical = servoDataVertical.getint("MaxAngle")
 
-    servoPinVertical = convert_from_board_number_to_bcm_number(servoPinVertical)
+    servoPinVertical = RobocarHelper.convert_from_board_number_to_bcm_number(servoPinVertical)
 
     servo = ServoHandling(
         (servoPinHorizontal, servoPinVertical),
@@ -116,7 +116,7 @@ cameraHelper.add_servo(servo)
 try:
     carController = CarControl(car, servo, camera, cameraHelper)
 except (X11ForwardingError) as e:
-    print_startup_error(e)
+    RobocarHelper.print_startup_error(e)
     exit()
 
 shared_array = Array(
