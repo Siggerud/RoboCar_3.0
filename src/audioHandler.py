@@ -5,13 +5,14 @@ class AudioHandler:
     def __init__(self, commandsToNumbers):
         self._recognizer = sr.Recognizer()
         self._commandsToNumbers = commandsToNumbers
+        self._deviceIndex = 4 #TODO: add this to config
 
     def set_audio_command(self, shared_value):
         spokenWords = ""
 
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
-        with sr.Microphone(device_index=1) as source:
+        with sr.Microphone(device_index=self._deviceIndex) as source:
             self._recognizer.adjust_for_ambient_noise(source)
 
             # recoginze_() method will throw a request
