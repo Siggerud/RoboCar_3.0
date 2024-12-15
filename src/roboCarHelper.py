@@ -1,3 +1,6 @@
+
+
+
 def map_value_to_new_scale(inputValue, newScaleMinValue, newScaleMaxValue, valuePrecision, oldScaleMinValue=-1, oldScaleMaxValue=1):
     newScaleSpan = newScaleMaxValue - newScaleMinValue
     oldScaleSpan = oldScaleMaxValue - oldScaleMinValue

@@ -22,7 +22,7 @@ phototransistor.
 ## Prerequisites
 
 ### Setup Pi OS
-Dowload and install the bookworm version to run this project
+Dowload and install the bookworm 64 bit version to run this project
 
 ### Setting up remote connection
 1. Enable your VNC connection by first opening the configuration settings
@@ -53,12 +53,19 @@ Due to some versions of libraries that might not work
 correctly together when installed through pip, we need to use
 sudo apt for some of the libraries instead 
 
+First reset pip
 ```
-sudo apt install -y libcamera-apps libcamera-dev libatlas-base-dev python3-kms++ python3-libcamera python3-pyqt5 python3-prctl
-sudo apt install -y libhdf5-dev libhdf5-103 libjpeg-dev libjasper-dev
+pip install pip==22.3.1 --break-system-packages
+```
 
-pip3 install picamera2
-pip3 install opencv-python
+Install picamera2
+```
+pip install picamera2
+```
+
+Install opencv-python
+```
+pip install opencv-python
 ```
 
 ### Setting up pigpio
@@ -66,7 +73,6 @@ We need pigpio to control our servo, otherwise
 there will be a lot of jitter.
 ```
 sudo apt-get install pigpio 
-sudo apt-get install  python-pigpio python3-pigpio
 ```
 
 Setup pipgio service to run at boot
@@ -85,11 +91,11 @@ sudo systemctl start pigpiod
 Start bluetooth and scan for heaphones
 ```
 sudo systemctl start bluetooth
+```
+```
 bluetoothctl
-
-power on
-agent on
-default-agent
+```
+```
 scan on
 ```
 
@@ -121,16 +127,16 @@ Install SpeechRecognition library
 pip install SpeechRecognition==3.11
 ```
 
-If you get an error here, you might have to downgrade your pip
-to version 22.3.1
-```
-python3 -m pip install pip==22.3.1
-```
+If you get an error here, then check if you forgot to downgrade pip to 22.3.1
 
-Install dependencies
+Install SpeechRecognition dependencies
 ```
 sudo apt install portaudio19-dev python3-pyaudio
+```
+```
 pip install pyaudio
+```
+```
 sudo apt install flac
 ```
 
@@ -146,6 +152,7 @@ import speech_recognition as sr
 for index, name in enumerate(sr.Microphone.list_microphone_names()):
     print(f"Microphone with index {index}: {name}")
 ```
+It should be the index next to "pulse"
 
 Insert index in this script to test microphone recording
 ```
@@ -203,16 +210,6 @@ with sr.Microphone(device_index=1) as source:
 ```
 
 If the output is what you communicated, the speech recognition works.
-
-### Upload code to arduino
-1. Connect the Arduino Uno to your computer via USB cable
-2. Download and install [Arduino IDE](https://www.arduino.cc/en/software).
-3. Open the Arduino IDE
-4. Go to files and open SerialComm.ino from this project
-5. Under Tools -> Boards choose Arduino Uno
-6. Under Tools -> Port choose the port that has Arduino Uno in paranthesis in the name
-7. Press the upload button
-8. Disconnect the Arduino Uno from the PC
 
 ### Add changes to config file if necessary
 All user tweaking will be done in the config file. Here you can add or remove
