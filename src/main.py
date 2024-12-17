@@ -142,7 +142,7 @@ carController.start()
 
 #TODO: set up audioHandler by config file
 # initialize audio handler
-deviceIndex = 4
+deviceIndex = 1
 audioHandler = AudioHandler(carController.get_commands_to_numbers(), deviceIndex)
 
 flag = carController.shared_flag
