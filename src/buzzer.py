@@ -5,7 +5,7 @@ class Buzzer:
     def __init__(self, buzzerPin: int):
         self._buzzerPin: int = buzzerPin
         self._defaultHonkTime = 0.3 #TODO: add this to config
-        self._buzzCommand: dict = {"honk now": {"description": "starts honking"}}
+        self._buzzCommand: dict = {"start horn": {"description": "starts honking"}}
 
     def setup(self):
         GPIO.setup(self._buzzerPin, GPIO.OUT)
