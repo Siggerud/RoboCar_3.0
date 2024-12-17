@@ -7,7 +7,7 @@ from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
 import os
 from multiprocessing import Array
-from audioHandler import AudioHandler
+from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
 
 def setup_camera(parser):
@@ -142,9 +142,12 @@ carController.start()
 
 #TODO: set up audioHandler by config file
 # initialize audio handler
-deviceIndex = 1
-audioHandler = AudioHandler(carController.get_commands_to_numbers(), deviceIndex)
-
+try:
+    audioHandler = AudioHandler(carController.get_commands_to_numbers())
+except MicrophoneNotConnected as e:
+    RobocarHelper.print_startup_error(e)
+    exit()
+    
 flag = carController.shared_flag
 
 # keep process running until keyboard interrupt

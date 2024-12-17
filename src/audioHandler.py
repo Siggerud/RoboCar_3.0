@@ -53,3 +53,14 @@ class AudioHandler:
         print("Text: " + spokenWords)
 
         return spokenWords.lower().strip()
+
+    def _get_device_index(self) -> int:
+        connectedMicrophones = sr.Microphone.list_microphone_names()
+        for index, microphone in enumerate(connectedMicrophones):
+            if microphone == "pulse":
+                return index
+
+        raise MicrophoneNotConnected("Microphone is not connected")
+
+class MicrophoneNotConnected(Exception):
+    pass

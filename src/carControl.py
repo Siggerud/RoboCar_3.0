@@ -143,23 +143,22 @@ class CarControl:
         #TODO: loop through list of objects instead
 
         # add car commands
-        objectsToCommands.update(self._add_object_to_commands(self._car.get_voice_commands(), self._car))
+        objectsToCommands.update(self._add_object_to_commands(self._car))
 
         # add servo commands
-        objectsToCommands.update(self._add_object_to_commands(self._servo.get_voice_commands(), self._servo))
+        objectsToCommands.update(self._add_object_to_commands(self._servo))
 
         # add camera commands
-        objectsToCommands.update(self._add_object_to_commands(self._cameraHelper.get_voice_commands(), self._cameraHelper))
+        objectsToCommands.update(self._add_object_to_commands(self._cameraHelper))
 
         # add honk commands
-        objectsToCommands.update(self._add_object_to_commands(self._honk.get_voice_commands(), self._honk))
+        objectsToCommands.update(self._add_object_to_commands(self._honk))
 
         return objectsToCommands
 
-    #TODO: just take object and call get_voice_commands()
-    def _add_object_to_commands(self, commands: list[str], roboObject: object) -> dict:
+    def _add_object_to_commands(self, roboObject) -> dict:
         objectToCommands: dict = {}
-        for command in commands:
+        for command in roboObject.get_voice_commands():
             objectToCommands[command] = roboObject
 
         return objectToCommands
