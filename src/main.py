@@ -147,7 +147,7 @@ try:
 except MicrophoneNotConnected as e:
     RobocarHelper.print_startup_error(e)
     exit()
-    
+
 flag = carController.shared_flag
 
 # keep process running until keyboard interrupt
