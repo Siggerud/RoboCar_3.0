@@ -56,7 +56,7 @@ class CameraHelper:
         shared_array[self._arrayDict["HUD"]] = float(self._hudActive)
         shared_array[self._arrayDict["Zoom"]] = self._zoomValue
 
-    def get_camera_commands(self) -> list:
+    def get_voice_commands(self) -> list:
         return RobocarHelper.chain_together_dict_keys([
             self._hudCommands,
             self._zoomCommands

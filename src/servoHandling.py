@@ -84,7 +84,7 @@ class ServoHandling:
                              self._exactAngleCommands[command]["pwmValue"]
                             )
 
-    def get_servo_commands(self) -> list[str]:
+    def get_voice_commands(self) -> list[str]:
         return RobocarHelper.chain_together_dict_keys([self._lookOffsetCommands,
                                          self._lookCenterCommand,
                                          self._exactAngleCommands]

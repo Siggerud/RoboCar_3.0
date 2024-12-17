@@ -46,7 +46,7 @@ class CarHandling:
 		self._speedStep: int = 10 #TODO: add this to config
 
 	def setup(self):
-		GPIO.setmode(GPIO.BOARD)
+		#GPIO.setmode(GPIO.BOARD)
 
 		GPIO.setup(self._leftBackward, GPIO.OUT)
 		GPIO.setup(self._leftForward, GPIO.OUT)
@@ -78,9 +78,9 @@ class CarHandling:
 		self._pwmA.stop()
 		self._pwmB.stop()
 
-		GPIO.cleanup()
+		#GPIO.cleanup()
 
-	def get_car_commands(self) -> dict[str: str]:
+	def get_voice_commands(self) -> dict[str: str]:
 		return RobocarHelper.chain_together_dict_keys([self._direction_commands,
 										 self._speed_commands,
 										 self._exact_speed_commands])

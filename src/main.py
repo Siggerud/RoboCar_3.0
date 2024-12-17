@@ -8,6 +8,7 @@ from configparser import ConfigParser
 import os
 from multiprocessing import Array
 from audioHandler import AudioHandler
+from buzzer import Buzzer
 
 def setup_camera(parser):
     if not parser["Components.enabled"].getboolean("Camera"):
@@ -22,6 +23,11 @@ def setup_camera(parser):
     camera = Camera(resolution)
 
     return camera
+
+def setup_buzzer(parser) -> Buzzer:
+    buzzerPin = parser["buzzer.pin"].getInt("Buzzer")
+
+    return Buzzer(buzzerPin)
 
 def setup_servo(parser):
     if not parser["Components.enabled"].getboolean("Servo"):
@@ -82,27 +88,18 @@ def setup_car(parser):
 
     return car
 
-def clean_up_spoken_words(spokenWords):
-    if "°" in spokenWords: # change out degree symbol
-        # sometimes the ° sign is right next to the number of degrees, so we need to add some space around it
-        splitWords = spokenWords.split("°")
-        strippedWords = [word.strip() for word in splitWords]
-        rejoinedWords = " ° ".join(strippedWords)
-
-        spokenWords = rejoinedWords.replace("°", "degrees")
-
-    print("Text: " + spokenWords)
-
-    return spokenWords.lower().strip()
-
 # set up parser to read input values
 parser = ConfigParser()
 parser.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
+# setup car
 car = setup_car(parser)
 
 # define servos aboard car
 servo = setup_servo(parser)
+
+# setup honk
+honk = setup_buzzer(parser)
 
 # setup camera
 camera = setup_camera(parser)
@@ -114,7 +111,7 @@ cameraHelper.add_servo(servo)
 
 # set up car controller
 try:
-    carController = CarControl(car, servo, camera, cameraHelper)
+    carController = CarControl(car, servo, camera, cameraHelper, honk)
 except (X11ForwardingError) as e:
     RobocarHelper.print_startup_error(e)
     exit()

@@ -1,9 +1,10 @@
 import subprocess
 from multiprocessing import Process, Value
 from time import sleep
+import RPi.GPIO as GPIO
 
 class CarControl:
-    def __init__(self, car, servo, camera, cameraHelper):
+    def __init__(self, car, servo, camera, cameraHelper, honk):
         if not self._check_if_X11_connected():
             raise X11ForwardingError("X11 forwarding not detected.")
 
@@ -12,6 +13,7 @@ class CarControl:
 
         self._camera = camera
         self._cameraHelper = cameraHelper
+        self._honk = honk
 
         self._processes = []
 
@@ -96,9 +98,12 @@ class CarControl:
         return numbersToCommands
 
     def _start_listening_for_voice_commands(self, shared_value, flag):
+        GPIO.setmode(GPIO.BOARD) #TODO: use decorator to do this instead
+
         # setup objects
         self._car.setup()
         self._servo.setup()
+        self._honk.setup()
 
         while not flag.value:
             newCommand = bool(shared_value[1]) # check if there's a new command
@@ -119,6 +124,8 @@ class CarControl:
         self._servo.cleanup()
         self._car.cleanup()
 
+        GPIO.cleanup() #TODO: use decorator to do this instead
+
     def _get_voice_command(self, num: int) -> str:
         return self._numbers_to_commands[num]
 
@@ -133,17 +140,23 @@ class CarControl:
     def _get_all_objects_mapped_to_commands(self) -> dict:
         objectsToCommands: dict = {}
 
+        #TODO: loop through list of objects instead
+
         # add car commands
-        objectsToCommands.update(self._add_object_to_commands(self._car.get_car_commands(), self._car))
+        objectsToCommands.update(self._add_object_to_commands(self._car.get_voice_commands(), self._car))
 
         # add servo commands
-        objectsToCommands.update(self._add_object_to_commands(self._servo.get_servo_commands(), self._servo))
+        objectsToCommands.update(self._add_object_to_commands(self._servo.get_voice_commands(), self._servo))
 
         # add camera commands
-        objectsToCommands.update(self._add_object_to_commands(self._cameraHelper.get_camera_commands(), self._cameraHelper))
+        objectsToCommands.update(self._add_object_to_commands(self._cameraHelper.get_voice_commands(), self._cameraHelper))
+
+        # add honk commands
+        objectsToCommands.update(self._add_object_to_commands(self._honk.get_voice_commands(), self._honk))
 
         return objectsToCommands
 
+    #TODO: just take object and call get_voice_commands()
     def _add_object_to_commands(self, commands: list[str], roboObject: object) -> dict:
         objectToCommands: dict = {}
         for command in commands:
