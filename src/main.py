@@ -25,7 +25,7 @@ def setup_camera(parser):
     return camera
 
 def setup_buzzer(parser) -> Buzzer:
-    buzzerPin = parser["buzzer.pin"].getInt("Buzzer")
+    buzzerPin = parser["buzzer.pin"].getint("Buzzer")
 
     return Buzzer(buzzerPin)
 
