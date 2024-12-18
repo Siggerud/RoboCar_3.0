@@ -2,7 +2,6 @@ import subprocess
 from multiprocessing import Process, Value
 from time import sleep
 import RPi.GPIO as GPIO
-from decorators import GPIOProcess
 
 class CarControl:
     def __init__(self, car, servo, camera, cameraHelper, honk):
@@ -98,7 +97,7 @@ class CarControl:
 
         return numbersToCommands
 
-    def GPIOProcess(self, func, *args):
+    def _GPIO_Process(self, func, *args):
         GPIO.setmode(GPIO.BOARD)
         func(*args)
         GPIO.cleanup()

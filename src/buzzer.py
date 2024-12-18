@@ -9,7 +9,6 @@ class Buzzer:
         self._maxHonkTime = 2 #TODO: add this to config
         self._buzzCommand: dict = {"start horn": {"description": "starts honking"}}
         self._buzzForSpecifiedTimeCommands: dict = self._set_honk_for_specified_time_commands()
-        print(self._buzzForSpecifiedTimeCommands)
 
     def setup(self):
         GPIO.setup(self._buzzerPin, GPIO.OUT)
