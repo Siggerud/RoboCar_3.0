@@ -1,7 +1,7 @@
 import subprocess
 from multiprocessing import Process, Value
 from time import sleep
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from decorators import GPIOProcess
 
 class CarControl:
@@ -75,8 +75,8 @@ class CarControl:
 
     def _activate_voice_command_handling(self):
         process = Process(
-            target=self._start_listening_for_voice_commands,
-            args=(self._shared_value, self.shared_flag)
+            target=self.GPIOProcess,
+            args=(self._start_listening_for_voice_command, self._shared_value, self.shared_flag)
         )
         self._processes.append(process)
         process.start()
@@ -98,7 +98,11 @@ class CarControl:
 
         return numbersToCommands
 
-    @GPIOProcess
+    def GPIOProcess(self, func, *args):
+        GPIO.setmode(GPIO.BOARD)
+        func(*args)
+        GPIO.cleanup()
+
     def _start_listening_for_voice_commands(self, shared_value, flag):
         #GPIO.setmode(GPIO.BOARD) #TODO: use decorator to do this instead
 
