@@ -31,8 +31,8 @@ class RobocarHelper:
         return round(x / a) * a
 
     @staticmethod
-    def convert_from_board_number_to_bcm_number(boardNumber):
-        gpioNumbering = {
+    def convert_from_board_number_to_bcm_number(boardNumber) -> int:
+        gpioNumbering: dict = {
             3: 2,
             5: 3,
             7: 4,

@@ -9,7 +9,7 @@ class Camera:
         self._dispW, self._dispH = resolution
         self._centerX = int(self._dispW / 2)
         self._centerY = int(self._dispH / 2)
-        self._rotation = rotation
+        self._rotation: bool = rotation
 
         self._picam2 = None
 
@@ -92,12 +92,12 @@ class Camera:
         self._arrayDict = arrayDict
 
     def _set_text_positions(self):
-        spacingVertical = 30
+        spacingVertical: int = 30
 
-        horizontalCoord = 10
-        verticalCoord = self._dispH - 15
+        horizontalCoord: int = 10
+        verticalCoord: int = self._dispH - 15
 
-        positions = []
+        positions: list = []
         for i in range(4):
             position = (horizontalCoord, verticalCoord - i * spacingVertical)
             positions.append(position)
