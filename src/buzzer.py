@@ -37,7 +37,7 @@ class Buzzer:
         honkTime: float = 0.1
         stepValue: float = 0.1
         honkCommands: dict = {}
-        while honkTime <= self._maxHonkTime:
+        while honkTime <= (self._maxHonkTime + stepValue):
             honkCommands[f"start horn {round(honkTime, 1)}"] = round(honkTime, 1) # round honkTime to avoid floating numbers with many decimals
 
             honkTime += stepValue

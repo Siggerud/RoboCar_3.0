@@ -81,7 +81,7 @@ class CameraHelper:
         zoomValue: float = self._minZoomValue
         stepValue: float = 0.1
         zoomCommands: dict = {}
-        while zoomValue <= self._maxZoomValue:
+        while zoomValue <= (self._maxZoomValue + stepValue):
             zoomCommands[f"zoom {round(zoomValue, 1)}"] = round(zoomValue, 1) # round zoomValue to avoid floating numbers with many decimals
 
             zoomValue += stepValue
