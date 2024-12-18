@@ -76,7 +76,7 @@ class CarControl:
     def _activate_voice_command_handling(self):
         process = Process(
             target=self.GPIOProcess,
-            args=(self._start_listening_for_voice_command, self._shared_value, self.shared_flag)
+            args=(self._start_listening_for_voice_commands, self._shared_value, self.shared_flag)
         )
         self._processes.append(process)
         process.start()
