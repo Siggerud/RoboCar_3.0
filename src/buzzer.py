@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 from time import sleep
+from roboCarHelper import RobocarHelper
 
 class Buzzer:
     def __init__(self, buzzerPin: int):
@@ -23,7 +24,9 @@ class Buzzer:
         self._buzz(honkTime)
 
     def get_voice_commands(self) -> list[str]:
-        return list(self._buzzCommand.keys())
+        return RobocarHelper.chain_together_dict_keys([self._buzzCommand,
+                                                       self._buzzForSpecifiedTimeCommands]
+                                                      )
 
     def _buzz(self, honkTime):
         GPIO.output(self._buzzerPin, GPIO.HIGH)
