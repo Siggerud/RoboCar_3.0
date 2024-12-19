@@ -89,7 +89,7 @@ class CarControl:
             commandsToNumbers[command] = index
 
         # add exit command to dictionary
-        commandsToNumbers[self._exitCommand] = index + 1
+        #commandsToNumbers[self._exitCommand] = index + 1
 
         return commandsToNumbers
 
