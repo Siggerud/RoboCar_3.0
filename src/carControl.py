@@ -79,7 +79,7 @@ class CarControl:
     def _activate_voice_command_handling(self):
         process = Process(
             target=self._GPIO_Process,
-            args=(self._start_listening_for_voice_commands, self._shared_value, self.shared_flag)
+            args=(self._start_listening_for_voice_commands, self.shared_flag)
         )
         self._processes.append(process)
         process.start()
@@ -89,7 +89,7 @@ class CarControl:
         func(*args)
         GPIO.cleanup()
 
-    def _start_listening_for_voice_commands(self, shared_value, flag):
+    def _start_listening_for_voice_commands(self, flag):
         # setup objects
         self._car.setup()
         self._servo.setup()
