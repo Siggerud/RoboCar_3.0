@@ -1,6 +1,5 @@
 import subprocess
 from multiprocessing import Process, Array, Value, Queue
-from time import sleep
 import RPi.GPIO as GPIO
 
 class CarControl:
@@ -107,8 +106,6 @@ class CarControl:
                 continue
 
             self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
-
-            sleep(0.5)
 
         # cleanup objects
         self._servo.cleanup()
