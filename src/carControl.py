@@ -1,5 +1,5 @@
 import subprocess
-from multiprocessing import Process, Array, Value
+from multiprocessing import Process, Array, Value, Queue
 from time import sleep
 import RPi.GPIO as GPIO
 
@@ -37,6 +37,7 @@ class CarControl:
                   ]
         )
         self.shared_flag = Value('b', False)
+        self.queue = Queue()
 
     def get_shared_value(self) -> Array:
         return self._shared_value
@@ -120,21 +121,23 @@ class CarControl:
         self._honk.setup()
 
         while not flag.value:
+            print(self.queue.get())
+            """
             newCommand = bool(shared_value[1]) # check if there's a new command
             if newCommand:
                 command: str = self._get_voice_command(self._shared_value[0])
-                """
-                if command == self._exitCommand:
-                    self._exit_program(flag)
-                    break
-                """
+                
+                #if command == self._exitCommand:
+                #    self._exit_program(flag)
+                #    break
+                
                 self._commandToObjects[command].handle_voice_command(command)
                 self._shared_value[1] = 0 # signal that command is read
 
                 self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
             sleep(0.5)
-
+        """
         # cleanup objects
         self._servo.cleanup()
         self._car.cleanup()

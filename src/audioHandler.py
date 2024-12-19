@@ -1,16 +1,23 @@
 import speech_recognition as sr
 import sounddevice # to avoid lots of ALSA error
+from time import sleep
+from random import randint
 
 class AudioHandler:
-    def __init__(self, commandsToNumbers, exitCommand):
+    def __init__(self, commandsToNumbers, exitCommand, queue):
         self._commandsToNumbers = commandsToNumbers
         self._exitCommand = exitCommand
         self._recognizer = sr.Recognizer()
         self._deviceIndex = self._get_device_index()
+        self._queue = queue
 
-    def set_audio_command(self, shared_value, flag):
+    def set_audio_command(self, flag):
         spokenWords = ""
+        num = randint(0, 10)
+        self._queue.put(str(num))
+        sleep(2)
 
+        """
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
         with sr.Microphone(device_index=self._deviceIndex) as source:
@@ -38,10 +45,10 @@ class AudioHandler:
             else:
                 # set the command in IPC
                 try:
-                    shared_value[0] = self._commandsToNumbers[spokenWords]
-                    shared_value[1] = 1  # set 1 to signal that a new command is given
+                    queue[0] = self._commandsToNumbers[spokenWords]
+                    queue[1] = 1  # set 1 to signal that a new command is given
                 except KeyError:
-                    pass
+                    pass"""
 
     def _clean_up_spoken_words(self, spokenWords):
         if "°" in spokenWords:  # change out degree symbol

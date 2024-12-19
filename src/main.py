@@ -121,9 +121,10 @@ carController.start()
 
 #TODO: set up audioHandler by config file
 # initialize audio handler
+queue = carController.queue
 try:
     exitCommand = "cancel program"
-    audioHandler = AudioHandler(carController.get_commands_to_numbers(), exitCommand)
+    audioHandler = AudioHandler(carController.get_commands_to_numbers(), exitCommand, queue)
 except MicrophoneNotConnected as e:
     RobocarHelper.print_startup_error(e)
     exit()
@@ -131,10 +132,11 @@ except MicrophoneNotConnected as e:
 shared_value = carController.get_shared_value()
 shared_flag = carController.get_flag()
 
+
 # keep process running until keyboard interrupt
 try:
     while not shared_flag.value:
-        audioHandler.set_audio_command(shared_value, shared_flag)
+        audioHandler.set_audio_command(shared_flag)
 
 except KeyboardInterrupt:
     shared_flag.value = True # set event to stop all active processes
