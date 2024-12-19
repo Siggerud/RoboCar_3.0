@@ -16,6 +16,7 @@ class CarControl:
         self._honk = honk
 
         self._processes = []
+        self._exitCommand = "cancel program" #TODO: make this a variable that is read from config for both audio and carcontroller class
 
         self._commandToObjects: dict[str: object] = self._get_all_objects_mapped_to_commands()
         self._commands_to_numbers: dict[str: int] = self._get_commands_to_numbers()
@@ -121,23 +122,21 @@ class CarControl:
         self._honk.setup()
 
         while not flag.value:
-            print(self.queue.get())
-            """
-            newCommand = bool(shared_value[1]) # check if there's a new command
-            if newCommand:
-                command: str = self._get_voice_command(self._shared_value[0])
-                
-                #if command == self._exitCommand:
-                #    self._exit_program(flag)
-                #    break
-                
-                self._commandToObjects[command].handle_voice_command(command)
-                self._shared_value[1] = 0 # signal that command is read
+            #newCommand = bool(shared_value[1]) # check if there's a new command
+            #if newCommand:
+            #command: str = self._get_voice_command(self._shared_value[0])
+            command = self.queue.get()
 
-                self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
+            if command == self._exitCommand:
+                break
+
+            self._commandToObjects[command].handle_voice_command(command)
+            #self._shared_value[1] = 0 # signal that command is read
+
+            self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
             sleep(0.5)
-        """
+
         # cleanup objects
         self._servo.cleanup()
         self._car.cleanup()
