@@ -101,7 +101,10 @@ class CarControl:
             if command == self._exitCommand:
                 break
 
-            self._commandToObjects[command].handle_voice_command(command)
+            try:
+                self._commandToObjects[command].handle_voice_command(command)
+            except KeyError:
+                continue
 
             self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
