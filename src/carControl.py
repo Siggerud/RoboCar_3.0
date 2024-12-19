@@ -88,9 +88,6 @@ class CarControl:
         for index, command in enumerate(list(self._commandToObjects.keys())):
             commandsToNumbers[command] = index
 
-        # add exit command to dictionary
-        #commandsToNumbers[self._exitCommand] = index + 1
-
         return commandsToNumbers
 
     def _get_numbers_to_commands(self) -> dict:
