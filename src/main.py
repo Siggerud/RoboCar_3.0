@@ -116,31 +116,6 @@ except (X11ForwardingError) as e:
     RobocarHelper.print_startup_error(e)
     exit()
 
-#TODO: initialize all the shared variables in carcontroller class
-shared_array = Array(
-    'd', [
-        0.0, #speed
-        0.0, #turn
-        0.0, #horizontal servo
-        0.0, #vertical servo
-        0.0, #HUD
-        1.0 #zoom
-    ]
-)
-
-shared_value = Array(
-    'i', [0, # command
-          0 # boolean to signal if a new command has been given
-          ]
-)
-
-shared_flag = Value('b', False)
-
-carController.add_flag(shared_flag)
-carController.add_voice_value(shared_value)
-carController.add_array(shared_array)
-
-
 # start car
 carController.start()
 
@@ -152,6 +127,9 @@ try:
 except MicrophoneNotConnected as e:
     RobocarHelper.print_startup_error(e)
     exit()
+
+shared_value = carController.get_shared_value()
+shared_flag = carController.get_flag()
 
 # keep process running until keyboard interrupt
 try:

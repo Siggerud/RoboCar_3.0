@@ -1,5 +1,5 @@
 import subprocess
-from multiprocessing import Process
+from multiprocessing import Process, Array, Value
 from time import sleep
 import RPi.GPIO as GPIO
 
@@ -21,15 +21,28 @@ class CarControl:
         self._commands_to_numbers: dict[str: int] = self._get_commands_to_numbers()
         self._numbers_to_commands: dict[int: str] = self._get_numbers_to_commands()
 
-        self.shared_array = None
-        self._shared_value = None
-        self.shared_flag = None
+        self.shared_array = Array(
+            'd', [
+                0.0, #speed
+                0.0, #turn
+                0.0, #horizontal servo
+                0.0, #vertical servo
+                0.0, #HUD
+                1.0 #zoom
+            ]
+        )
+        self._shared_value = Array(
+            'i', [0, # command
+                  0 # boolean to signal if a new command has been given
+                  ]
+        )
+        self.shared_flag = Value('b', False)
 
-    def add_array(self, array):
-        self.shared_array = array
+    def get_shared_value(self) -> Array:
+        return self._shared_value
 
-    def add_flag(self, flag):
-        self.shared_flag = flag
+    def get_flag(self) -> Value:
+        return self.shared_flag
 
     def get_commands_to_numbers(self) -> dict[str: int]:
         return self._commands_to_numbers
@@ -176,9 +189,6 @@ class CarControl:
             print("Succesful connection to forwarded X11 server")
 
         return not returnCode
-
-    def add_voice_value(self, _shared_value):
-        self._shared_value = _shared_value
 
 
 class X11ForwardingError(Exception):
