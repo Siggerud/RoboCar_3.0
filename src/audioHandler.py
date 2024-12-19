@@ -2,12 +2,11 @@ import speech_recognition as sr
 import sounddevice # to avoid lots of ALSA error
 
 class AudioHandler:
-    def __init__(self, commandsToNumbers, exitCommand, queue):
-        self._commandsToNumbers = commandsToNumbers
+    def __init__(self, exitCommand, queue):
+        self._queue = queue
         self._exitCommand = exitCommand
         self._recognizer = sr.Recognizer()
         self._deviceIndex = self._get_device_index()
-        self._queue = queue
 
     def set_audio_command(self, flag):
         spokenWords = ""

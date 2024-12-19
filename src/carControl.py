@@ -19,8 +19,6 @@ class CarControl:
         self._exitCommand = "cancel program" #TODO: make this a variable that is read from config for both audio and carcontroller class
 
         self._commandToObjects: dict[str: object] = self._get_all_objects_mapped_to_commands()
-        self._commands_to_numbers: dict[str: int] = self._get_commands_to_numbers()
-        self._numbers_to_commands: dict[int: str] = self._get_numbers_to_commands()
 
         self.shared_array = Array(
             'd', [
@@ -32,22 +30,12 @@ class CarControl:
                 1.0 #zoom
             ]
         )
-        self._shared_value = Array(
-            'i', [0, # command
-                  0 # boolean to signal if a new command has been given
-                  ]
-        )
+
         self.shared_flag = Value('b', False)
         self.queue = Queue()
 
-    def get_shared_value(self) -> Array:
-        return self._shared_value
-
     def get_flag(self) -> Value:
         return self.shared_flag
-
-    def get_commands_to_numbers(self) -> dict[str: int]:
-        return self._commands_to_numbers
 
     def start(self):
         # TODO: print commands
@@ -96,20 +84,6 @@ class CarControl:
         self._processes.append(process)
         process.start()
 
-    def _get_commands_to_numbers(self) -> dict:
-        commandsToNumbers: dict = {}
-
-        # add commands from all objects
-        for index, command in enumerate(list(self._commandToObjects.keys())):
-            commandsToNumbers[command] = index
-
-        return commandsToNumbers
-
-    def _get_numbers_to_commands(self) -> dict:
-        numbersToCommands: dict = {num: command for command, num in self._commands_to_numbers.items()}
-
-        return numbersToCommands
-
     def _GPIO_Process(self, func, *args):
         GPIO.setmode(GPIO.BOARD)
         func(*args)
@@ -122,16 +96,12 @@ class CarControl:
         self._honk.setup()
 
         while not flag.value:
-            #newCommand = bool(shared_value[1]) # check if there's a new command
-            #if newCommand:
-            #command: str = self._get_voice_command(self._shared_value[0])
             command = self.queue.get()
 
             if command == self._exitCommand:
                 break
 
             self._commandToObjects[command].handle_voice_command(command)
-            #self._shared_value[1] = 0 # signal that command is read
 
             self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
@@ -140,9 +110,6 @@ class CarControl:
         # cleanup objects
         self._servo.cleanup()
         self._car.cleanup()
-
-    def _get_voice_command(self, num: int) -> str:
-        return self._numbers_to_commands[num]
 
     def _start_camera(self, shared_array, flag):
         self._camera.setup()
@@ -178,11 +145,6 @@ class CarControl:
 
         return objectToCommands
 
-    """
-    def _exit_program(self, flag):
-        flag.value = True
-        print("Exiting program...")
-    """
     def _check_if_X11_connected(self):
         result = subprocess.run(["xset", "q"], capture_output=True, text=True)
         returnCode = result.returncode

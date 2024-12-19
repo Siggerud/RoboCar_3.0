@@ -124,12 +124,11 @@ carController.start()
 queue = carController.queue
 try:
     exitCommand = "cancel program"
-    audioHandler = AudioHandler(carController.get_commands_to_numbers(), exitCommand, queue)
+    audioHandler = AudioHandler(exitCommand, queue)
 except MicrophoneNotConnected as e:
     RobocarHelper.print_startup_error(e)
     exit()
 
-shared_value = carController.get_shared_value()
 shared_flag = carController.get_flag()
 
 
