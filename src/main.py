@@ -6,7 +6,7 @@ from carControl import CarControl, X11ForwardingError
 from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
 import os
-from multiprocessing import Array
+from multiprocessing import Array, Value
 from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
 
@@ -116,6 +116,7 @@ except (X11ForwardingError) as e:
     RobocarHelper.print_startup_error(e)
     exit()
 
+#TODO: initialize all the shared variables in carcontroller class
 shared_array = Array(
     'd', [
         0.0, #speed
@@ -132,8 +133,11 @@ shared_value = Array(
           0 # boolean to signal if a new command has been given
           ]
 )
-carController.add_voice_value(shared_value)
 
+shared_flag = Value('b', False)
+
+carController.add_flag(shared_flag)
+carController.add_voice_value(shared_value)
 carController.add_array(shared_array)
 
 
@@ -143,20 +147,19 @@ carController.start()
 #TODO: set up audioHandler by config file
 # initialize audio handler
 try:
-    audioHandler = AudioHandler(carController.get_commands_to_numbers())
+    exitCommand = "cancel program"
+    audioHandler = AudioHandler(carController.get_commands_to_numbers(), exitCommand)
 except MicrophoneNotConnected as e:
     RobocarHelper.print_startup_error(e)
     exit()
 
-flag = carController.shared_flag
-
 # keep process running until keyboard interrupt
 try:
-    while not flag.value:
-        audioHandler.set_audio_command(shared_value)
+    while not shared_flag.value:
+        audioHandler.set_audio_command(shared_value, shared_flag)
 
 except KeyboardInterrupt:
-    flag.value = True # set event to stop all active processes
+    shared_flag.value = True # set event to stop all active processes
 finally:
     print("finished!")
 

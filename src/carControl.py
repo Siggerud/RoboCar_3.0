@@ -1,5 +1,5 @@
 import subprocess
-from multiprocessing import Process, Value
+from multiprocessing import Process
 from time import sleep
 import RPi.GPIO as GPIO
 
@@ -17,18 +17,19 @@ class CarControl:
 
         self._processes = []
 
-        self._exitCommand: str = "cancel program"  # TODO: make this an input to the class
-
         self._commandToObjects: dict[str: object] = self._get_all_objects_mapped_to_commands()
         self._commands_to_numbers: dict[str: int] = self._get_commands_to_numbers()
         self._numbers_to_commands: dict[int: str] = self._get_numbers_to_commands()
 
         self.shared_array = None
         self._shared_value = None
-        self.shared_flag = Value('b', False)
+        self.shared_flag = None
 
     def add_array(self, array):
         self.shared_array = array
+
+    def add_flag(self, flag):
+        self.shared_flag = flag
 
     def get_commands_to_numbers(self) -> dict[str: int]:
         return self._commands_to_numbers
@@ -74,7 +75,7 @@ class CarControl:
 
     def _activate_voice_command_handling(self):
         process = Process(
-            target=self.GPIOProcess,
+            target=self._GPIO_Process,
             args=(self._start_listening_for_voice_commands, self._shared_value, self.shared_flag)
         )
         self._processes.append(process)
@@ -103,8 +104,6 @@ class CarControl:
         GPIO.cleanup()
 
     def _start_listening_for_voice_commands(self, shared_value, flag):
-        #GPIO.setmode(GPIO.BOARD) #TODO: use decorator to do this instead
-
         # setup objects
         self._car.setup()
         self._servo.setup()
@@ -114,10 +113,11 @@ class CarControl:
             newCommand = bool(shared_value[1]) # check if there's a new command
             if newCommand:
                 command: str = self._get_voice_command(self._shared_value[0])
+                """
                 if command == self._exitCommand:
                     self._exit_program(flag)
                     break
-
+                """
                 self._commandToObjects[command].handle_voice_command(command)
                 self._shared_value[1] = 0 # signal that command is read
 
@@ -128,8 +128,6 @@ class CarControl:
         # cleanup objects
         self._servo.cleanup()
         self._car.cleanup()
-
-        #GPIO.cleanup() #TODO: use decorator to do this instead
 
     def _get_voice_command(self, num: int) -> str:
         return self._numbers_to_commands[num]
@@ -168,10 +166,11 @@ class CarControl:
 
         return objectToCommands
 
+    """
     def _exit_program(self, flag):
         flag.value = True
         print("Exiting program...")
-
+    """
     def _check_if_X11_connected(self):
         result = subprocess.run(["xset", "q"], capture_output=True, text=True)
         returnCode = result.returncode
