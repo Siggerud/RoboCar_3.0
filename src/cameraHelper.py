@@ -38,6 +38,12 @@ class CameraHelper:
         elif command in self._zoomCommands:
             self._set_zoom_value(command)
 
+    def get_command_validity(self, command) -> str:
+        if command in self._hudCommands:
+            if self._hudActive == self._hudCommands[command]["hudValue"]:
+                return "partially valid"
+        return "valid"
+
     def add_car(self, car):
         self._car = car
 

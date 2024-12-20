@@ -71,6 +71,17 @@ class CarHandling:
 			print("Adjusting speed...")
 			self._adjust_speed(command)
 
+	def get_command_validity(self, command) -> str:
+		if command == "go faster":
+			if (self._speed + self._speedStep) > self._pwmMaxTT:
+				return "partially valid"
+		elif command == "go slower":
+			if (self._speed - self._speedStep) < self._pwmMinTT:
+				return "partially valid"
+
+		return "valid"
+
+
 	def cleanup(self):
 		self._pwmA.stop()
 		self._pwmB.stop()
@@ -100,13 +111,11 @@ class CarHandling:
 		adjustSpeed: bool = False
 
 		if command == "go faster":
-			if (self._speed + self._speedStep) <= self._pwmMaxTT:
-				self._speed += self._speedStep
-				adjustSpeed = True
+			self._speed += self._speedStep
+			adjustSpeed = True
 		elif command == "go slower":
-			if (self._speed - self._speedStep) >= self._pwmMinTT:
-				self._speed -= self._speedStep
-				adjustSpeed = True
+			self._speed -= self._speedStep
+			adjustSpeed = True
 		else:
 			newSpeed = self._exact_speed_commands[command]
 			if newSpeed != self._speed:

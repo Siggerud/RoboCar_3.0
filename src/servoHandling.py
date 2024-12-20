@@ -90,6 +90,9 @@ class ServoHandling:
                                          self._exactAngleCommands]
                                         )
 
+    def get_command_validity(self, command) -> str:
+        return "valid"
+
     def _center_servo_positions(self):
         for plane in list(self._servoPins.keys()):
             self._move_servo(plane, self._servoPwmNeutralValue)

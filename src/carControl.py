@@ -19,6 +19,12 @@ class CarControl:
 
         self._commandToObjects: dict[str: object] = self._get_all_objects_mapped_to_commands()
 
+        self._commandValidityToSignalColor: dict = {
+            "valid": "green",
+            "partially valid": "yellow",
+            "invalid": "red"
+        }
+
         self.shared_array = Array(
             'd', [
                 0.0, #speed
@@ -97,17 +103,25 @@ class CarControl:
         self._signalLights.setup()
 
         while not flag.value:
-            command = self.queue.get()
+            command: str = self.queue.get()
 
             if command == self._exitCommand:
                 break
 
             try:
-                self._commandToObjects[command].handle_voice_command(command)
+                #TODO: add step that checks if the command can be given twice in a row, like the same angle twice
+                commandValidity: str = self._commandToObjects[command].get_command_validity(command)
             except KeyError:
-                continue
+                commandValidity: str = "invalid"
 
-            self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
+            # signal if the command was valid, partially valid or invalid
+            signalColor = self._commandValidityToSignalColor[commandValidity]
+            self._signalLights.blink(signalColor)
+
+            # execute command if it is valid
+            if commandValidity == "valid":
+                self._commandToObjects[command].handle_voice_command(command)
+                self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
         # cleanup objects
         self._servo.cleanup()
