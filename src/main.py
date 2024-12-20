@@ -6,14 +6,20 @@ from carControl import CarControl, X11ForwardingError
 from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
 import os
-from multiprocessing import Array, Value
+from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
 
-def setup_camera(parser):
-    if not parser["Components.enabled"].getboolean("Camera"):
-        return None
+def setup_signal_lights(parser):
+    signalPins = parser["Signal.light.pins"]
 
+    greenLightPin = signalPins.getint("Green")
+    yellowLightPin = signalPins.getint("Yellow")
+    redLightPin = signalPins.getint("Red")
+
+    return SignalLights(greenLightPin, yellowLightPin, redLightPin)
+
+def setup_camera(parser):
     cameraSpecs = parser["Camera.specs"]
 
     resolutionWidth = cameraSpecs.getint("ResolutionWidth")
@@ -25,14 +31,11 @@ def setup_camera(parser):
     return camera
 
 def setup_buzzer(parser) -> Buzzer:
-    buzzerPin = parser["buzzer.pin"].getint("Buzzer")
+    buzzerPin = parser["Buzzer.pin"].getint("Buzzer")
 
     return Buzzer(buzzerPin)
 
 def setup_servo(parser):
-    if not parser["Components.enabled"].getboolean("Servo"):
-        return None
-
     servoDataVertical = parser[f"Servo.handling.specs.horizontal"]
 
     servoPinHorizontal = servoDataVertical.getint("ServoPin")
@@ -59,9 +62,6 @@ def setup_servo(parser):
 
 
 def setup_car(parser):
-    if not parser["Components.enabled"].getboolean("CarHandling"):
-        return None
-
     carHandlingPins = parser["Car.handling.pins"]
 
     # define GPIO pins
@@ -109,9 +109,12 @@ cameraHelper = CameraHelper()
 cameraHelper.add_car(car)
 cameraHelper.add_servo(servo)
 
+# setup signal lights
+signalLights = setup_signal_lights(parser)
+
 # set up car controller
 try:
-    carController = CarControl(car, servo, camera, cameraHelper, honk)
+    carController = CarControl(car, servo, camera, cameraHelper, honk, signalLights)
 except (X11ForwardingError) as e:
     RobocarHelper.print_startup_error(e)
     exit()

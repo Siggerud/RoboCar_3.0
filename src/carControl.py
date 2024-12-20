@@ -3,16 +3,16 @@ from multiprocessing import Process, Array, Value, Queue
 import RPi.GPIO as GPIO
 
 class CarControl:
-    def __init__(self, car, servo, camera, cameraHelper, honk):
+    def __init__(self, car, servo, camera, cameraHelper, honk, signalLights):
         if not self._check_if_X11_connected():
             raise X11ForwardingError("X11 forwarding not detected.")
 
         self._car = car
         self._servo = servo
-
         self._camera = camera
         self._cameraHelper = cameraHelper
         self._honk = honk
+        self._signalLights = signalLights
 
         self._processes = []
         self._exitCommand = "cancel program" #TODO: make this a variable that is read from config for both audio and carcontroller class
@@ -84,15 +84,17 @@ class CarControl:
         process.start()
 
     def _GPIO_Process(self, func, *args):
-        GPIO.setmode(GPIO.BOARD)
-        func(*args)
-        GPIO.cleanup()
+        GPIO.setmode(GPIO.BOARD) # set GPIO mode as BOARD for all classes using GPIO pins
+        GPIO.setwarnings(False) # disable GPIO warnings
+        func(*args) # call parameter method
+        GPIO.cleanup() # cleanup all classes using GPIO pins
 
     def _start_listening_for_voice_commands(self, flag):
         # setup objects
         self._car.setup()
         self._servo.setup()
         self._honk.setup()
+        self._signalLights.setup()
 
         while not flag.value:
             command = self.queue.get()
