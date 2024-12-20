@@ -33,10 +33,12 @@ class Camera:
 
         self._arrayDict = None
 
-        self._number_to_turnValue = {
-            0: "-",
+        self._number_to_directionValue = {
+            0: "Stopped",
             1: "Left",
-            2: "Right"
+            2: "Right",
+            3: "Forward",
+            4: "Reverse"
         }
 
     def setup(self):
@@ -150,9 +152,9 @@ class Camera:
                             self._thickness)
                 counter += 1
 
-                turnValue = self._get_turn_value(shared_array[self._arrayDict["turn"]])
-                turnText = f"Turn: {turnValue}"
-                cv2.putText(image, turnText, self._get_origin(counter), self._font, self._scale, self._colour,
+                directionValue = self._get_direction_value(shared_array[self._arrayDict["direction"]])
+                directionText = f"Direction: {directionValue}"
+                cv2.putText(image, directionText, self._get_origin(counter), self._font, self._scale, self._colour,
                             self._thickness)
                 counter += 1
 
@@ -165,8 +167,8 @@ class Camera:
     def _set_zoom_value(self, shared_array):
         self._zoomValue = shared_array[self._arrayDict["Zoom"]]
 
-    def _get_turn_value(self, number):
-        return self._number_to_turnValue[number]
+    def _get_direction_value(self, number):
+        return self._number_to_directionValue[number]
 
     def _get_origin(self, count):
         return self._textPositions[count]

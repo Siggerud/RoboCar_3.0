@@ -28,7 +28,7 @@ class CarControl:
         self.shared_array = Array(
             'd', [
                 0.0, #speed
-                0.0, #turn
+                0.0, #direction
                 0.0, #horizontal servo
                 0.0, #vertical servo
                 0.0, #HUD
@@ -69,7 +69,7 @@ class CarControl:
 
     def _set_shared_array_and_array_dict(self):
         arrayDict: dict = {}
-        cameraInputs: list = ["speed", "turn", "horizontal servo", "vertical servo", "HUD", "Zoom"]
+        cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]
         for index, cameraInput in enumerate(cameraInputs):
             arrayDict[cameraInput] = index
 
@@ -109,7 +109,6 @@ class CarControl:
                 break
 
             try:
-                #TODO: add step that checks if the command can be given twice in a row, like the same angle twice
                 commandValidity: str = self._commandToObjects[command].get_command_validity(command)
             except KeyError:
                 commandValidity: str = "invalid"

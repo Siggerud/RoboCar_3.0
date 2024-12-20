@@ -29,9 +29,9 @@ class CarHandling:
 		self._direction_commands: dict = {
 			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "Left"},
 			"turn right": {"description": "Turns car right", "gpioValues": [True, False, False, True], "direction": "Right"},
-			"go forward": {"description": "Drives car forward", "gpioValues": [True, True, False, False], "direction": "-"},
-			"go backward": {"description": "Reverses car", "gpioValues": [False, False, True, True], "direction": "-"},
-			"stop now": {"description": "Stops car", "gpioValues": [False, False, False, False], "direction": "-"},
+			"go forward": {"description": "Drives car forward", "gpioValues": [True, True, False, False], "direction": "Forward"},
+			"go backward": {"description": "Reverses car", "gpioValues": [False, False, True, True], "direction": "Reverse"},
+			"stop now": {"description": "Stops car", "gpioValues": [False, False, False, False], "direction": "Stopped"},
 		}
 
 		self._speed_commands: dict = {
@@ -39,7 +39,7 @@ class CarHandling:
 			"go slower": {"description": "Decrease car speed"}
 		}
 
-		self._direction: str = "-"
+		self._direction: str = "stopped"
 
 		self._exact_speed_commands: dict = self._set_exact_speed_commands()
 
@@ -72,12 +72,24 @@ class CarHandling:
 			self._adjust_speed(command)
 
 	def get_command_validity(self, command) -> str:
-		if command == "go faster":
-			if (self._speed + self._speedStep) > self._pwmMaxTT:
+		# check if direction remains unchanged
+		if command in self._direction_commands:
+			if self._direction == self._direction_commands[command]["direction"]:
 				return "partially valid"
-		elif command == "go slower":
-			if (self._speed - self._speedStep) < self._pwmMinTT:
+
+		# check if speed remains unchanged
+		elif command in self._exact_speed_commands:
+			if self._speed == self._exact_speed_commands[command]:
 				return "partially valid"
+
+		# check if new speed increase/decrease is within valid range
+		elif command in self._speed_commands:
+			if command == "go faster":
+				if (self._speed + self._speedStep) > self._pwmMaxTT:
+					return "partially valid"
+			elif command == "go slower":
+				if (self._speed - self._speedStep) < self._pwmMinTT:
+					return "partially valid"
 
 		return "valid"
 

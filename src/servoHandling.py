@@ -91,6 +91,23 @@ class ServoHandling:
                                         )
 
     def get_command_validity(self, command) -> str:
+        # check if angles stay unchanged
+        if command in self._lookOffsetCommands:
+            plane = self._lookOffsetCommands[command]["plane"]
+
+            if self._currentPwmValue[plane] == self._lookOffsetCommands[command]["pwmValue"]:
+                return "partially valid"
+
+        elif command in self._exactAngleCommands:
+            plane = self._exactAngleCommands[command]["plane"]
+
+            if self._currentPwmValue[plane] == self._exactAngleCommands[command]["pwmValue"]:
+                return "partially valid"
+
+        elif command in self._lookCenterCommand:
+            if self._currentPwmValue["horizontal"] == self._servoPwmNeutralValue and self._currentPwmValue["vertical"] == self._servoPwmNeutralValue:
+                return "partially valid"
+
         return "valid"
 
     def _center_servo_positions(self):

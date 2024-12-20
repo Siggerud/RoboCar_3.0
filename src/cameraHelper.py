@@ -16,10 +16,12 @@ class CameraHelper:
 
         self._hudActive = True
 
-        self._turnValue_to_number = {
-            "-": 0,
+        self._directionValue_to_number = {
+            "Stopped": 0,
             "Left": 1,
-            "Right": 2
+            "Right": 2,
+            "Forward": 3,
+            "Reverse": 4
         }
 
         self._hudCommands: dict = {
@@ -39,9 +41,14 @@ class CameraHelper:
             self._set_zoom_value(command)
 
     def get_command_validity(self, command) -> str:
-        if command in self._hudCommands:
+        if command in self._hudCommands: # check if display is already on or off
             if self._hudActive == self._hudCommands[command]["hudValue"]:
                 return "partially valid"
+
+        elif command in self._zoomCommands:
+            if self._zoomValue == self._zoomCommands[command]: # check if zoom value is unchanged
+                return "partially valid"
+
         return "valid"
 
     def add_car(self, car):
@@ -57,7 +64,7 @@ class CameraHelper:
 
         if self._car:
             shared_array[self._arrayDict["speed"]] = self._car.get_current_speed()
-            shared_array[self._arrayDict["turn"]] = self._turnValue_to_number[self._car.get_current_turn_value()]
+            shared_array[self._arrayDict["direction"]] = self._directionValue_to_number[self._car.get_current_turn_value()]
 
         shared_array[self._arrayDict["HUD"]] = float(self._hudActive)
         shared_array[self._arrayDict["Zoom"]] = self._zoomValue
