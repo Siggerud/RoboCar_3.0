@@ -48,7 +48,7 @@ class CarHandling(RoboObject):
 		self._exact_speed_commands: dict = self._set_exact_speed_commands(speedCommands["exactSpeedCommand"])
 
 		# mainly for printing at startup
-		self._variableCommands = {
+		self._variableCommands: dict = {
 			speedCommands["exactSpeedCommand"].replace("param", "speed"): {
 				"description": "Sets speed to the specified speed value"
 			}
@@ -121,10 +121,10 @@ class CarHandling(RoboObject):
 										 self._speed_commands,
 										 self._exact_speed_commands])
 
-	def get_current_speed(self):
+	def get_current_speed(self) -> int:
 		return int(self._speed)
 
-	def get_current_turn_value(self):
+	def get_current_turn_value(self) -> str:
 		return self._direction
 
 	def _set_exact_speed_commands(self, userCommand: str) -> dict:
@@ -155,7 +155,6 @@ class CarHandling(RoboObject):
 				self._speed = newSpeed
 
 		if adjustSpeed:
-			print(self._speed)
 			self._change_duty_cycle()
 
 	def _change_duty_cycle(self):

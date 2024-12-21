@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 class SignalLights:
-    def __init__(self, greenLightPin, yellowLightPin, redLightPin):
+    def __init__(self, greenLightPin, yellowLightPin, redLightPin, blinkTime):
         self._lightPins: dict = {
             "green": greenLightPin,
             "yellow": yellowLightPin,

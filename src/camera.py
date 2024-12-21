@@ -14,26 +14,26 @@ class Camera:
         self._picam2 = None
 
         # text on video properties
-        self._colour = (0, 255, 0)
-        self._textPositions = self._set_text_positions()
+        self._colour: tuple = (0, 255, 0)
+        self._textPositions: list = self._set_text_positions()
         self._font = cv2.FONT_HERSHEY_SIMPLEX
-        self._scale = 1
-        self._thickness = 1
+        self._scale: int = 1
+        self._thickness: int = 1
 
-        self._zoomValue = 1.0
-        self._hudActive = True
+        self._zoomValue: float = 1.0
+        self._hudActive: bool = True
 
-        self._carEnabled = False
-        self._servoEnabled = False
+        self._carEnabled: bool = False
+        self._servoEnabled: bool = False
 
-        self._fps = 0
-        self._weightPrevFps = 0.9
-        self._weightNewFps = 0.1
-        self._fpsPos = (10, 30)
+        self._fps: float = 0.0
+        self._weightPrevFps: float = 0.9
+        self._weightNewFps: float = 0.1
+        self._fpsPos: tuple = (10, 30)
 
         self._arrayDict = None
 
-        self._number_to_directionValue = {
+        self._number_to_directionValue: dict = {
             0: "Stopped",
             1: "Left",
             2: "Right",
@@ -52,7 +52,7 @@ class Camera:
         self._picam2.start()
 
     def show_camera_feed(self, shared_array):
-        tStart = time() # start timer for calculating fps
+        tStart: float = time() # start timer for calculating fps
 
         # get raw image
         im = self._picam2.capture_array()
@@ -93,7 +93,7 @@ class Camera:
     def add_array_dict(self, arrayDict):
         self._arrayDict = arrayDict
 
-    def _set_text_positions(self):
+    def _set_text_positions(self) -> list[tuple]:
         spacingVertical: int = 30
 
         horizontalCoord: int = 10
@@ -107,8 +107,8 @@ class Camera:
         return positions
 
     def _calculate_fps(self, startTime):
-        endTime = time()
-        loopTime = endTime - startTime
+        endTime: float = time()
+        loopTime: float = endTime - startTime
 
         self._fps = self._weightPrevFps * self._fps + self._weightNewFps * (1 / loopTime)
 
@@ -130,7 +130,7 @@ class Camera:
 
         # add external control values if HUD is enabled
         if self._hudActive:
-            counter = 0
+            counter: int = 0
             cv2.putText(image, f"Zoom: {self._zoomValue}x", self._get_origin(counter), self._font, self._scale,
                         self._colour,
                         self._thickness)
@@ -158,7 +158,7 @@ class Camera:
                             self._thickness)
                 counter += 1
 
-    def _get_fps_text(self):
+    def _get_fps_text(self) -> str:
         return str(int(self._fps)) + " FPS"
 
     def _set_HUD_active_value(self, shared_array):
@@ -167,8 +167,8 @@ class Camera:
     def _set_zoom_value(self, shared_array):
         self._zoomValue = shared_array[self._arrayDict["Zoom"]]
 
-    def _get_direction_value(self, number):
+    def _get_direction_value(self, number) -> str:
         return self._number_to_directionValue[number]
 
-    def _get_origin(self, count):
+    def _get_origin(self, count) -> tuple:
         return self._textPositions[count]

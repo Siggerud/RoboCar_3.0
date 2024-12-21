@@ -6,18 +6,18 @@ class CameraHelper(RoboObject):
         self._car = None
         self._servo = None
 
-        self._angleText = ""
-        self._speedText = ""
-        self._turnText = ""
+        self._angleText: str = ""
+        self._speedText: str = ""
+        self._turnText: str = ""
 
-        self._zoomValue = 1.0
+        self._zoomValue: float = 1.0
 
-        self._minZoomValue = 1.0
+        self._minZoomValue: float = 1.0
         self._maxZoomValue: float = maxZoomValue
 
-        self._hudActive = True
+        self._hudActive: bool = True
 
-        self._directionValue_to_number = {
+        self._directionValue_to_number: dict = {
             "Stopped": 0,
             "Left": 1,
             "Right": 2,
@@ -35,7 +35,7 @@ class CameraHelper(RoboObject):
         self._arrayDict = None
 
         # mainly for printing at startup
-        self._variableCommands = {
+        self._variableCommands: dict = {
             userCommands["zoomCommand"].replace("param", "zoom"): {
                 "description": "Zooms camera to the specified zoom value"
             }

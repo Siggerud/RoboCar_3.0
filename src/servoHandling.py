@@ -90,8 +90,7 @@ class ServoHandling(RoboObject):
 
         self._center_servo_positions()
 
-    def handle_voice_command(self, command):
-        print(command)
+    def handle_voice_command(self, command: str):
         if command in self._lookOffsetCommands:
             self._move_servo(self._lookOffsetCommands[command]["plane"],
                              self._lookOffsetCommands[command]["pwmValue"]
@@ -118,7 +117,7 @@ class ServoHandling(RoboObject):
                                              self._exactAngleCommands]
                                             )
 
-    def get_command_validity(self, command) -> str:
+    def get_command_validity(self, command: str) -> str:
         # check if angles stay unchanged
         if command in self._lookOffsetCommands:
             plane = self._lookOffsetCommands[command]["plane"]
@@ -150,8 +149,8 @@ class ServoHandling(RoboObject):
     def _get_angle_mapped_to_pwm_values(self) -> dict[int: float]:
         angleToPwmValues: dict = {}
 
-        minAngle = min(self._minAngles.values())
-        maxAngle = max(self._maxAngles.values())
+        minAngle: int = min(self._minAngles.values())
+        maxAngle: int = max(self._maxAngles.values())
         for angle in range(minAngle, maxAngle + 1):
             angleToPwmValues[angle] = self._angle_to_pwm(angle)
 

@@ -15,5 +15,5 @@ class RoboObject(ABC):
         pass
 
     @abstractmethod
-    def handle_voice_command(self):
+    def handle_voice_command(self, command):
         pass

@@ -11,21 +11,23 @@ from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
 
 def setup_signal_lights(parser):
-    signalPins = parser["Signal.light.pins"]
+    signalSpecs = parser["Signal.light.specs"]
 
-    greenLightPin = signalPins.getint("Green")
-    yellowLightPin = signalPins.getint("Yellow")
-    redLightPin = signalPins.getint("Red")
+    greenLightPin: int = signalSpecs.getint("green_pin")
+    yellowLightPin: int = signalSpecs.getint("yellow_pin")
+    redLightPin: int = signalSpecs.getint("red_pin")
 
-    return SignalLights(greenLightPin, yellowLightPin, redLightPin)
+    blinkTime: float = float(signalSpecs["blink_time"])
+
+    return SignalLights(greenLightPin, yellowLightPin, redLightPin, blinkTime)
 
 def setup_camera(parser):
     cameraSpecs = parser["Camera.specs"]
 
-    resolutionWidth = cameraSpecs.getint("ResolutionWidth")
-    resolutionHeight = cameraSpecs.getint("ResolutionHeight")
+    resolutionWidth: int = cameraSpecs.getint("ResolutionWidth")
+    resolutionHeight: int = cameraSpecs.getint("ResolutionHeight")
 
-    resolution = (resolutionWidth, resolutionHeight)
+    resolution: tuple = (resolutionWidth, resolutionHeight)
     camera = Camera(resolution)
 
     return camera
@@ -46,7 +48,7 @@ def setup_camera_helper(parser):
 
 def setup_buzzer(parser) -> Buzzer:
     buzzerSpecs = parser["Buzzer.specs"]
-    pin = buzzerSpecs.getint("pin")
+    pin: int = buzzerSpecs.getint("pin")
     defaultHonkTime = float(buzzerSpecs["default_buzz_time"])
     maxHonkTime = float(buzzerSpecs["max_buzz_time"])
 
