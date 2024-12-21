@@ -56,7 +56,7 @@ class ServoHandling:
             }
         }
         print(userCommands)
-        print(userCommands["LookLeftExact"].format(angle="3"))
+        print(userCommands["lookLeftExact"].format(angle="3"))
         self._lookCenterCommand: dict = {
             userCommands["lookCenterCommand"]: {
                 "description": "Centers camera"
