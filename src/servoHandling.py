@@ -33,37 +33,38 @@ class ServoHandling:
         self._angleToPwmValues: dict = self._get_angle_mapped_to_pwm_values()
         self._pwmToAngleValues: dict = self._get_pwm_mapped_to_angle_values()
 
+        basicCommands = userCommands["basicCommands"]
         self._lookOffsetCommands: dict = {
-            userCommands["lookUpCommand"]: {
+            basicCommands["lookUpCommand"]: {
                 "description": "Turns camera up",
                 "plane": "vertical",
                 "pwmValue": self._angleToPwmValues[self._maxAngles["vertical"]]
             },
-            userCommands["lookDownCommand"]:
+            basicCommands["lookDownCommand"]:
                 {"description": "Turns camera down",
                  "plane": "vertical",
                  "pwmValue": self._angleToPwmValues[self._minAngles["vertical"]]
                  },
-            userCommands["lookLeftCommand"]:
+            basicCommands["lookLeftCommand"]:
                 {"description": "Turns camera left",
                  "plane": "horizontal",
                  "pwmValue": self._angleToPwmValues[self._maxAngles["horizontal"]]
                  },
-            userCommands["lookRightCommand"]: {
+            basicCommands["lookRightCommand"]: {
                 "description": "Turns camera right",
                 "plane": "horizontal",
                 "pwmValue": self._angleToPwmValues[self._minAngles["horizontal"]]
             }
         }
-        print(userCommands)
-        print(userCommands["lookLeftExact"].format(angle="3"))
+
         self._lookCenterCommand: dict = {
-            userCommands["lookCenterCommand"]: {
+            basicCommands["lookCenterCommand"]: {
                 "description": "Centers camera"
             }
         }
 
-        self._exactAngleCommands: dict = self._get_exact_angle_commands()
+        exactAngleCommands = userCommands["exactAngleCommands"]
+        self._exactAngleCommands: dict = self._get_exact_angle_commands(exactAngleCommands)
 
     def setup(self):
         for pin in list(self._servoPins.values()):
@@ -136,16 +137,18 @@ class ServoHandling:
 
         return pwmToAngles
 
-    def _get_exact_angle_commands(self) -> dict:
+    def _get_exact_angle_commands(self, userCommands: dict) -> dict:
         exactAngleCommands: dict = {}
 
         # looking right commands
         for angle in range(self._minAngles["horizontal"], 0):
-            exactAngleCommands[f"{abs(angle)} degrees right"] = { # print the absolute value because the angle is negatie
+            print(userCommands["lookLeftExact"].format(angle="3"))
+            userCommand = userCommands["lookRightExact"].format(angle=str(abs(angle))) # print the absolute value because the angle is negative
+            exactAngleCommands[userCommand] = {
                 "plane": "horizontal",
                 "pwmValue": self._angleToPwmValues[angle]
             }
-
+        print(exactAngleCommands)
         # looking left commands
         for angle in range(1, self._maxAngles["horizontal"] + 1):
             exactAngleCommands[f"{angle} degrees left"] = {

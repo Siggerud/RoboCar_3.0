@@ -49,7 +49,8 @@ def setup_servo(parser):
     maxAngleVertical: int = servoDataHorizontal.getint("MaxAngle")
 
     servoCommands = parser["Servo.commands"]
-    commands: dict = {
+
+    basicCommands: dict = {
         "lookUpCommand": servoCommands["look_up"],
         "lookDownCommand": servoCommands["look_down"],
         "lookLeftCommand": servoCommands["look_left"],
@@ -57,10 +58,17 @@ def setup_servo(parser):
         "lookCenterCommand": servoCommands["look_center"]
     }
 
-    commands["lookUpExact"] = servoCommands["look_up_exact"]
-    commands["lookDownExact"] = servoCommands["look_down_exact"]
-    commands["lookLeftExact"] = servoCommands["look_left_exact"]
-    commands["lookRightExact"] = servoCommands["look_right_exact"]
+    exactAngleCommands: dict = {
+        "lookUpExact": servoCommands["look_up_exact"],
+        "lookDownExact": servoCommands["look_down_exact"],
+        "lookLeftExact": servoCommands["look_left_exact"],
+        "lookRightExact": servoCommands["look_right_exact"]
+    }
+
+    commands: dict = {
+        "basicCommands": basicCommands,
+        "exactAngleCommands": exactAngleCommands
+    }
 
     servo = ServoHandling(
         (servoPinHorizontal, servoPinVertical),
