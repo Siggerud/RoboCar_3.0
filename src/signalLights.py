@@ -17,6 +17,8 @@ class SignalLights:
         # blink three times in rapid sucession to signal startup
         self._blink_all_lights()
 
+    def cleanup(self):
+        self._blink_all_lights() # blink to signal that class is shutting down
 
     def blink(self, color):
         pin = self._lightPins[color]

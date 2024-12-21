@@ -125,6 +125,7 @@ class CarControl:
         # cleanup objects
         self._servo.cleanup()
         self._car.cleanup()
+        self._signalLights.cleanup()
 
     def _start_camera(self, shared_array, flag):
         self._camera.setup()
