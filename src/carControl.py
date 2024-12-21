@@ -31,17 +31,6 @@ class CarControl:
             "partially valid": "yellow",
             "invalid": "red"
         }
-        """
-        self.shared_array = Array(
-            'd', [
-                0.0, #speed
-                0.0, #direction
-                0.0, #horizontal servo
-                0.0, #vertical servo
-                1.0, #HUD
-                1.0 #zoom
-            ]
-        )"""
 
         self.shared_array = self._get_shared_array(self._cameraHelper.get_array_dict())
 

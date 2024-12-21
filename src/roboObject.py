@@ -11,6 +11,10 @@ class RoboObject(ABC):
         pass
 
     @abstractmethod
+    def get_command_validity(self):
+        pass
+
+    @abstractmethod
     def print_commands(self):
         pass
 
