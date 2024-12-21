@@ -119,6 +119,8 @@ class CameraHelper(RoboObject):
         for index, cameraInput in enumerate(cameraInputs):
             arrayDict[cameraInput] = index
 
+        return arrayDict
+
     def _set_hud_value(self, command):
         self._hudActive = self._hudCommands[command]["hudValue"]
 
