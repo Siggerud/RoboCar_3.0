@@ -170,48 +170,54 @@ def setup_car(parser):
 
     return car
 
+def setup_car_controller(parser):
+    # setup car
+    car = setup_car(parser)
+
+    # define servos aboard car
+    servo = setup_servo(parser)
+
+    # setup honk
+    honk = setup_buzzer(parser)
+
+    # setup camera
+    camera = setup_camera(parser)
+
+    # setup camerahelper
+    cameraHelper = setup_camera_helper(parser)
+
+    # add objects to camerahelper
+    cameraHelper.add_car(car)
+    cameraHelper.add_servo(servo)
+
+    # setup signal lights
+    signalLights = setup_signal_lights(parser)
+
+    exitCommand = parser["Global.commands"]["exit"]
+
+    # set up car controller
+    try:
+        carController = CarControl(car, servo, camera, cameraHelper, honk, signalLights, exitCommand)
+    except (X11ForwardingError) as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
+
+    return carController
+
+
 # set up parser to read input values
 parser = ConfigParser()
 parser.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
-# setup car
-car = setup_car(parser)
+carController = setup_car_controller(parser)
 
-# define servos aboard car
-servo = setup_servo(parser)
-
-# setup honk
-honk = setup_buzzer(parser)
-
-# setup camera
-camera = setup_camera(parser)
-
-# setup camerahelper
-cameraHelper = setup_camera_helper(parser)
-
-# add objects to camerahelper
-cameraHelper.add_car(car)
-cameraHelper.add_servo(servo)
-
-# setup signal lights
-signalLights = setup_signal_lights(parser)
-
-# set up car controller
-try:
-    carController = CarControl(car, servo, camera, cameraHelper, honk, signalLights)
-except (X11ForwardingError) as e:
-    RobocarHelper.print_startup_error(e)
-    exit()
-
-queue = carController.queue
 audioHandler = setup_audio_handler(parser)
-audioHandler.setup(queue)
-
-shared_flag = carController.get_flag()
+audioHandler.setup(carController.get_queue())
 
 # start car
 carController.start()
 
+shared_flag = carController.get_flag()
 # keep process running until keyboard interrupt
 try:
     while not shared_flag.value:
