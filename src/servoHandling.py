@@ -55,7 +55,7 @@ class ServoHandling:
                 "pwmValue": self._angleToPwmValues[self._minAngles["horizontal"]]
             }
         }
-        print(self._lookOffsetCommands)
+        print(userCommands["LookLeftExact"].format(angle="3"))
         self._lookCenterCommand: dict = {
             userCommands["lookCenterCommand"]: {
                 "description": "Centers camera"
