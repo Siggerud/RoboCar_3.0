@@ -106,7 +106,7 @@ class CarControl:
         self._signalLights.setup()
 
         while not flag.value:
-            command: str = self.queue.get()
+            command: str = self._queue.get()
 
             if command == self._exitCommand:
                 break
