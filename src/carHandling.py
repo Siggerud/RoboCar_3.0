@@ -39,7 +39,7 @@ class CarHandling:
 			"go slower": {"description": "Decrease car speed"}
 		}
 
-		self._direction: str = "stopped"
+		self._direction: str = "Stopped"
 
 		self._exact_speed_commands: dict = self._set_exact_speed_commands()
 
