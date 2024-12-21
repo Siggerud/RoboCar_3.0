@@ -27,6 +27,8 @@ class CarHandling:
 		self._pwmA = None
 		self._pwmB = None
 
+		self._direction: str = "Stopped"
+
 		directionCommands = userCommands["direction"]
 		self._direction_commands: dict = {
 			directionCommands["turnLeftCommand"]: {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "Left"},
@@ -42,17 +44,14 @@ class CarHandling:
 			speedCommands["decreaseSpeedCommand"]: {"description": "Decrease car speed"}
 		}
 
-		self._direction: str = "Stopped"
+		self._exact_speed_commands: dict = self._set_exact_speed_commands(speedCommands["exactSpeedCommand"])
 
 		# mainly for printing at startup
 		self._variableCommands = {
-			userCommands["exactSpeedCommand"].replace("param", "speed"): {
+			speedCommands["exactSpeedCommand"].replace("param", "speed"): {
 				"description": "Sets speed to the specified speed value"
 			}
 		}
-
-		self._unformatted_exact_speed_command: str = speedCommands["exactSpeedCommand"]
-		self._exact_speed_commands: dict = self._set_exact_speed_commands(self._unformatted_exact_speed_command)
 
 	def setup(self):
 		GPIO.setup(self._leftBackward, GPIO.OUT)
