@@ -40,8 +40,8 @@ class Buzzer:
         stepValue: float = 0.1
         honkCommands: dict = {}
         while honkTime <= (self._maxHonkTime + stepValue):
-            userCommand = RobocarHelper.format_command(userCommand, str(round(honkTime, 1)))
-            honkCommands[userCommand] = round(honkTime, 1) # round honkTime to avoid floating numbers with many decimals
+            command = RobocarHelper.format_command(userCommand, str(round(honkTime, 1)))
+            honkCommands[command] = round(honkTime, 1) # round honkTime to avoid floating numbers with many decimals
 
             honkTime += stepValue
 
