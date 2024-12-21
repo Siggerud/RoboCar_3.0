@@ -28,7 +28,7 @@ class CameraHelper:
             userCommands["turnOnDisplayCommand"]: {"description": "Turns on HUD", "hudValue": True},
             userCommands["turnOffDisplayCommand"]: {"description": "Turns off HUD", "hudValue": False}
         }
-        print(self._hudCommands)
+
         self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoomCommand"])
 
         self._arrayDict = None

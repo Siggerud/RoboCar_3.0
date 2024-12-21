@@ -102,6 +102,19 @@ def setup_servo(parser):
 
     return servo
 
+def setup_audio_handler(parser):
+    audioSpecs = parser["Audio.specs"]
+    language: str = audioSpecs["language"]
+
+    exitCommand: str = parser["Global.commands"]["exit"]
+
+    try:
+        audioHandler = AudioHandler(exitCommand, language)
+    except MicrophoneNotConnected as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
+
+    return audioHandler
 
 def setup_car(parser):
     carHandlingSpecs = parser["Car.handling.specs"]
@@ -190,21 +203,14 @@ except (X11ForwardingError) as e:
     RobocarHelper.print_startup_error(e)
     exit()
 
-# start car
-carController.start()
-
-#TODO: set up audioHandler by config file
-# initialize audio handler
 queue = carController.queue
-try:
-    exitCommand = "cancel program"
-    audioHandler = AudioHandler(exitCommand, queue)
-except MicrophoneNotConnected as e:
-    RobocarHelper.print_startup_error(e)
-    exit()
+audioHandler = setup_audio_handler(parser)
+audioHandler.setup(queue)
 
 shared_flag = carController.get_flag()
 
+# start car
+carController.start()
 
 # keep process running until keyboard interrupt
 try:
