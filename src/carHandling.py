@@ -75,7 +75,8 @@ class CarHandling:
 
 	def print_commands(self):
 		variableCommand: str = self._unformatted_exact_speed_command.replace('param', 'speed')
-		allCommands = [variableCommand].extend(self.get_voice_commands())
+		allCommands = [variableCommand]
+		allCommands.extend(self.get_voice_commands())
 		maxCommandLength = max(len(command) for command in allCommands) #TODO: add this class to robohelper
 
 		print("Car handling commands:")
