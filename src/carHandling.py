@@ -73,7 +73,7 @@ class CarHandling:
 			self._adjust_speed(command)
 
 	def print_commands(self):
-		for command,v in self._direction_commands:
+		for command, v in self._direction_commands.items():
 			print(f"{command}: {v['description']}")
 
 	def get_command_validity(self, command) -> str:
