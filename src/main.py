@@ -39,15 +39,24 @@ def setup_camera_helper(parser):
     }
 
     cameraSpecs = parser["Camera.specs"]
-    maxZoomValue = cameraSpecs.getint("max_zoom_value")
+    maxZoomValue = float(cameraSpecs["max_zoom_value"])
 
     return CameraHelper(commands, maxZoomValue)
 
 
 def setup_buzzer(parser) -> Buzzer:
-    buzzerPin = parser["Buzzer.pin"].getint("Buzzer")
+    buzzerSpecs = parser["Buzzer.specs"]
+    pin = buzzerSpecs.getint("pin")
+    defaultHonkTime = float(buzzerSpecs["default_buzz_time"])
+    maxHonkTime = float(buzzerSpecs["max_buzz_time"])
 
-    return Buzzer(buzzerPin)
+    buzzCommands = parser["Buzzer.commands"]
+    commands: dict = {
+        "buzzCommand": buzzCommands["buzz"],
+        "buzzForSpecifiedTimeCommand": buzzCommands["buzz_for_specified_time"]
+    }
+
+    return Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
 
 def setup_servo(parser):
     servoDataHorizontal = parser["Servo.handling.specs.horizontal"]

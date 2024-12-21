@@ -1,7 +1,7 @@
 from roboCarHelper import RobocarHelper
 
 class CameraHelper:
-    def __init__(self, userCommands, maxZoomValue):
+    def __init__(self, userCommands: dict, maxZoomValue: float):
         self._car = None
         self._servo = None
 
@@ -12,7 +12,7 @@ class CameraHelper:
         self._zoomValue = 1.0
 
         self._minZoomValue = 1.0
-        self._maxZoomValue = maxZoomValue
+        self._maxZoomValue: float = maxZoomValue
 
         self._hudActive = True
 
@@ -90,7 +90,7 @@ class CameraHelper:
     def _set_zoom_value(self, command):
         self._zoomValue = self._zoomCommands[command]
 
-    def _set_zoom_commands(self, command) -> dict:
+    def _set_zoom_commands(self, command: str) -> dict:
         zoomValue: float = self._minZoomValue
         stepValue: float = 0.1
         zoomCommands: dict = {}

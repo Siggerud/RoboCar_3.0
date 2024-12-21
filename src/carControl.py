@@ -31,7 +31,7 @@ class CarControl:
                 0.0, #direction
                 0.0, #horizontal servo
                 0.0, #vertical servo
-                0.0, #HUD
+                1.0, #HUD
                 1.0 #zoom
             ]
         )

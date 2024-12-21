@@ -3,13 +3,13 @@ from time import sleep
 from roboCarHelper import RobocarHelper
 
 class Buzzer:
-    def __init__(self, buzzerPin: int):
+    def __init__(self, buzzerPin: int, defaultHonkTime: float, maxHonkTime: float, userCommands: dict):
         self._buzzerPin: int = buzzerPin
-        self._defaultHonkTime = 0.3 #TODO: add this to config
-        self._maxHonkTime = 2 #TODO: add this to config
-        self._buzzCommand: dict = {"start horn": {"description": "starts honking"}}
-        self._buzzForSpecifiedTimeCommands: dict = self._set_honk_for_specified_time_commands()
-
+        self._defaultHonkTime: float = defaultHonkTime
+        self._maxHonkTime: float = maxHonkTime
+        self._buzzCommand: dict = {userCommands["buzzCommand"]: {"description": "starts honking"}}
+        self._buzzForSpecifiedTimeCommands: dict = self._set_honk_for_specified_time_commands(userCommands["buzzForSpecifiedTimeCommand"])
+        print(self._buzzForSpecifiedTimeCommands)
     def setup(self):
         GPIO.setup(self._buzzerPin, GPIO.OUT)
 
@@ -35,15 +35,19 @@ class Buzzer:
         sleep(honkTime)
         GPIO.output(self._buzzerPin, GPIO.LOW)
 
-    def _set_honk_for_specified_time_commands(self) -> dict:
+    def _set_honk_for_specified_time_commands(self, buzzForSpecifiedTimeCommand: str) -> dict:
         honkTime: float = 0.1
         stepValue: float = 0.1
         honkCommands: dict = {}
         while honkTime <= (self._maxHonkTime + stepValue):
-            honkCommands[f"start horn {round(honkTime, 1)}"] = round(honkTime, 1) # round honkTime to avoid floating numbers with many decimals
+            userCommand = self._format_buzz_for_specified_time_command(buzzForSpecifiedTimeCommand, honkTime)
+            honkCommands[userCommand] = round(honkTime, 1) # round honkTime to avoid floating numbers with many decimals
 
             honkTime += stepValue
 
         return honkCommands
+
+    def _format_buzz_for_specified_time_command(self, command, time):
+        return command.format(time=str(round(time, 1)))
 
 
