@@ -44,7 +44,8 @@ class CarHandling:
 
 		self._direction: str = "Stopped"
 
-		self._exact_speed_commands: dict = self._set_exact_speed_commands(speedCommands["exactSpeedCommand"])
+		self._unformatted_exact_speed_command: str = speedCommands["exactSpeedCommand"]
+		self._exact_speed_commands: dict = self._set_exact_speed_commands(self._unformatted_exact_speed_command)
 
 	def setup(self):
 		GPIO.setup(self._leftBackward, GPIO.OUT)
@@ -73,8 +74,14 @@ class CarHandling:
 			self._adjust_speed(command)
 
 	def print_commands(self):
+		print("Car handling commands")
 		for command, v in self._direction_commands.items():
 			print(f"{command}: {v['description']}")
+
+		for command, v in self._speed_commands.items():
+			print(f"{command}: {v['description']}")
+
+		print(self._unformatted_exact_speed_command + "\n")
 
 	def get_command_validity(self, command) -> str:
 		# check if direction remains unchanged
