@@ -168,7 +168,7 @@ class CarControl:
         returnCode = result.returncode
 
         if not returnCode:
-            print("Succesful connection to forwarded X11 server")
+            print("Succesful connection to forwarded X11 server\n")
 
         return not returnCode
 

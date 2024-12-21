@@ -74,14 +74,17 @@ class CarHandling:
 			self._adjust_speed(command)
 
 	def print_commands(self):
-		print("Car handling commands")
+		allCommands = self.get_voice_commands()
+		maxCommandLength = max(len(command) for command in allCommands) #TODO: add this class to robohelper
+
+		print("Car handling commands:")
 		for command, v in self._direction_commands.items():
-			print(f"{command}: {v['description']}")
+			print(f"{command.ljust(maxCommandLength)}: {v['description']}")
 
 		for command, v in self._speed_commands.items():
-			print(f"{command}: {v['description']}")
+			print(f"{command.ljust(maxCommandLength)}: {v['description']}")
 
-		print(f"{self._unformatted_exact_speed_command.replace('param', 'speed')}: Sets speed to specified value\n")
+		print(f"{self._unformatted_exact_speed_command.replace('param', 'speed').ljust(maxCommandLength)}: Sets speed to specified value\n")
 
 	def get_command_validity(self, command) -> str:
 		# check if direction remains unchanged
@@ -110,7 +113,7 @@ class CarHandling:
 		self._pwmA.stop()
 		self._pwmB.stop()
 
-	def get_voice_commands(self) -> dict[str: str]:
+	def get_voice_commands(self) -> list[str]:
 		return RobocarHelper.chain_together_dict_keys([self._direction_commands,
 										 self._speed_commands,
 										 self._exact_speed_commands])
