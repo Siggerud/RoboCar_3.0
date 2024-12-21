@@ -80,26 +80,12 @@ class CarHandling:
 			self._adjust_speed(command)
 
 	def print_commands(self):
-
-		"""
-		variableCommand: str = self._unformatted_exact_speed_command.replace('param', 'speed')
-		allCommands = [variableCommand]
-		allCommands.extend(self.get_voice_commands())
-		maxCommandLength = max(len(command) for command in allCommands) #TODO: add this class to robohelper
-
-		print("Car handling commands:")
-		for command, v in self._direction_commands.items():
-			print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-
-		for command, v in self._speed_commands.items():
-			print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-
-		print(f"{variableCommand.ljust(maxCommandLength)}: Sets speed to specified value\n")"""
 		allDictsWithCommands: dict = {}
 		allDictsWithCommands.update(self._direction_commands)
 		allDictsWithCommands.update(self._speed_commands)
 		allDictsWithCommands.update(self._variableCommands)
 		title: str = "Car handling commands:"
+
 		RobocarHelper.print_commands(title, allDictsWithCommands)
 
 	def get_command_validity(self, command) -> str:

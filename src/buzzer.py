@@ -34,17 +34,12 @@ class Buzzer:
         self._buzz(honkTime)
 
     def print_commands(self):
-        allCommands: list = list(self._variableCommands.keys())
-        allCommands.extend(self.get_voice_commands())
-        maxCommandLength = max(len(command) for command in allCommands)
+        allDictsWithCommands: dict = {}
+        allDictsWithCommands.update(self._buzzCommand)
+        allDictsWithCommands.update(self._variableCommands)
+        title: str = "Honk commands:"
 
-        print("Honk commands:")
-        for command, v in self._buzzCommand.items():
-            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-
-        for command, v in self._variableCommands.items():
-            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-        print()
+        RobocarHelper.print_commands(title, allDictsWithCommands)
 
     def get_voice_commands(self) -> list[str]:
         return RobocarHelper.chain_together_dict_keys([self._buzzCommand,

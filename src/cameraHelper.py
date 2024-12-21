@@ -29,15 +29,16 @@ class CameraHelper:
             userCommands["turnOffDisplayCommand"]: {"description": "Turns off HUD", "hudValue": False}
         }
 
+        self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoomCommand"])
+
+        self._arrayDict = None
+
         # mainly for printing at startup
         self._variableCommands = {
             userCommands["zoomCommand"].replace("param", "zoom"): {
                 "description": "Zooms camera to the specified zoom value"
             }
         }
-        self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoomCommand"])
-
-        self._arrayDict = None
 
     def handle_voice_command(self, command):
         print(command)
@@ -47,18 +48,12 @@ class CameraHelper:
             self._set_zoom_value(command)
 
     def print_commands(self):
-        allCommands: list = list(self._variableCommands.keys())
-        allCommands.extend(self.get_voice_commands())
-        maxCommandLength = max(len(command) for command in allCommands)
+        allDictsWithCommands: dict = {}
+        allDictsWithCommands.update(self._hudCommands)
+        allDictsWithCommands.update(self._variableCommands)
+        title: str = "Camera commands:"
 
-        print("Camera commands:")
-        for command, v in self._hudCommands.items():
-            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-
-        for command, v in self._variableCommands.items():
-            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-        print()
-
+        RobocarHelper.print_commands(title, allDictsWithCommands)
 
     def get_command_validity(self, command) -> str:
         if command in self._hudCommands: # check if display is already on or off

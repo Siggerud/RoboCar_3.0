@@ -64,21 +64,23 @@ class ServoHandling:
         }
 
         variableAngleCommands: dict = userCommands["exactAngleCommands"]
-        self._variableAngleCommands: dict = {
-            variableAngleCommands["lookRightExact"]: {
+        self._exactAngleCommands: dict = self._get_exact_angle_commands(variableAngleCommands)
+
+        # mainly for printing at startup
+        self._variableCommands: dict = {
+            variableAngleCommands["lookRightExact"].replace("param", "angle"): {
                 "description": "Turns camera specified angle to the right"
             },
-            variableAngleCommands["lookLeftExact"]: {
+            variableAngleCommands["lookLeftExact"].replace("param", "angle"): {
                 "description": "Turns camera specified angle to the left"
             },
-            variableAngleCommands["lookUpExact"]: {
+            variableAngleCommands["lookUpExact"].replace("param", "angle"): {
                 "description": "Turns camera specified angle upwards"
             },
-            variableAngleCommands["lookDownExact"]: {
+            variableAngleCommands["lookDownExact"].replace("param", "angle"): {
                 "description": "Turns camera specified angle downwards"
             }
         }
-        self._exactAngleCommands: dict = self._get_exact_angle_commands(variableAngleCommands)
 
     def setup(self):
         for pin in list(self._servoPins.values()):
@@ -101,21 +103,13 @@ class ServoHandling:
                             )
 
     def print_commands(self):
-        variableCommands: dict = {key.replace("param", "angle"): value for key, value in self._variableAngleCommands.items()}
-        allCommands = list(variableCommands.keys())
-        allCommands.extend(self.get_voice_commands())
-        maxCommandLength = max(len(command) for command in allCommands)
+        allDictsWithCommands: dict = {}
+        allDictsWithCommands.update(self._lookOffsetCommands)
+        allDictsWithCommands.update(self._lookCenterCommand)
+        allDictsWithCommands.update(self._variableCommands)
+        title: str = "Servo handling commands:"
 
-        print("Servo handling commands:")
-        for command, v in self._lookOffsetCommands.items():
-            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-
-        for command, v in self._lookCenterCommand.items():
-            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-
-        for command, v in variableCommands.items():
-            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
-        print()
+        RobocarHelper.print_commands(title, allDictsWithCommands)
 
     def get_voice_commands(self) -> list[str]:
             return RobocarHelper.chain_together_dict_keys([self._lookOffsetCommands,
