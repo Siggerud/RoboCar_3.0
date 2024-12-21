@@ -34,8 +34,8 @@ class CarHandling(RoboObject):
 		self._direction_commands: dict = {
 			directionCommands["turnLeftCommand"]: {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "Left"},
 			directionCommands["turnRightCommand"]: {"description": "Turns car right", "gpioValues": [True, False, False, True], "direction": "Right"},
-			directionCommands["driveCommand"]: {"description": "Drives car forward", "gpioValues": [True, True, False, False], "direction": "Forward"},
-			directionCommands["reverseCommand"]: {"description": "Reverses car", "gpioValues": [False, False, True, True], "direction": "Reverse"},
+			directionCommands["driveCommand"]: {"description": "Drives car forward", "gpioValues": [False, False, True, True], "direction": "Forward"},
+			directionCommands["reverseCommand"]: {"description": "Reverses car", "gpioValues": [True, True, False, False], "direction": "Reverse"},
 			directionCommands["stopCommand"]: {"description": "Stops car", "gpioValues": [False, False, False, False], "direction": "Stopped"},
 		}
 
@@ -131,7 +131,6 @@ class CarHandling(RoboObject):
 		speedCommands: dict = {}
 		for speed in range(self._pwmMinTT, self._pwmMaxTT + 1):
 			command = RobocarHelper.format_command(userCommand, str(speed))
-			#command = self._format_exact_speed_command(userCommand, speed)
 			speedCommands[command] = speed
 
 		return speedCommands
