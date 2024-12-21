@@ -32,7 +32,7 @@ class CameraHelper:
         # mainly for printing at startup
         self._variableCommands = {
             userCommands["zoomCommand"].replace("param", "zoom"): {
-                "description": "Zooms camera to the specified value"
+                "description": "Zooms camera to the specified zoom value"
             }
         }
         self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoomCommand"])

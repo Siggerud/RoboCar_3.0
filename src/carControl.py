@@ -46,10 +46,10 @@ class CarControl:
         return self._queue
 
     def start(self):
-        # TODO: print commands
         self._car.print_commands()
         self._servo.print_commands()
         self._cameraHelper.print_commands()
+        self._honk.print_commands()
 
         # TODO: make this dependent on what is enabled in camerahelper class
         self._get_camera_ready() # this needs to be first method called
@@ -104,6 +104,7 @@ class CarControl:
         self._car.setup()
         self._servo.setup()
         self._honk.setup()
+
         self._signalLights.setup()
 
         while not flag.value:

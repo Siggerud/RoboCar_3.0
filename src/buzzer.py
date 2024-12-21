@@ -7,8 +7,16 @@ class Buzzer:
         self._buzzerPin: int = buzzerPin
         self._defaultHonkTime: float = defaultHonkTime
         self._maxHonkTime: float = maxHonkTime
+
         self._buzzCommand: dict = {userCommands["buzzCommand"]: {"description": "starts honking"}}
         self._buzzForSpecifiedTimeCommands: dict = self._set_honk_for_specified_time_commands(userCommands["buzzForSpecifiedTimeCommand"])
+
+        # mainly for printing at startup
+        self._variableCommands = {
+            userCommands["buzzCommand"].replace("param", "time"): {
+                "description": "Honks for the specified time"
+            }
+        }
 
     def setup(self):
         GPIO.setup(self._buzzerPin, GPIO.OUT)
@@ -24,6 +32,19 @@ class Buzzer:
             honkTime = self._buzzForSpecifiedTimeCommands[command]
 
         self._buzz(honkTime)
+
+    def print_commands(self):
+        allCommands: list = list(self._variableCommands.keys())
+        allCommands.extend(self.get_voice_commands())
+        maxCommandLength = max(len(command) for command in allCommands)
+
+        print("Camera commands:")
+        for command, v in self._buzzCommand.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+
+        for command, v in self._variableCommands.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+        print()
 
     def get_voice_commands(self) -> list[str]:
         return RobocarHelper.chain_together_dict_keys([self._buzzCommand,
