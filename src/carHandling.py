@@ -2,48 +2,51 @@ import RPi.GPIO as GPIO
 from roboCarHelper import RobocarHelper
 
 class CarHandling:
-	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT):
-		self._leftBackward = leftBackward
-		self._leftForward = leftForward
-		self._rightBackward = rightBackward
-		self._rightForward = rightForward
-		self._enA = enA
-		self._enB = enB
+	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT, speedStep, userCommands):
+		self._leftBackward: int = leftBackward
+		self._leftForward: int = leftForward
+		self._rightBackward: int = rightBackward
+		self._rightForward: int = rightForward
+		self._enA: int = enA
+		self._enB: int = enB
 
-		self._pwmMinTT = pwmMinTT
-		self._pwmMaxTT = pwmMaxTT
+		self._pwmMinTT: int = pwmMinTT
+		self._pwmMaxTT: int = pwmMaxTT
 
-		self._speed = self._pwmMinTT
+		self._speedStep: int = speedStep
 
-		self._turnLeft = False
-		self._turnRight = False
+		self._speed: int = self._pwmMinTT
 
-		self._goForward = False
-		self._goReverse = False
+		self._turnLeft: bool = False
+		self._turnRight: bool = False
+		self._goForward: bool = False
+		self._goReverse: bool = False
 
 		self._gpioThrottle = None
 
 		self._pwmA = None
 		self._pwmB = None
 
+		directionCommands = userCommands["direction"]
 		self._direction_commands: dict = {
-			"turn left": {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "Left"},
-			"turn right": {"description": "Turns car right", "gpioValues": [True, False, False, True], "direction": "Right"},
-			"go forward": {"description": "Drives car forward", "gpioValues": [True, True, False, False], "direction": "Forward"},
-			"go backward": {"description": "Reverses car", "gpioValues": [False, False, True, True], "direction": "Reverse"},
-			"stop now": {"description": "Stops car", "gpioValues": [False, False, False, False], "direction": "Stopped"},
+			directionCommands["turnLeftCommand"]: {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "Left"},
+			directionCommands["turnRightCommand"]: {"description": "Turns car right", "gpioValues": [True, False, False, True], "direction": "Right"},
+			directionCommands["driveCommand"]: {"description": "Drives car forward", "gpioValues": [True, True, False, False], "direction": "Forward"},
+			directionCommands["reverseCommand"]: {"description": "Reverses car", "gpioValues": [False, False, True, True], "direction": "Reverse"},
+			directionCommands["stopCommand"]: {"description": "Stops car", "gpioValues": [False, False, False, False], "direction": "Stopped"},
 		}
 
+		speedCommands = userCommands["speed"]
 		self._speed_commands: dict = {
-			"go faster": {"description": "Increases car speed"},
-			"go slower": {"description": "Decrease car speed"}
+			speedCommands["increaseSpeedCommand"]: {"description": "Increases car speed"},
+			speedCommands["decreaseSpeedCommand"]: {"description": "Decrease car speed"}
 		}
+		print(self._direction_commands)
+		print(self._speed_commands)
 
 		self._direction: str = "Stopped"
 
 		self._exact_speed_commands: dict = self._set_exact_speed_commands()
-
-		self._speedStep: int = 10 #TODO: add this to config
 
 	def setup(self):
 		GPIO.setup(self._leftBackward, GPIO.OUT)

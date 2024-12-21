@@ -104,17 +104,42 @@ def setup_servo(parser):
 
 
 def setup_car(parser):
-    carHandlingPins = parser["Car.handling.pins"]
+    carHandlingSpecs = parser["Car.handling.specs"]
 
     # define GPIO pins
-    rightForward = carHandlingPins.getint("RightForward")
-    rightBackward = carHandlingPins.getint("RightBackward")
-    leftForward = carHandlingPins.getint("LeftForward")
-    leftBackward = carHandlingPins.getint("LeftBackward")
-    enA = carHandlingPins.getint("EnA")
-    enB = carHandlingPins.getint("EnB")
-    minPwmTT = carHandlingPins.getint("MinimumMotorPWM")
-    maxPwmTT = carHandlingPins.getint("MaximumMotorPWM")
+    rightForward: int = carHandlingSpecs.getint("RightForward")
+    rightBackward: int = carHandlingSpecs.getint("RightBackward")
+    leftForward: int = carHandlingSpecs.getint("LeftForward")
+    leftBackward: int = carHandlingSpecs.getint("LeftBackward")
+    enA: int = carHandlingSpecs.getint("EnA")
+    enB: int = carHandlingSpecs.getint("EnB")
+
+    # define pwm values
+    minPwmTT: int = carHandlingSpecs.getint("MinimumMotorPWM")
+    maxPwmTT: int = carHandlingSpecs.getint("MaximumMotorPWM")
+
+    speedStep: int = carHandlingSpecs.getint("speed_step")
+
+    # define car commands
+    carHandlingCommands = parser["Car.handling.commands"]
+    directionCommands: dict = {
+        "turnLeftCommand": carHandlingCommands["turn_left"],
+        "turnRightCommand": carHandlingCommands["turn_right"],
+        "driveCommand": carHandlingCommands["drive"],
+        "reverseCommand": carHandlingCommands["reverse"],
+        "stopCommand": carHandlingCommands["stop"]
+    }
+
+    speedCommands: dict = {
+        "increaseSpeedCommand": carHandlingCommands["increase_speed"],
+        "decreaseSpeedCommand": carHandlingCommands["decrease_speed"],
+        "exactSpeedCommand": carHandlingCommands["exact_speed"]
+    }
+
+    commands: dict = {
+        "direction": directionCommands,
+        "speed": speedCommands
+    }
 
     # define car handling
     car = CarHandling(
@@ -125,7 +150,9 @@ def setup_car(parser):
         enA,
         enB,
         minPwmTT,
-        maxPwmTT
+        maxPwmTT,
+        speedStep,
+        commands
     )
 
     return car
