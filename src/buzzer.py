@@ -13,6 +13,9 @@ class Buzzer:
     def setup(self):
         GPIO.setup(self._buzzerPin, GPIO.OUT)
 
+    def get_command_validity(self, command) -> str:
+        return "valid" # honking commands are always valid
+
     def handle_voice_command(self, command):
         if command in self._buzzCommand:
             honkTime = self._defaultHonkTime
