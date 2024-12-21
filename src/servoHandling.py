@@ -141,36 +141,88 @@ class ServoHandling:
         exactAngleCommands: dict = {}
 
         # looking right commands
+        plane: str = "horizontal"
+        angleRange: range = range(self._minAngles[plane], 0)
+        command: str = userCommands["lookRightExact"]
+        exactAngleCommands.update(
+            self._get_angle_commands_for_given_direction(angleRange, command, plane)
+        )
+
+        # looking left commands
+        plane: str = "horizontal"
+        angleRange: range = range(1, self._maxAngles[plane] + 1)
+        command: str = userCommands["lookRightExact"]
+        exactAngleCommands.update(
+            self._get_angle_commands_for_given_direction(angleRange, command, plane)
+        )
+
+        # looking down commands
+        plane: str = "vertical"
+        angleRange: range = range(self._minAngles[plane], 0)
+        command: str = userCommands["lookDownExact"]
+        exactAngleCommands.update(
+            self._get_angle_commands_for_given_direction(angleRange, command, plane)
+        )
+
+        # looking up commands
+        plane: str = "vertical"
+        angleRange: range = range(1, self._maxAngles[plane] + 1)
+        command: str = userCommands["lookUpExact"]
+        exactAngleCommands.update(
+            self._get_angle_commands_for_given_direction(angleRange, command, plane)
+        )
+
+        """
+        #TODO: make this into method that is called 4 times instead
+        # looking right commands
         for angle in range(self._minAngles["horizontal"], 0):
-            print(userCommands["lookLeftExact"].format(angle="3"))
-            userCommand = userCommands["lookRightExact"].format(angle=str(abs(angle))) # print the absolute value because the angle is negative
+            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
             exactAngleCommands[userCommand] = {
                 "plane": "horizontal",
                 "pwmValue": self._angleToPwmValues[angle]
             }
-        print(exactAngleCommands)
+        
         # looking left commands
         for angle in range(1, self._maxAngles["horizontal"] + 1):
-            exactAngleCommands[f"{angle} degrees left"] = {
+            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
+            exactAngleCommands[userCommand] = {
                 "plane": "horizontal",
                 "pwmValue": self._angleToPwmValues[angle]
             }
 
         # looking down commands
         for angle in range(self._minAngles["vertical"], 0):
-            exactAngleCommands[f"{abs(angle)} degrees down"] = {
+            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
+            exactAngleCommands[userCommand] = {
                 "plane": "vertical",
                 "pwmValue": self._angleToPwmValues[angle]
             }
 
         # looking up commands
         for angle in range(1, self._maxAngles["vertical"] + 1):
-            exactAngleCommands[f"{angle} degrees up"] = {
+            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
+            exactAngleCommands[userCommand] = {
                 "plane": "vertical",
+                "pwmValue": self._angleToPwmValues[angle]
+            }
+    """
+        print(exactAngleCommands)
+        return exactAngleCommands
+
+    def _get_angle_commands_for_given_direction(self, range, command, plane) -> dict:
+        exactAngleCommands: dict = {}
+
+        for angle in range:
+            userCommand = self._format_exact_angle_user_command(command, angle)
+            exactAngleCommands[userCommand] = {
+                "plane": plane,
                 "pwmValue": self._angleToPwmValues[angle]
             }
 
         return exactAngleCommands
+
+    def _format_exact_angle_user_command(self, command, angle):
+        return command.format(angle=str(abs(angle))) # take the absolute value, because the user will always say a positive value
 
     def _angle_to_pwm(self, angle) -> float:
         pwmValue = RobocarHelper.map_value_to_new_scale(
