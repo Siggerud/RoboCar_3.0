@@ -3,6 +3,15 @@ class RobocarHelper:
         pass
 
     @staticmethod
+    def print_commands(title, dicts):
+        maxCommandLength = max(len(command) for command in dicts.keys()) + 1
+
+        print(title)
+        for command, v in dicts.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+        print()
+
+    @staticmethod
     def format_command(command, param):
         return command.format(param=param)
 

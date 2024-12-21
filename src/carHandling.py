@@ -44,6 +44,13 @@ class CarHandling:
 
 		self._direction: str = "Stopped"
 
+		# mainly for printing at startup
+		self._variableCommands = {
+			userCommands["exactSpeedCommand"].replace("param", "speed"): {
+				"description": "Sets speed to the specified speed value"
+			}
+		}
+
 		self._unformatted_exact_speed_command: str = speedCommands["exactSpeedCommand"]
 		self._exact_speed_commands: dict = self._set_exact_speed_commands(self._unformatted_exact_speed_command)
 
@@ -74,6 +81,8 @@ class CarHandling:
 			self._adjust_speed(command)
 
 	def print_commands(self):
+
+		"""
 		variableCommand: str = self._unformatted_exact_speed_command.replace('param', 'speed')
 		allCommands = [variableCommand]
 		allCommands.extend(self.get_voice_commands())
@@ -86,7 +95,13 @@ class CarHandling:
 		for command, v in self._speed_commands.items():
 			print(f"{command.ljust(maxCommandLength)}: {v['description']}")
 
-		print(f"{variableCommand.ljust(maxCommandLength)}: Sets speed to specified value\n")
+		print(f"{variableCommand.ljust(maxCommandLength)}: Sets speed to specified value\n")"""
+		allDictsWithCommands: dict = {}
+		allDictsWithCommands.update(self._direction_commands)
+		allDictsWithCommands.update(self._speed_commands)
+		allDictsWithCommands.update(self._variableCommands)
+		title: str = "Car handling commands:"
+		RobocarHelper.print_commands(title, allDictsWithCommands)
 
 	def get_command_validity(self, command) -> str:
 		# check if direction remains unchanged
