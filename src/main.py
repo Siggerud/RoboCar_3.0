@@ -57,6 +57,22 @@ def setup_servo(parser):
         "lookCenterCommand": servoCommands["look_center"]
     }
 
+    def append_angle_before(command):
+        return "{{angle}} " + command
+
+    def append_angle_after(command):
+        return command + "{{angle}}"
+
+    if servoCommands.getboolean("angle_before_command"):
+        func = append_angle_before
+    else:
+        func = append_angle_after
+
+    commands["lookUpExact"] = func(servoCommands["look_up_exact"])
+    commands["lookDownExact"] = func(servoCommands["look_down_exact"])
+    commands["lookLeftExact"] = func(servoCommands["look_left_exact"])
+    commands["lookRightExact"] = func(servoCommands["look_right_exact"])
+    print(commands)
     servo = ServoHandling(
         (servoPinHorizontal, servoPinVertical),
         (minAngleHorizontal, minAngleVertical),
