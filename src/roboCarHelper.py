@@ -3,6 +3,10 @@ class RobocarHelper:
         pass
 
     @staticmethod
+    def format_command(self, command, param):
+        return command.format(param=param)
+
+    @staticmethod
     def map_value_to_new_scale(inputValue, newScaleMinValue, newScaleMaxValue, valuePrecision, oldScaleMinValue=-1,
                                oldScaleMaxValue=1):
         newScaleSpan = newScaleMaxValue - newScaleMinValue
