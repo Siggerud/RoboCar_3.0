@@ -41,12 +41,10 @@ class CarHandling:
 			speedCommands["increaseSpeedCommand"]: {"description": "Increases car speed"},
 			speedCommands["decreaseSpeedCommand"]: {"description": "Decrease car speed"}
 		}
-		print(self._direction_commands)
-		print(self._speed_commands)
 
 		self._direction: str = "Stopped"
 
-		self._exact_speed_commands: dict = self._set_exact_speed_commands()
+		self._exact_speed_commands: dict = self._set_exact_speed_commands(speedCommands["exactSpeedCommand"])
 
 	def setup(self):
 		GPIO.setup(self._leftBackward, GPIO.OUT)
@@ -112,12 +110,16 @@ class CarHandling:
 	def get_current_turn_value(self):
 		return self._direction
 
-	def _set_exact_speed_commands(self) -> dict:
+	def _set_exact_speed_commands(self, userCommand: str) -> dict:
 		speedCommands: dict = {}
 		for speed in range(self._pwmMinTT, self._pwmMaxTT + 1):
-			speedCommands[f"speed {speed}"] = speed
+			command = self._format_exact_speed_command(userCommand, speed)
+			speedCommands[command] = speed
 
 		return speedCommands
+
+	def _format_exact_speed_command(self, command, speed):
+		return command.format(speed=str(speed))
 
 	def _adjust_direction_value(self, direction):
 		self._direction = direction
