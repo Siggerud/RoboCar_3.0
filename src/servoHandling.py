@@ -151,7 +151,7 @@ class ServoHandling:
         # looking left commands
         plane: str = "horizontal"
         angleRange: range = range(1, self._maxAngles[plane] + 1)
-        command: str = userCommands["lookRightExact"]
+        command: str = userCommands["lookLeftExact"]
         exactAngleCommands.update(
             self._get_angle_commands_for_given_direction(angleRange, command, plane)
         )
