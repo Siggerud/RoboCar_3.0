@@ -31,7 +31,7 @@ class CarControl:
             "partially valid": "yellow",
             "invalid": "red"
         }
-    """
+        """
         self.shared_array = Array(
             'd', [
                 0.0, #speed
