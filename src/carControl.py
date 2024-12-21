@@ -43,7 +43,7 @@ class CarControl:
             ]
         )"""
 
-        self.shared_array = self._get_shared_array()
+        self.shared_array = self._get_shared_array(self._cameraHelper.get_array_dict())
 
         self.shared_flag = Value('b', False)
         self._queue = Queue()
