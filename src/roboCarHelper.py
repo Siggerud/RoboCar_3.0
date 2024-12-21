@@ -3,7 +3,7 @@ class RobocarHelper:
         pass
 
     @staticmethod
-    def format_command(self, command, param):
+    def format_command(command, param):
         return command.format(param=param)
 
     @staticmethod
