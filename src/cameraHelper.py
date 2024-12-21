@@ -2,10 +2,11 @@ from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
 
 class CameraHelper(RoboObject):
-    def __init__(self, userCommands: dict, maxZoomValue: float):
-        self._car = None
-        self._servo = None
-
+    def __init__(self, userCommands: dict, maxZoomValue: float, car=None, servo=None):
+        self._car = car
+        self._servo = servo
+        print(car)
+        print(servo)
         self._angleText: str = ""
         self._speedText: str = ""
         self._turnText: str = ""
@@ -32,7 +33,7 @@ class CameraHelper(RoboObject):
 
         self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoomCommand"])
 
-        self._arrayDict = None
+        self._arrayDict: dict = self._set_array_dict()
 
         # mainly for printing at startup
         self._variableCommands: dict = {
@@ -100,11 +101,23 @@ class CameraHelper(RoboObject):
     def get_zoom_value(self):
         return self._zoomValue
 
-    def add_array_dict(self, arrayDict):
-        self._arrayDict = arrayDict
+    def get_array_dict(self) -> dict:
+        return self._arrayDict
 
     def cleanup(self):
         pass
+
+    def _set_array_dict(self) -> dict:
+        arrayDict: dict = {}
+        #cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]
+        cameraInputs: list = []
+        if self._car:
+            cameraInputs.extend(["speed", "direction"])
+        if self._servo:
+            cameraInputs.extend(["horizontal servo", "vertical servo"])
+        cameraInputs.extend(["HUD", "Zoom"])
+        for index, cameraInput in enumerate(cameraInputs):
+            arrayDict[cameraInput] = index
 
     def _set_hud_value(self, command):
         self._hudActive = self._hudCommands[command]["hudValue"]

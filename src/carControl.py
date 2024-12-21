@@ -56,7 +56,6 @@ class CarControl:
         for roboObject in self._roboObjects:
             roboObject.print_commands()
 
-        # TODO: make this dependent on what is enabled in camerahelper class
         self._get_camera_ready() # this needs to be first method called
         self._activate_camera()
 
@@ -70,20 +69,14 @@ class CarControl:
     def _get_camera_ready(self):
         self._set_shared_array_dict()
 
-        if self._car:
-            self._camera.set_car_enabled()
-
-        if self._servo:
-            self._camera.set_servo_enabled()
-
     def _set_shared_array_dict(self):
         arrayDict: dict = {}
         cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]
         for index, cameraInput in enumerate(cameraInputs):
             arrayDict[cameraInput] = index
 
-        self._camera.add_array_dict(arrayDict)
-        self._cameraHelper.add_array_dict(arrayDict)
+        #self._camera.add_array_dict(arrayDict)
+        #self._cameraHelper.add_array_dict(arrayDict)
 
     def _activate_camera(self):
         process = Process(target=self._start_camera, args=(self.shared_array, self.shared_flag))
