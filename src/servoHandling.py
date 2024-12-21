@@ -178,16 +178,13 @@ class ServoHandling:
         exactAngleCommands: dict = {}
 
         for angle in range:
-            userCommand = self._format_exact_angle_user_command(command, angle)
+            userCommand = RobocarHelper.format_command(command, str(abs(angle))) # take the absolute value, because the user will always say a positive value
             exactAngleCommands[userCommand] = {
                 "plane": plane,
                 "pwmValue": self._angleToPwmValues[angle]
             }
 
         return exactAngleCommands
-
-    def _format_exact_angle_user_command(self, command, angle):
-        return command.format(angle=str(abs(angle))) # take the absolute value, because the user will always say a positive value
 
     def _angle_to_pwm(self, angle) -> float:
         pwmValue = RobocarHelper.map_value_to_new_scale(
