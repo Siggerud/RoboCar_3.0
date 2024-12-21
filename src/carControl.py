@@ -9,9 +9,16 @@ class CarControl:
 
         self._car = car
         self._servo = servo
-        self._camera = camera
         self._cameraHelper = cameraHelper
         self._honk = honk
+        self._roboObjects: list = [
+            self._car,
+            self._servo,
+            self._cameraHelper,
+            self._honk
+        ]
+
+        self._camera = camera
         self._signalLights = signalLights
 
         self._processes: list = []
@@ -46,10 +53,8 @@ class CarControl:
         return self._queue
 
     def start(self):
-        self._car.print_commands()
-        self._servo.print_commands()
-        self._cameraHelper.print_commands()
-        self._honk.print_commands()
+        for roboObject in self._roboObjects:
+            roboObject.print_commands()
 
         # TODO: make this dependent on what is enabled in camerahelper class
         self._get_camera_ready() # this needs to be first method called
@@ -101,9 +106,8 @@ class CarControl:
 
     def _start_listening_for_voice_commands(self, flag):
         # setup objects
-        self._car.setup()
-        self._servo.setup()
-        self._honk.setup()
+        for roboObject in self._roboObjects:
+            roboObject.setup()
 
         self._signalLights.setup()
 
@@ -128,9 +132,8 @@ class CarControl:
                 self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
 
         # cleanup objects
-        self._servo.cleanup()
-        self._car.cleanup()
-        self._signalLights.cleanup()
+        for roboObject in self._roboObjects:
+            roboObject.cleanup()
 
     def _start_camera(self, shared_array, flag):
         self._camera.setup()

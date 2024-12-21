@@ -1,8 +1,9 @@
 import RPi.GPIO as GPIO
 from time import sleep
 from roboCarHelper import RobocarHelper
+from roboObject import RoboObject
 
-class Buzzer:
+class Buzzer(RoboObject):
     def __init__(self, buzzerPin: int, defaultHonkTime: float, maxHonkTime: float, userCommands: dict):
         self._buzzerPin: int = buzzerPin
         self._defaultHonkTime: float = defaultHonkTime
@@ -45,6 +46,9 @@ class Buzzer:
         return RobocarHelper.chain_together_dict_keys([self._buzzCommand,
                                                        self._buzzForSpecifiedTimeCommands]
                                                       )
+
+    def cleanup(self):
+        pass
 
     def _buzz(self, honkTime):
         GPIO.output(self._buzzerPin, GPIO.HIGH)

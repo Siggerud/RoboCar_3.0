@@ -1,6 +1,7 @@
 from roboCarHelper import RobocarHelper
+from roboObject import RoboObject
 
-class CameraHelper:
+class CameraHelper(RoboObject):
     def __init__(self, userCommands: dict, maxZoomValue: float):
         self._car = None
         self._servo = None
@@ -39,6 +40,9 @@ class CameraHelper:
                 "description": "Zooms camera to the specified zoom value"
             }
         }
+
+    def setup(self):
+        pass
 
     def handle_voice_command(self, command):
         print(command)

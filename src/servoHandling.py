@@ -1,7 +1,8 @@
 from roboCarHelper import RobocarHelper
 import pigpio
+from roboObject import RoboObject
 
-class ServoHandling:
+class ServoHandling(RoboObject):
     def __init__(self, servoPins, minAngles, maxAngles, userCommands):
         self._minAngles: dict = {
             "horizontal": minAngles[0],

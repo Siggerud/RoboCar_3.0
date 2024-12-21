@@ -1,7 +1,8 @@
 import RPi.GPIO as GPIO
 from roboCarHelper import RobocarHelper
+from roboObject import RoboObject
 
-class CarHandling:
+class CarHandling(RoboObject):
 	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT, speedStep, userCommands):
 		self._leftBackward: int = leftBackward
 		self._leftForward: int = leftForward
