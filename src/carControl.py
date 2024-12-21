@@ -31,7 +31,7 @@ class CarControl:
             "partially valid": "yellow",
             "invalid": "red"
         }
-
+    """
         self.shared_array = Array(
             'd', [
                 0.0, #speed
@@ -41,7 +41,9 @@ class CarControl:
                 1.0, #HUD
                 1.0 #zoom
             ]
-        )
+        )"""
+
+        self.shared_array = self._get_shared_array()
 
         self.shared_flag = Value('b', False)
         self._queue = Queue()
@@ -68,6 +70,16 @@ class CarControl:
 
     def _get_camera_ready(self):
         self._set_shared_array_dict()
+
+    def _get_shared_array(self, shared_array_dict) -> Array:
+        # initialize the array list with the same size as the dict that corresponds to the array
+        arrayList: list = [0.0] * len(shared_array_dict.keys())
+
+        # zoom and hud should be initialized to 1.0
+        arrayList[shared_array_dict["HUD"]] = 1.0
+        arrayList[shared_array_dict["Zoom"]] = 1.0
+
+        return Array('d', arrayList)
 
     def _set_shared_array_dict(self):
         arrayDict: dict = {}

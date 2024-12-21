@@ -5,8 +5,7 @@ class CameraHelper(RoboObject):
     def __init__(self, userCommands: dict, maxZoomValue: float, car=None, servo=None):
         self._car = car
         self._servo = servo
-        print(car)
-        print(servo)
+
         self._angleText: str = ""
         self._speedText: str = ""
         self._turnText: str = ""
@@ -109,7 +108,6 @@ class CameraHelper(RoboObject):
 
     def _set_array_dict(self) -> dict:
         arrayDict: dict = {}
-        #cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]
         cameraInputs: list = []
         if self._car:
             cameraInputs.extend(["speed", "direction"])

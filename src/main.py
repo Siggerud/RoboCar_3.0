@@ -188,9 +188,7 @@ def setup_car_controller(parser):
     # setup camerahelper
     cameraHelper = setup_camera_helper(parser, car, servo)
 
-    # add objects to camerahelper and enable these objects in camera class
-    #cameraHelper.add_car(car)
-    #cameraHelper.add_servo(servo)
+    # enable objects in camera class
     camera.set_car_enabled()
     camera.set_servo_enabled()
     camera.add_array_dict(cameraHelper.get_array_dict())
