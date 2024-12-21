@@ -13,7 +13,7 @@ class Buzzer:
 
         # mainly for printing at startup
         self._variableCommands = {
-            userCommands["buzzCommand"].replace("param", "time"): {
+            userCommands["buzzForSpecifiedTimeCommand"].replace("param", "time"): {
                 "description": "Honks for the specified time"
             }
         }
@@ -38,7 +38,7 @@ class Buzzer:
         allCommands.extend(self.get_voice_commands())
         maxCommandLength = max(len(command) for command in allCommands)
 
-        print("Camera commands:")
+        print("Honk commands:")
         for command, v in self._buzzCommand.items():
             print(f"{command.ljust(maxCommandLength)}: {v['description']}")
 
