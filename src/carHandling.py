@@ -72,6 +72,10 @@ class CarHandling:
 			print("Adjusting speed...")
 			self._adjust_speed(command)
 
+	def print_commands(self):
+		for command,v in self._direction_commands:
+			print(f"{command}: {v['description']}")
+
 	def get_command_validity(self, command) -> str:
 		# check if direction remains unchanged
 		if command in self._direction_commands:

@@ -37,7 +37,6 @@ class CarControl:
         )
 
         self.shared_flag = Value('b', False)
-        self._queue = Queue()
 
     def get_flag(self) -> Value:
         return self.shared_flag
@@ -47,12 +46,11 @@ class CarControl:
 
     def start(self):
         # TODO: print commands
+        self._car.print_commands()
 
         # TODO: make this dependent on what is enabled in camerahelper class
-        if self._camera:
-            self._get_camera_ready() # this needs to be first method called
-
-            self._activate_camera()
+        self._get_camera_ready() # this needs to be first method called
+        self._activate_camera()
 
         self._activate_voice_command_handling()
 
@@ -62,7 +60,7 @@ class CarControl:
             process.join()
 
     def _get_camera_ready(self):
-        self._set_shared_array_and_array_dict()
+        self._set_shared_array_dict()
 
         if self._car:
             self._camera.set_car_enabled()
@@ -70,7 +68,7 @@ class CarControl:
         if self._servo:
             self._camera.set_servo_enabled()
 
-    def _set_shared_array_and_array_dict(self):
+    def _set_shared_array_dict(self):
         arrayDict: dict = {}
         cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]
         for index, cameraInput in enumerate(cameraInputs):
