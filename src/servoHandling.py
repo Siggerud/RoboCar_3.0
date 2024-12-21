@@ -33,7 +33,7 @@ class ServoHandling:
         self._angleToPwmValues: dict = self._get_angle_mapped_to_pwm_values()
         self._pwmToAngleValues: dict = self._get_pwm_mapped_to_angle_values()
 
-        basicCommands = userCommands["basicCommands"]
+        basicCommands: dict = userCommands["basicCommands"]
         self._lookOffsetCommands: dict = {
             basicCommands["lookUpCommand"]: {
                 "description": "Turns camera up",
@@ -63,8 +63,22 @@ class ServoHandling:
             }
         }
 
-        exactAngleCommands = userCommands["exactAngleCommands"]
-        self._exactAngleCommands: dict = self._get_exact_angle_commands(exactAngleCommands)
+        variableAngleCommands: dict = userCommands["exactAngleCommands"]
+        self._variableAngleCommands: dict = {
+            variableAngleCommands["lookRightExact"]: {
+                "description": "Turns camera specified angle to the right"
+            },
+            variableAngleCommands["lookLeftExact"]: {
+                "description": "Turns camera specified angle to the left"
+            },
+            variableAngleCommands["lookUpExact"]: {
+                "description": "Turns camera specified angle upwards"
+            },
+            variableAngleCommands["lookDownExact"]: {
+                "description": "Turns camera specified angle downwards"
+            }
+        }
+        self._exactAngleCommands: dict = self._get_exact_angle_commands(variableAngleCommands)
 
     def setup(self):
         for pin in list(self._servoPins.values()):
@@ -86,11 +100,28 @@ class ServoHandling:
                              self._exactAngleCommands[command]["pwmValue"]
                             )
 
+    def print_commands(self):
+        variableCommands: dict = {key.replace("param", "angle"): value for key, value in self._variableAngleCommands.items()}
+        allCommands = list(variableCommands.keys())
+        allCommands.extend(self.get_voice_commands())
+        maxCommandLength = max(len(command) for command in allCommands)
+
+        print("Servo handling commands:")
+        for command, v in self._lookOffsetCommands.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+
+        for command, v in self._lookCenterCommand.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+
+        for command, v in variableCommands.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+        print()
+
     def get_voice_commands(self) -> list[str]:
-        return RobocarHelper.chain_together_dict_keys([self._lookOffsetCommands,
-                                         self._lookCenterCommand,
-                                         self._exactAngleCommands]
-                                        )
+            return RobocarHelper.chain_together_dict_keys([self._lookOffsetCommands,
+                                             self._lookCenterCommand,
+                                             self._exactAngleCommands]
+                                            )
 
     def get_command_validity(self, command) -> str:
         # check if angles stay unchanged
