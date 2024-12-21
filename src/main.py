@@ -30,6 +30,20 @@ def setup_camera(parser):
 
     return camera
 
+def setup_camera_helper(parser):
+    cameraCommands = parser["Camera.commands"]
+    commands: dict = {
+        "turnOnDisplayCommand": cameraCommands["turn_on_display"],
+        "turnOffDisplayCommand": cameraCommands["turn_off_display"],
+        "zoomCommand": cameraCommands["zoom"]
+    }
+
+    cameraSpecs = parser["Camera.specs"]
+    maxZoomValue = cameraSpecs.getint("max_zoom_value")
+
+    return CameraHelper(commands, maxZoomValue)
+
+
 def setup_buzzer(parser) -> Buzzer:
     buzzerPin = parser["Buzzer.pin"].getint("Buzzer")
 
@@ -123,8 +137,10 @@ honk = setup_buzzer(parser)
 # setup camera
 camera = setup_camera(parser)
 
+# setup camerahelper
+cameraHelper = setup_camera_helper(parser)
+
 # add objects to camerahelper
-cameraHelper = CameraHelper()
 cameraHelper.add_car(car)
 cameraHelper.add_servo(servo)
 

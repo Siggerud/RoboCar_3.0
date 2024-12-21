@@ -172,41 +172,6 @@ class ServoHandling:
             self._get_angle_commands_for_given_direction(angleRange, command, plane)
         )
 
-        """
-        #TODO: make this into method that is called 4 times instead
-        # looking right commands
-        for angle in range(self._minAngles["horizontal"], 0):
-            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
-            exactAngleCommands[userCommand] = {
-                "plane": "horizontal",
-                "pwmValue": self._angleToPwmValues[angle]
-            }
-        
-        # looking left commands
-        for angle in range(1, self._maxAngles["horizontal"] + 1):
-            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
-            exactAngleCommands[userCommand] = {
-                "plane": "horizontal",
-                "pwmValue": self._angleToPwmValues[angle]
-            }
-
-        # looking down commands
-        for angle in range(self._minAngles["vertical"], 0):
-            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
-            exactAngleCommands[userCommand] = {
-                "plane": "vertical",
-                "pwmValue": self._angleToPwmValues[angle]
-            }
-
-        # looking up commands
-        for angle in range(1, self._maxAngles["vertical"] + 1):
-            userCommand = self._format_exact_angle_user_command(userCommands["lookRightExact"], angle)
-            exactAngleCommands[userCommand] = {
-                "plane": "vertical",
-                "pwmValue": self._angleToPwmValues[angle]
-            }
-    """
-        print(exactAngleCommands)
         return exactAngleCommands
 
     def _get_angle_commands_for_given_direction(self, range, command, plane) -> dict:

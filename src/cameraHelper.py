@@ -1,7 +1,7 @@
 from roboCarHelper import RobocarHelper
 
 class CameraHelper:
-    def __init__(self):
+    def __init__(self, userCommands, maxZoomValue):
         self._car = None
         self._servo = None
 
@@ -12,7 +12,7 @@ class CameraHelper:
         self._zoomValue = 1.0
 
         self._minZoomValue = 1.0
-        self._maxZoomValue = 3.0 #TODO: add this to config file
+        self._maxZoomValue = maxZoomValue
 
         self._hudActive = True
 
@@ -25,12 +25,12 @@ class CameraHelper:
         }
 
         self._hudCommands: dict = {
-            "turn on display": {"description": "Turns on HUD", "hudValue": True},
-            "turn off display": {"description": "Turns off HUD", "hudValue": False}
+            userCommands["turnOnDisplayCommand"]: {"description": "Turns on HUD", "hudValue": True},
+            userCommands["turnOffDisplayCommand"]: {"description": "Turns off HUD", "hudValue": False}
         }
 
-        self._zoomCommands: dict = self._set_zoom_commands()
-
+        self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoom"])
+        print(self._zoomCommands)
         self._arrayDict = None
 
     def handle_voice_command(self, command):
@@ -90,14 +90,18 @@ class CameraHelper:
     def _set_zoom_value(self, command):
         self._zoomValue = self._zoomCommands[command]
 
-    def _set_zoom_commands(self) -> dict:
+    def _set_zoom_commands(self, command) -> dict:
         zoomValue: float = self._minZoomValue
         stepValue: float = 0.1
         zoomCommands: dict = {}
         while zoomValue <= (self._maxZoomValue + stepValue):
-            zoomCommands[f"zoom {round(zoomValue, 1)}"] = round(zoomValue, 1) # round zoomValue to avoid floating numbers with many decimals
+            userCommand = self._format_zoom_command(command, zoomValue)
+            zoomCommands[userCommand] = round(zoomValue, 1) # round zoomValue to avoid floating numbers with many decimals
 
             zoomValue += stepValue
 
         return zoomCommands
+
+    def _format_zoom_command(self, command, zoomValue):
+        return command.format(zoomValue=str(round(zoomValue, 1)))
 
