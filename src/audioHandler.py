@@ -25,7 +25,7 @@ class AudioHandler:
                 audio_text = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
                 try:
                     # using google speech recognition
-                    spokenWords = self._recognizer.recognize_google(audio_text, language=)
+                    spokenWords = self._recognizer.recognize_google(audio_text, language=self._languageCode)
                     break
                 except sr.UnknownValueError:
                     # if nothing intelligible is picked up, then try again
