@@ -49,6 +49,7 @@ class CarControl:
         # TODO: print commands
         self._car.print_commands()
         self._servo.print_commands()
+        self._cameraHelper.print_commands()
 
         # TODO: make this dependent on what is enabled in camerahelper class
         self._get_camera_ready() # this needs to be first method called

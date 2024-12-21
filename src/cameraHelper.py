@@ -29,6 +29,12 @@ class CameraHelper:
             userCommands["turnOffDisplayCommand"]: {"description": "Turns off HUD", "hudValue": False}
         }
 
+        # mainly for printing at startup
+        self._variableCommands = {
+            userCommands["zoomCommand"].replace("param", "zoom"): {
+                "description": "Zooms camera to the specified value"
+            }
+        }
         self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoomCommand"])
 
         self._arrayDict = None
@@ -39,6 +45,20 @@ class CameraHelper:
             self._set_hud_value(command)
         elif command in self._zoomCommands:
             self._set_zoom_value(command)
+
+    def print_commands(self):
+        allCommands: list = list(self._variableCommands.keys())
+        allCommands.extend(self.get_voice_commands())
+        maxCommandLength = max(len(command) for command in allCommands)
+
+        print("Camera commands:")
+        for command, v in self._hudCommands.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+
+        for command, v in self._variableCommands.items():
+            print(f"{command.ljust(maxCommandLength)}: {v['description']}")
+        print()
+
 
     def get_command_validity(self, command) -> str:
         if command in self._hudCommands: # check if display is already on or off
