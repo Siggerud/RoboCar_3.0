@@ -81,7 +81,7 @@ class CarHandling:
 		for command, v in self._speed_commands.items():
 			print(f"{command}: {v['description']}")
 
-		print(self._unformatted_exact_speed_command + "\n")
+		print(f"{self._unformatted_exact_speed_command.replace('param', 'speed')}: Sets speed to specified value\n")
 
 	def get_command_validity(self, command) -> str:
 		# check if direction remains unchanged
