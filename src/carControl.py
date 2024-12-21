@@ -37,6 +37,7 @@ class CarControl:
         )
 
         self.shared_flag = Value('b', False)
+        self._queue = Queue()
 
     def get_flag(self) -> Value:
         return self.shared_flag
