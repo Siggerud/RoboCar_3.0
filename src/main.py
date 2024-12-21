@@ -36,26 +36,32 @@ def setup_buzzer(parser) -> Buzzer:
     return Buzzer(buzzerPin)
 
 def setup_servo(parser):
-    servoDataVertical = parser[f"Servo.handling.specs.horizontal"]
+    servoDataHorizontal = parser["Servo.handling.specs.horizontal"]
 
-    servoPinHorizontal = servoDataVertical.getint("ServoPin")
-    minAngleHorizontal = servoDataVertical.getint("MinAngle")
-    maxAngleHorizontal = servoDataVertical.getint("MaxAngle")
+    servoPinHorizontal: int = RobocarHelper.convert_from_board_number_to_bcm_number(servoDataHorizontal.getint("ServoPin"))
+    minAngleHorizontal: int = servoDataHorizontal.getint("MinAngle")
+    maxAngleHorizontal: int = servoDataHorizontal.getint("MaxAngle")
 
-    servoPinHorizontal = RobocarHelper.convert_from_board_number_to_bcm_number(servoPinHorizontal)
+    servoDataHorizontal = parser[f"Servo.handling.specs.vertical"]
 
-    servoDataVertical = parser[f"Servo.handling.specs.vertical"]
+    servoPinVertical: int = RobocarHelper.convert_from_board_number_to_bcm_number(servoDataHorizontal.getint("ServoPin"))
+    minAngleVertical: int = servoDataHorizontal.getint("MinAngle")
+    maxAngleVertical: int = servoDataHorizontal.getint("MaxAngle")
 
-    servoPinVertical = servoDataVertical.getint("ServoPin")
-    minAngleVertical = servoDataVertical.getint("MinAngle")
-    maxAngleVertical = servoDataVertical.getint("MaxAngle")
-
-    servoPinVertical = RobocarHelper.convert_from_board_number_to_bcm_number(servoPinVertical)
+    servoCommands = parser["Servo.commands"]
+    commands: dict = {
+        "lookUpCommand": servoCommands["look_up"],
+        "lookDownCommand": servoCommands["look_down"],
+        "lookLeftCommand": servoCommands["look_left"],
+        "lookRightCommand": servoCommands["look_right"],
+        "lookCenterCommand": servoCommands["look_center"]
+    }
 
     servo = ServoHandling(
         (servoPinHorizontal, servoPinVertical),
         (minAngleHorizontal, minAngleVertical),
-        (maxAngleHorizontal, maxAngleVertical)
+        (maxAngleHorizontal, maxAngleVertical),
+        commands
     )
 
     return servo

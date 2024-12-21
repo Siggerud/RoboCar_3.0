@@ -2,7 +2,7 @@ from roboCarHelper import RobocarHelper
 import pigpio
 
 class ServoHandling:
-    def __init__(self, servoPins, minAngles, maxAngles):
+    def __init__(self, servoPins, minAngles, maxAngles, userCommands):
         self._minAngles: dict = {
             "horizontal": minAngles[0],
             "vertical": minAngles[1]
@@ -34,22 +34,22 @@ class ServoHandling:
         self._pwmToAngleValues: dict = self._get_pwm_mapped_to_angle_values()
 
         self._lookOffsetCommands: dict = {
-            "look up": {
+            userCommands["lookUpCommand"]: {
                 "description": "Turns camera up",
                 "plane": "vertical",
                 "pwmValue": self._angleToPwmValues[self._maxAngles["vertical"]]
             },
-            "look down":
+            userCommands["lookDownCommand"]:
                 {"description": "Turns camera down",
                  "plane": "vertical",
                  "pwmValue": self._angleToPwmValues[self._minAngles["vertical"]]
                  },
-            "look left":
+            userCommands["lookLeftCommand"]:
                 {"description": "Turns camera left",
                  "plane": "horizontal",
                  "pwmValue": self._angleToPwmValues[self._maxAngles["horizontal"]]
                  },
-            "look right": {
+            userCommands["lookRightCommand"]: {
                 "description": "Turns camera right",
                 "plane": "horizontal",
                 "pwmValue": self._angleToPwmValues[self._minAngles["horizontal"]]
@@ -57,7 +57,7 @@ class ServoHandling:
         }
 
         self._lookCenterCommand: dict = {
-            "look centre": {
+            userCommands["lookCenterCommand"]: {
                 "description": "Centers camera"
             }
         }
