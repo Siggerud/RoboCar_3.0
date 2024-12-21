@@ -90,18 +90,15 @@ class CameraHelper:
     def _set_zoom_value(self, command):
         self._zoomValue = self._zoomCommands[command]
 
-    def _set_zoom_commands(self, command: str) -> dict:
+    def _set_zoom_commands(self, userCommand: str) -> dict:
         zoomValue: float = self._minZoomValue
         stepValue: float = 0.1
         zoomCommands: dict = {}
         while zoomValue <= (self._maxZoomValue + stepValue):
-            userCommand = self._format_zoom_command(command, zoomValue)
-            zoomCommands[userCommand] = round(zoomValue, 1) # round zoomValue to avoid floating numbers with many decimals
+            command: str = RobocarHelper.format_command(userCommand, str(round(zoomValue, 1)))
+            zoomCommands[command] = round(zoomValue, 1) # round zoomValue to avoid floating numbers with many decimals
 
             zoomValue += stepValue
 
         return zoomCommands
-
-    def _format_zoom_command(self, command, zoomValue):
-        return command.format(zoomValue=str(round(zoomValue, 1)))
 
