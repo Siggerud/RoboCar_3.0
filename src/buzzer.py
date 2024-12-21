@@ -35,19 +35,17 @@ class Buzzer:
         sleep(honkTime)
         GPIO.output(self._buzzerPin, GPIO.LOW)
 
-    def _set_honk_for_specified_time_commands(self, buzzForSpecifiedTimeCommand: str) -> dict:
+    def _set_honk_for_specified_time_commands(self, userCommand: str) -> dict:
         honkTime: float = 0.1
         stepValue: float = 0.1
         honkCommands: dict = {}
         while honkTime <= (self._maxHonkTime + stepValue):
-            userCommand = self._format_buzz_for_specified_time_command(buzzForSpecifiedTimeCommand, honkTime)
+            userCommand = RobocarHelper.format_command(userCommand, str(round(honkTime, 1)))
             honkCommands[userCommand] = round(honkTime, 1) # round honkTime to avoid floating numbers with many decimals
 
             honkTime += stepValue
 
         return honkCommands
 
-    def _format_buzz_for_specified_time_command(self, command, time):
-        return command.format(time=str(round(time, 1)))
 
 
