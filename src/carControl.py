@@ -146,19 +146,9 @@ class CarControl:
     def _get_all_objects_mapped_to_commands(self) -> dict:
         objectsToCommands: dict = {}
 
-        #TODO: loop through list of objects instead
-
-        # add car commands
-        objectsToCommands.update(self._add_object_to_commands(self._car))
-
-        # add servo commands
-        objectsToCommands.update(self._add_object_to_commands(self._servo))
-
-        # add camera commands
-        objectsToCommands.update(self._add_object_to_commands(self._cameraHelper))
-
-        # add honk commands
-        objectsToCommands.update(self._add_object_to_commands(self._honk))
+        # add commands from all robot objects
+        for roboObject in self._roboObjects:
+            objectsToCommands.update(self._add_object_to_commands(roboObject))
 
         return objectsToCommands
 

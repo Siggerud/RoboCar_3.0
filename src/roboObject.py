@@ -13,3 +13,7 @@ class RoboObject(ABC):
     @abstractmethod
     def print_commands(self):
         pass
+
+    @abstractmethod
+    def handle_voice_command(self):
+        pass
