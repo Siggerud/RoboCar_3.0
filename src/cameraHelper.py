@@ -103,6 +103,9 @@ class CameraHelper(RoboObject):
     def add_array_dict(self, arrayDict):
         self._arrayDict = arrayDict
 
+    def cleanup(self):
+        pass
+
     def _set_hud_value(self, command):
         self._hudActive = self._hudCommands[command]["hudValue"]
 
