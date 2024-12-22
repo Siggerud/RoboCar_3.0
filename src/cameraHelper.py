@@ -153,6 +153,8 @@ class CameraHelper(RoboObject):
         elif command == self._userCommands["zoomCommands"]["zoomInCommand"]:
             self._zoomValue += self._zoomIncrement
 
+        self._zoomValue = round(self._zoomValue, 1) # round to nearest decimal to avoid rounding errors on camera feed
+
     def _set_zoom_commands(self, userCommand: str) -> dict:
         zoomValue: float = self._minZoomValue
         stepValue: float = 0.1
