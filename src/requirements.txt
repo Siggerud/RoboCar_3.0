@@ -1,0 +1,5 @@
+picamera2==0.3.22
+opencv-python==4.10.0.84
+SpeechRecognition==3.11.0
+pyaudio==0.2.13
+sounddevice==0.5.1
