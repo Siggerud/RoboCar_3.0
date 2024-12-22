@@ -30,6 +30,8 @@ class CarHandling(RoboObject):
 
 		self._direction: str = "Stopped"
 
+		self._userCommands: dict = userCommands
+
 		directionCommands = userCommands["direction"]
 		self._direction_commands: dict = {
 			directionCommands["turnLeftCommand"]: {"description": "Turns car left", "gpioValues": [False, True, True, False], "direction": "Left"},
@@ -41,8 +43,8 @@ class CarHandling(RoboObject):
 
 		speedCommands = userCommands["speed"]
 		self._speed_commands: dict = {
-			speedCommands["increaseSpeedCommand"]: {"description": "Increases car speed"},
-			speedCommands["decreaseSpeedCommand"]: {"description": "Decrease car speed"}
+			speedCommands["increaseSpeedCommand"]: {"description": "Increases car speed", "commandDescription": "increaseSpeedCommand"},
+			speedCommands["decreaseSpeedCommand"]: {"description": "Decrease car speed", "commandDescription": "decreaseSpeedCommand"}
 		}
 
 		self._exact_speed_commands: dict = self._set_exact_speed_commands(speedCommands["exactSpeedCommand"])
@@ -102,10 +104,10 @@ class CarHandling(RoboObject):
 
 		# check if new speed increase/decrease is within valid range
 		elif command in self._speed_commands:
-			if command == "go faster":
+			if command == self._userCommands["speed"]["increaseSpeedCommand"]:
 				if (self._speed + self._speedStep) > self._pwmMaxTT:
 					return "partially valid"
-			elif command == "go slower":
+			elif command == self._userCommands["speed"]["decreaseSpeedCommand"]:
 				if (self._speed - self._speedStep) < self._pwmMinTT:
 					return "partially valid"
 
@@ -141,10 +143,10 @@ class CarHandling(RoboObject):
 	def _adjust_speed(self, command: str):
 		adjustSpeed: bool = False
 
-		if command == "go faster":
+		if command == self._userCommands["speed"]["increaseSpeedCommand"]:
 			self._speed += self._speedStep
 			adjustSpeed = True
-		elif command == "go slower":
+		elif command == self._userCommands["speed"]["decreaseSpeedCommand"]:
 			self._speed -= self._speedStep
 			adjustSpeed = True
 		else:

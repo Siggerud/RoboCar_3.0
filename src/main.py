@@ -34,16 +34,28 @@ def setup_camera(parser):
 
 def setup_camera_helper(parser, *args):
     cameraCommands = parser["Camera.commands"]
-    commands: dict = {
+
+    hudCommands: dict = {
         "turnOnDisplayCommand": cameraCommands["turn_on_display"],
-        "turnOffDisplayCommand": cameraCommands["turn_off_display"],
-        "zoomCommand": cameraCommands["zoom"]
+        "turnOffDisplayCommand": cameraCommands["turn_off_display"]
+    }
+
+    zoomCommands: dict = {
+        "zoomExactCommand": cameraCommands["zoom"],
+        "zoomInCommand": cameraCommands["zoom_in"],
+        "zoomOutCommand": cameraCommands["zoom_out"]
+    }
+
+    commands: dict = {
+        "hudCommands": hudCommands,
+        "zoomCommands": zoomCommands
     }
 
     cameraSpecs = parser["Camera.specs"]
     maxZoomValue = float(cameraSpecs["max_zoom_value"])
+    zoomIncrement = float(cameraSpecs["zoom_step"])
 
-    return CameraHelper(commands, maxZoomValue, *args)
+    return CameraHelper(commands, maxZoomValue, zoomIncrement, *args)
 
 
 def setup_buzzer(parser) -> Buzzer:

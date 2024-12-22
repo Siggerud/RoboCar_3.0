@@ -11,7 +11,7 @@ class RoboObject(ABC):
         pass
 
     @abstractmethod
-    def get_command_validity(self):
+    def get_command_validity(self, command):
         pass
 
     @abstractmethod

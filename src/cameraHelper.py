@@ -2,7 +2,7 @@ from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
 
 class CameraHelper(RoboObject):
-    def __init__(self, userCommands: dict, maxZoomValue: float, car=None, servo=None):
+    def __init__(self, userCommands: dict, maxZoomValue: float, zoomIncrement: float, car=None, servo=None):
         self._car = car
         self._servo = servo
 
@@ -11,6 +11,7 @@ class CameraHelper(RoboObject):
         self._turnText: str = ""
 
         self._zoomValue: float = 1.0
+        self._zoomIncrement: float = zoomIncrement
 
         self._minZoomValue: float = 1.0
         self._maxZoomValue: float = maxZoomValue
@@ -25,18 +26,27 @@ class CameraHelper(RoboObject):
             "Reverse": 4
         }
 
+        self._userCommands: dict = userCommands
+
+        hudCommands: dict = userCommands["hudCommands"]
         self._hudCommands: dict = {
-            userCommands["turnOnDisplayCommand"]: {"description": "Turns on HUD", "hudValue": True},
-            userCommands["turnOffDisplayCommand"]: {"description": "Turns off HUD", "hudValue": False}
+            hudCommands["turnOnDisplayCommand"]: {"description": "Turns on HUD", "hudValue": True},
+            hudCommands["turnOffDisplayCommand"]: {"description": "Turns off HUD", "hudValue": False}
         }
 
-        self._zoomCommands: dict = self._set_zoom_commands(userCommands["zoomCommand"])
+        zoomCommands: dict = userCommands["zoomCommands"]
+        self._zoomExactCommands: dict = self._set_zoom_commands(zoomCommands["zoomExactCommand"])
+
+        self._zoomIncrementCommands: dict = {
+            zoomCommands["zoomInCommand"]: {"description": "zooms in by the default increment value"},
+            zoomCommands["zoomOutCommand"]: {"description": "zooms out by the default increment value"}
+        }
 
         self._arrayDict: dict = self._set_array_dict()
 
         # mainly for printing at startup
         self._variableCommands: dict = {
-            userCommands["zoomCommand"].replace("param", "zoom"): {
+            zoomCommands["zoomExactCommand"].replace("param", "zoom"): {
                 "description": "Zooms camera to the specified zoom value"
             }
         }
@@ -44,29 +54,40 @@ class CameraHelper(RoboObject):
     def setup(self):
         pass
 
-    def handle_voice_command(self, command):
+    def handle_voice_command(self, command: str):
         print(command)
         if command in self._hudCommands:
             self._set_hud_value(command)
-        elif command in self._zoomCommands:
+        elif command in self._zoomExactCommands:
             self._set_zoom_value(command)
+        elif command in self._zoomIncrementCommands:
+            self._increment_zoom_value(command)
 
     def print_commands(self):
         allDictsWithCommands: dict = {}
         allDictsWithCommands.update(self._hudCommands)
+        allDictsWithCommands.update(self._zoomIncrementCommands)
         allDictsWithCommands.update(self._variableCommands)
         title: str = "Camera commands:"
 
         RobocarHelper.print_commands(title, allDictsWithCommands)
 
-    def get_command_validity(self, command) -> str:
+    def get_command_validity(self, command: str) -> str:
         if command in self._hudCommands: # check if display is already on or off
             if self._hudActive == self._hudCommands[command]["hudValue"]:
                 return "partially valid"
 
-        elif command in self._zoomCommands:
-            if self._zoomValue == self._zoomCommands[command]: # check if zoom value is unchanged
+        elif command in self._zoomExactCommands:
+            if self._zoomValue == self._zoomExactCommands[command]: # check if zoom value is unchanged
                 return "partially valid"
+
+        elif command in self._zoomIncrementCommands:
+            if command == self._userCommands["zoomCommands"]["zoomOutCommand"]:
+                if (self._zoomValue - self._zoomIncrement) < self._minZoomValue:
+                    return "partially valid"
+            elif command == self._userCommands["zoomCommands"]["zoomInCommand"]:
+                if (self._zoomValue + self._zoomIncrement) > self._maxZoomValue:
+                    return "partially valid"
 
         return "valid"
 
@@ -91,7 +112,8 @@ class CameraHelper(RoboObject):
     def get_voice_commands(self) -> list:
         return RobocarHelper.chain_together_dict_keys([
             self._hudCommands,
-            self._zoomCommands
+            self._zoomExactCommands,
+            self._zoomIncrementCommands
         ])
 
     def get_HUD_active(self):
@@ -119,11 +141,17 @@ class CameraHelper(RoboObject):
 
         return arrayDict
 
-    def _set_hud_value(self, command):
+    def _set_hud_value(self, command: str):
         self._hudActive = self._hudCommands[command]["hudValue"]
 
-    def _set_zoom_value(self, command):
-        self._zoomValue = self._zoomCommands[command]
+    def _set_zoom_value(self, command: str):
+        self._zoomValue = self._zoomExactCommands[command]
+
+    def _increment_zoom_value(self, command: str):
+        if command == self._userCommands["zoomCommands"]["zoomOutCommand"]:
+            self._zoomValue -= self._zoomIncrement
+        elif command == self._userCommands["zoomCommands"]["zoomInCommand"]:
+            self._zoomValue += self._zoomIncrement
 
     def _set_zoom_commands(self, userCommand: str) -> dict:
         zoomValue: float = self._minZoomValue
