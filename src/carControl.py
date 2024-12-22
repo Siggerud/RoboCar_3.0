@@ -44,8 +44,7 @@ class CarControl:
         return self._queue
 
     def start(self):
-        for roboObject in self._roboObjects:
-            roboObject.print_commands()
+        self._print_start_up_message()
 
         self._get_camera_ready() # this needs to be first method called
         self._activate_camera()
@@ -69,6 +68,12 @@ class CarControl:
         arrayList[shared_array_dict["Zoom"]] = 1.0
 
         return Array('d', arrayList)
+
+    def _print_start_up_message(self):
+        for roboObject in self._roboObjects:
+            roboObject.print_commands()
+
+        print(f"Exit command : {self._exitCommand}")
 
     def _set_shared_array_dict(self):
         arrayDict: dict = {}

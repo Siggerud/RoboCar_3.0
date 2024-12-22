@@ -8,16 +8,10 @@ The robocar with Xbox controller
 <br />
 Camera feed screenshot from camera onboard robocar
 
-This is a project where I've built
-a vehicle that can be controlled with a wireless xbox controller via bluetooth.
-It has a camera mounted on a servo that can be turned left and right, and it can be tilted back- and
-forward.
-It also has a distance sensors in the front and the back of the car, and a warning sound will
-be set off if the vehicle is too close to any object. The closer the car is 
-to an obstacle, the faster the alarm will beep. 
-The front lights will dim according to the external lights, by reading data from a phototransistor.
-I've used a serial connection to an arduino to read data from the distance sensors and the
-phototransistor.
+This a robotcar that is operated by voice commands. In addition to the controlling
+of the car you can also control the direction of a mounted camera, zooming and
+a honking device. To tell wether you've given a valid voice command, signal lights
+will give you feedback.
 
 ## Prerequisites
 
@@ -211,43 +205,23 @@ with sr.Microphone(device_index=1) as source:
 If the output is what you communicated, the speech recognition works.
 
 ### Add changes to config file if necessary
-All user tweaking will be done in the config file. Here you can add or remove
-components installed on the car, change pin numbers and other limit values for the car
-1. Turn off any components you have not added to the car under Components.enabled
-2. Change any pin connections that are deviating from the wiring list given below
-3. Add or remove progressive lights if need be
+All components are setup through a config file that can be modified by you.
+You can specify which pins you are using, angle rotation range for the camera
+and you can specify the voice commands for specific operations in the language
+of your choice.
 
 ## Starting up the program
 1. Power your xbox controller and wait for it to connect to the pi
 2. Connect to your pi via RealVNC
 3. Open this project in a terminal 
-4. Run main.py
+4. Run src/main.py
 
 ## Driving and controlling the car
-To drive the car:<br />
-RT - Gas
-LT - Reverse
-D-Pad - Turn
-
-If you stand still while turning, the wheels will turn opposite of the
-adjacent side to turn faster.
-
-To turn the camera:<br />
-Use the RSB stick to turn the camera to the left and right. Letting the stick
-go will make the camera go to the neutral position.
-
-To zoom:<br />
-Use the LSB stick to zoom in and out. Letting the stick go will set the zoom to
-1x.
+Give the commands given in the startup message when running the program.
 
 ### Exiting the program
-1. When you're finished press Ctrl+C or double tap the specified controller exit button to exit the program in a controlled manner
-2. Power off your xBox controller
-
-### Running tests
-To make sure everything is as expected you can run some
-tests written to verify the classes in this project. To test
-you just have to run the test files.
+Give the exit command given in the start up message. This command can be changed
+in the config file.
 
 ## Appendix
 
@@ -274,21 +248,22 @@ GND -> -
 #### Raspberry pi to camera
 Cameraslot -> Camera
 
-#### Raspberry pi to arduino
-USB-A -> USB-B
-
 #### Raspberry pi to passive buzzer
-29 -> +
+36 -> +<br />
 GND -> -
 
 #### Raspberry pi to LEDs
-LED 1<br />
-36 -> +
-GND -> -
+Green LED<br />
+32 -> +<br />
+GND -> -<br />
 <br />
-LED 2<br />
-31 -> +
-GND -> -
+Yellow LED<br />
+31 -> +<br />
+GND -> -<br />
+
+Red LED<br />
+29 -> +<br />
+GND -> -<br />
 
 #### L289 to motors
 L289 right and left should be based on looking at the
@@ -308,21 +283,6 @@ L289 MOTORB Left -> Left motor front - <br />
 L289 VMS -> Batterypack +-<br />
 L289 GND -> Batterypack -
 
-#### Arduino to front distance sensor
-A2 -> Echo <br />
-A3 -> Trig <br />
-5V -> + <br />
-GND -> -
-
-#### Arduino to back distance sensor
-A0 -> Echo <br />
-A1 -> Trig <br />
-5V -> + <br />
-GND -> -
-
-#### Arduino to phototransistor
-<img src="images/ArduinoToPhotoresistors.png" alt="drawing" width="150"/>
-
 ### Parts list
 
 #### Car handling
@@ -331,27 +291,21 @@ Battery pack holding 6AA batteries <br />
 L289N motor driver <br />
 4 wheels that attach to motors <br />
 
-#### Sensors
-2 HC-SR04 distance sensors <br />
-Photoresistor
-
 #### Other electrical components
 Raspberry Pi 4 model B <br />
 Raspberry pi Camera Module V2 <br />
 Powerbank 10000mah <br />
-Arduino Uno <br />
-Arduino Sensor Shield V5.0 <br />
 2 SG90 servos <br />
 Passive buzzer <br />
 Breadboard <br />
-2 yellow LED lights <br />
-1 10K Ohm resistor <br />
-2 220 Ohm resistor
+1 green LED light<br />
+1 yellow LED light <br />
+1 red LED light<br />
+3 330 Ohm resistor
 
 #### Structural components
 3D printed parts <br />
-6x M3 40 mm spacers <br />
-12x M3 10 mm spacers <br />
+4x M3 40 mm spacers <br />
 4 metal brackets for motors <br />
 M3 screws
 M3 nuts
