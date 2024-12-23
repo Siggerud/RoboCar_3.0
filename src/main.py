@@ -61,9 +61,14 @@ def setup_camera_helper(parser, *args):
 
 def setup_buzzer(parser) -> Buzzer:
     buzzerSpecs = parser["Buzzer.specs"]
-    pin: int = buzzerSpecs.getint("pin")
-    defaultHonkTime = float(buzzerSpecs["default_buzz_time"])
-    maxHonkTime = float(buzzerSpecs["max_buzz_time"])
+
+    try:
+        pin: int = buzzerSpecs.getint("pin")
+        defaultHonkTime: float = buzzerSpecs.getfloat("default_buzz_time")
+        maxHonkTime: float = buzzerSpecs.getfloat("max_buzz_time")
+    except ValueError as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
 
     buzzCommands = parser["Buzzer.commands"]
     commands: dict = {
