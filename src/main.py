@@ -9,6 +9,7 @@ import os
 from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
+from exceptions import InvalidArgumentException
 
 def setup_signal_lights(parser):
     signalSpecs = parser["Signal.light.specs"]
@@ -70,7 +71,12 @@ def setup_buzzer(parser) -> Buzzer:
         "buzzForSpecifiedTimeCommand": buzzCommands["buzz_for_specified_time"]
     }
 
-    return Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
+    try:
+        buzzer = Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
+    except InvalidArgumentException:
+        exit()
+
+    return buzzer
 
 def setup_servo(parser):
     servoDataHorizontal = parser["Servo.handling.specs.horizontal"]

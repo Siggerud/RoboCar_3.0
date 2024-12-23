@@ -2,9 +2,11 @@ import RPi.GPIO as GPIO
 from time import sleep
 from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
+from exceptions import InvalidArgumentException
 
 class Buzzer(RoboObject):
     def __init__(self, buzzerPin: int, defaultHonkTime: float, maxHonkTime: float, userCommands: dict):
+        self._check_argument_validity(buzzerPin, defaultHonkTime, maxHonkTime, userCommands)
         self._buzzerPin: int = buzzerPin
         self._defaultHonkTime: float = defaultHonkTime
         self._maxHonkTime: float = maxHonkTime
@@ -67,5 +69,22 @@ class Buzzer(RoboObject):
 
         return honkCommands
 
+    def _check_argument_validity(self, buzzerPin, defaultHonkTime, maxHonkTime, userCommands):
+        if buzzerPin not in RobocarHelper.get_all_bcm_pins() and buzzerPin not in RobocarHelper.get_all_board_pins():
+            raise InvalidArgumentException(f"Buzzerpin argument '{buzzerPin}' is not a valid number")
 
+
+        if defaultHonkTime <= 0:
+            raise InvalidArgumentException("defaultHonkTime argument must be a positive float")
+
+        #TODO: move changing to float to the classes
+        if maxHonkTime <= 0:
+            raise  InvalidArgumentException("maxHonkTime argument must be a positive float")
+
+        for command in list(userCommands.keys()):
+            if len(command.split()) < 2:
+                raise InvalidArgumentException(f"Number of words in command '{command}' must be greater than 1")
+
+        if "{param}" not in userCommands["buzz_for_specified_time"]:
+            raise InvalidArgumentException["You need to specify {param} in buzz_for_specified_time"]
 
