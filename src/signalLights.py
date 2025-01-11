@@ -1,14 +1,21 @@
 import RPi.GPIO as GPIO
 from time import sleep
+from roboObject import RoboObject
 
-class SignalLights:
+class SignalLights(RoboObject):
     def __init__(self, greenLightPin, yellowLightPin, redLightPin, blinkTime):
+        super().__init__(
+            [greenLightPin, yellowLightPin, redLightPin],
+            {},
+            blinkTime=blinkTime
+        )
+
         self._lightPins: dict = {
             "green": greenLightPin,
             "yellow": yellowLightPin,
             "red": redLightPin
         }
-        self._blinkTime: float = 0.2
+        self._blinkTime: float = blinkTime
 
     def setup(self):
         for pin in self._lightPins.values():
@@ -44,5 +51,10 @@ class SignalLights:
                 GPIO.output(pin, GPIO.LOW)
 
             sleep(timeBetweenBlinks)
+
+    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
+        super()._check_argument_validity(pins, userCommands, **kwargs)
+        print("checking")
+        self._check_if_num_is_in_interval(kwargs["blinkTime"], 0.1, 10, "blinkTime")
 
 

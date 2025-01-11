@@ -14,19 +14,29 @@ from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinE
 def setup_signal_lights(parser):
     signalSpecs = parser["Signal.light.specs"]
 
-    greenLightPin: int = signalSpecs.getint("green_pin")
-    yellowLightPin: int = signalSpecs.getint("yellow_pin")
-    redLightPin: int = signalSpecs.getint("red_pin")
+    try:
+        greenLightPin: int = signalSpecs.getint("green_pin")
+        yellowLightPin: int = signalSpecs.getint("yellow_pin")
+        redLightPin: int = signalSpecs.getint("red_pin")
 
-    blinkTime: float = float(signalSpecs["blink_time"])
+        blinkTime: float = float(signalSpecs["blink_time"])
+    except ValueError as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
 
-    return SignalLights(greenLightPin, yellowLightPin, redLightPin, blinkTime)
+    signalLights = SignalLights(greenLightPin, yellowLightPin, redLightPin, blinkTime)
+
+    return signalLights
 
 def setup_camera(parser):
     cameraSpecs = parser["Camera.specs"]
 
-    resolutionWidth: int = cameraSpecs.getint("ResolutionWidth")
-    resolutionHeight: int = cameraSpecs.getint("ResolutionHeight")
+    try:
+        resolutionWidth: int = cameraSpecs.getint("ResolutionWidth")
+        resolutionHeight: int = cameraSpecs.getint("ResolutionHeight")
+    except ValueError as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
 
     resolution: tuple = (resolutionWidth, resolutionHeight)
     camera = Camera(resolution)
@@ -53,10 +63,19 @@ def setup_camera_helper(parser, *args):
     }
 
     cameraSpecs = parser["Camera.specs"]
-    maxZoomValue = float(cameraSpecs["max_zoom_value"])
-    zoomIncrement = float(cameraSpecs["zoom_step"])
 
-    cameraHelper = CameraHelper(commands, maxZoomValue, zoomIncrement, *args)
+    try:
+        maxZoomValue = float(cameraSpecs["max_zoom_value"])
+        zoomIncrement = float(cameraSpecs["zoom_step"])
+    except ValueError as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
+
+    try:
+        cameraHelper = CameraHelper(commands, maxZoomValue, zoomIncrement, *args)
+    except (OutOfRangeException, InvalidCommandException) as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
 
     return cameraHelper
 
