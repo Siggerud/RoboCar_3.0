@@ -195,9 +195,11 @@ class CarHandling(RoboObject):
 
 		self._check_for_placeholder_in_command(userCommands["exactSpeedCommand"])
 
+		# check that the pwm values are within valid range
 		self._check_if_num_is_in_interval(kwargs["pwmMinTT"], 0, 100, "MinimumMotorPWM")
 		self._check_if_num_is_in_interval(kwargs["pwmMaxTT"], 0, 100, "MaximumMotorPWM")
 
+		# check that the speed step is within valid range
 		self._check_if_num_is_in_interval(kwargs["speedStep"], 1, 100, "speed_step")
 
 

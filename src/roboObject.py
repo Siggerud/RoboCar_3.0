@@ -45,8 +45,8 @@ class RoboObject:
 
             self._add_pin_to_board_pins_in_use(pin)
 
-    def _check_if_num_is_greater_than_or_equal_to_zero(self, num, variableName: str):
-        if num <= 0:
+    def _check_if_num_is_greater_than_or_equal_to_number(self, num, lowerBound, variableName: str):
+        if num <= lowerBound:
             raise OutOfRangeException(f"{variableName} should be greater than zero")
 
     def _check_command_length(self, commands: dict):

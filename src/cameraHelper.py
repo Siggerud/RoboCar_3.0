@@ -5,7 +5,9 @@ class CameraHelper(RoboObject):
     def __init__(self, userCommands: dict, maxZoomValue: float, zoomIncrement: float, car=None, servo=None):
         super().__init__(
             [],
-            {**userCommands["hudCommands"], **userCommands["zoomCommands"]}
+            {**userCommands["hudCommands"], **userCommands["zoomCommands"]},
+            maxZoomValue=maxZoomValue,
+            zoomIncrement=zoomIncrement
         )
 
         self._car = car
@@ -167,4 +169,13 @@ class CameraHelper(RoboObject):
             zoomValue += stepValue
 
         return zoomCommands
+
+    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
+        super()._check_argument_validity(pins, userCommands, **kwargs)
+
+        self._check_for_placeholder_in_command(userCommands["zoomExactCommand"])
+
+        self._check_if_num_is_in_interval(kwargs["maxZoomValue"], 1.0, 100.0, "MaximumZoomValue")
+
+        self._check_if_num_is_in_interval(kwargs["zoomIncrement"], 0.1, 10.0, "ZoomIncrement")
 

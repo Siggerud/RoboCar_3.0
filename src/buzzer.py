@@ -68,9 +68,9 @@ class Buzzer(RoboObject):
 
     def _check_argument_validity(self, pins, userCommands, **kwargs):
         super()._check_argument_validity(pins, userCommands)
-        self._check_if_num_is_greater_than_or_equal_to_zero(kwargs["defaultHonkTime"], "default honk time")
+        self._check_if_num_is_greater_than_or_equal_to_number(kwargs["defaultHonkTime"], "default honk time")
 
-        self._check_if_num_is_greater_than_or_equal_to_zero(kwargs["maxHonkTime"], "max honk time")
+        self._check_if_num_is_greater_than_or_equal_to_number(kwargs["maxHonkTime"], 0,"max honk time")
 
         self._check_for_placeholder_in_command(userCommands["buzzForSpecifiedTimeCommand"])
 

@@ -56,7 +56,9 @@ def setup_camera_helper(parser, *args):
     maxZoomValue = float(cameraSpecs["max_zoom_value"])
     zoomIncrement = float(cameraSpecs["zoom_step"])
 
-    return CameraHelper(commands, maxZoomValue, zoomIncrement, *args)
+    cameraHelper = CameraHelper(commands, maxZoomValue, zoomIncrement)
+
+    return cameraHelper
 
 
 def setup_buzzer(parser) -> Buzzer:
@@ -124,12 +126,16 @@ def setup_servo(parser):
         "exactAngleCommands": exactAngleCommands
     }
 
-    servo = ServoHandling(
-        [servoPinHorizontal, servoPinVertical],
-        [minAngleHorizontal, minAngleVertical],
-        [maxAngleHorizontal, maxAngleVertical],
-        commands
-    )
+    try:
+        servo = ServoHandling(
+            [servoPinHorizontal, servoPinVertical],
+            [minAngleHorizontal, minAngleVertical],
+            [maxAngleHorizontal, maxAngleVertical],
+            commands
+        )
+    except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
+        RobocarHelper.print_startup_error(e)
+        exit() #TODO: make this into a method
 
     return servo
 
