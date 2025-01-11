@@ -3,8 +3,8 @@ import pigpio
 from roboObject import RoboObject
 
 class ServoHandling(RoboObject):
-    def __init__(self, servoPins, minAngles, maxAngles, userCommands):
-        super.__init__(servoPins, userCommands)
+    def __init__(self, servoPins: list, minAngles: list, maxAngles: list, userCommands: dict):
+        super().__init__(servoPins, userCommands)
 
         self._minAngles: dict = {
             "horizontal": minAngles[0],

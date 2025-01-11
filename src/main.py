@@ -119,9 +119,9 @@ def setup_servo(parser):
     }
 
     servo = ServoHandling(
-        (servoPinHorizontal, servoPinVertical),
-        (minAngleHorizontal, minAngleVertical),
-        (maxAngleHorizontal, maxAngleVertical),
+        [servoPinHorizontal, servoPinVertical],
+        [minAngleHorizontal, minAngleVertical],
+        [maxAngleHorizontal, maxAngleVertical],
         commands
     )
 
