@@ -3,17 +3,17 @@ import sounddevice # to avoid lots of ALSA error
 
 class AudioHandler:
     def __init__(self, exitCommand, language):
-        self._exitCommand = exitCommand
+        self._exitCommand: str = exitCommand
         self._recognizer = sr.Recognizer()
-        self._languageCode = self._get_language_code(language)
-        self._deviceIndex = self._get_device_index()
+        self._languageCode: str = self._get_language_code(language)
+        self._deviceIndex: int = self._get_device_index()
         self._queue = None
 
-    def setup(self, queue):
+    def setup(self, queue) -> None:
         self._queue = queue
 
-    def set_audio_command(self, flag):
-        spokenWords = ""
+    def set_audio_command(self, flag) -> None:
+        spokenWords: str = ""
 
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
@@ -22,7 +22,7 @@ class AudioHandler:
 
             print("Talk")
             while True:
-                audio_text = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
+                audio_text: str = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
                 try:
                     # using google speech recognition
                     spokenWords = self._recognizer.recognize_google(audio_text, language=self._languageCode)
@@ -43,21 +43,21 @@ class AudioHandler:
             # set the command in IPC
             self._queue.put(spokenWords)
 
-    def _clean_up_spoken_words(self, spokenWords):
+    def _clean_up_spoken_words(self, spokenWords: str) -> str:
         if "°" in spokenWords:  # change out degree symbol
             # sometimes the ° sign is right next to the number of degrees, so we need to add some space around it
-            splitWords = spokenWords.split("°")
-            strippedWords = [word.strip() for word in splitWords]
-            rejoinedWords = " ° ".join(strippedWords)
+            splitWords: list = spokenWords.split("°")
+            strippedWords: list = [word.strip() for word in splitWords]
+            rejoinedWords: str = " ° ".join(strippedWords)
 
             spokenWords = rejoinedWords.replace("°", "degrees")
 
-        print("Text: " + spokenWords)
+        print("Command: " + spokenWords)
 
         return spokenWords.lower().strip()
 
     def _get_device_index(self) -> int:
-        connectedMicrophones = sr.Microphone.list_microphone_names()
+        connectedMicrophones: list = sr.Microphone.list_microphone_names()
         for index, microphone in enumerate(connectedMicrophones):
             if microphone == "pulse":
                 return index

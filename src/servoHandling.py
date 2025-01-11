@@ -90,16 +90,14 @@ class ServoHandling(RoboObject):
             }
         }
 
-    # TODO: add valiity checks for all arguments
-
-    def setup(self):
+    def setup(self) -> None:
         for pin in list(self._servoPins.values()):
             self._pigpioPwm.set_mode(pin, pigpio.OUTPUT)
             self._pigpioPwm.set_PWM_frequency(pin, 50) # 50 hz is typical for servos
 
         self._center_servo_positions()
 
-    def handle_voice_command(self, command: str):
+    def handle_voice_command(self, command: str) -> None:
         if command in self._lookOffsetCommands:
             self._move_servo(self._lookOffsetCommands[command]["plane"],
                              self._lookOffsetCommands[command]["pwmValue"]
@@ -114,13 +112,13 @@ class ServoHandling(RoboObject):
     def get_current_servo_angle(self, plane) -> int:
         return self._pwmToAngleValues[self._currentPwmValue[plane]]
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         print("Cleaning up servo")
         self._center_servo_positions()  # center camera when exiting
         for pin in list(self._servoPins.values()):
             self._pigpioPwm.set_PWM_dutycycle(pin, 0)
 
-    def print_commands(self):
+    def print_commands(self) -> None:
         allDictsWithCommands: dict = {}
         allDictsWithCommands.update(self._lookOffsetCommands)
         allDictsWithCommands.update(self._lookCenterCommand)
@@ -155,11 +153,11 @@ class ServoHandling(RoboObject):
 
         return "valid"
 
-    def _center_servo_positions(self):
+    def _center_servo_positions(self) -> None:
         for plane in list(self._servoPins.keys()):
             self._move_servo(plane, self._servoPwmNeutralValue)
 
-    def _move_servo(self, plane, pwmValue):
+    def _move_servo(self, plane, pwmValue) -> None:
         self._pigpioPwm.set_servo_pulsewidth(self._servoPins[plane], pwmValue) # move servo in given plane
         self._currentPwmValue[plane] = pwmValue # update the current pwm value for given plane
 
@@ -221,7 +219,7 @@ class ServoHandling(RoboObject):
         exactAngleCommands: dict = {}
 
         for angle in range:
-            userCommand = self._format_command(command, str(abs(angle))) # take the absolute value, because the user will always say a positive value
+            userCommand: str = self._format_command(command, str(abs(angle))) # take the absolute value, because the user will always say a positive value
             exactAngleCommands[userCommand] = {
                 "plane": plane,
                 "pwmValue": self._angleToPwmValues[angle]
@@ -230,7 +228,7 @@ class ServoHandling(RoboObject):
         return exactAngleCommands
 
     def _angle_to_pwm(self, angle) -> float:
-        pwmValue = RobocarHelper.map_value_to_new_scale(
+        pwmValue: float = RobocarHelper.map_value_to_new_scale(
                 angle,
                 self._pwmAbsoluteMin,
                 self._pwmAbsoluteMax,
@@ -241,7 +239,7 @@ class ServoHandling(RoboObject):
 
         return pwmValue
 
-    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
+    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs) -> None:
         super()._check_argument_validity(pins, userCommands, **kwargs)
 
         self._check_for_placeholder_in_command(userCommands["lookRightExact"])

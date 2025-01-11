@@ -43,7 +43,7 @@ class CarControl:
     def get_queue(self) -> Queue:
         return self._queue
 
-    def start(self):
+    def start(self) -> None:
         self._print_start_up_message()
 
         self._get_camera_ready() # this needs to be first method called
@@ -51,12 +51,12 @@ class CarControl:
 
         self._activate_voice_command_handling()
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         # close all threads
         for process in self._processes:
             process.join()
 
-    def _get_camera_ready(self):
+    def _get_camera_ready(self) -> None:
         self._set_shared_array_dict()
 
     def _get_shared_array(self, shared_array_dict) -> Array:
@@ -69,28 +69,25 @@ class CarControl:
 
         return Array('d', arrayList)
 
-    def _print_start_up_message(self):
+    def _print_start_up_message(self) -> None:
         for roboObject in self._roboObjects:
             roboObject.print_commands()
 
         print(f"Exit command : {self._exitCommand}")
         print()
 
-    def _set_shared_array_dict(self):
+    def _set_shared_array_dict(self) -> None:
         arrayDict: dict = {}
         cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]
         for index, cameraInput in enumerate(cameraInputs):
             arrayDict[cameraInput] = index
 
-        #self._camera.add_array_dict(arrayDict)
-        #self._cameraHelper.add_array_dict(arrayDict)
-
-    def _activate_camera(self):
+    def _activate_camera(self) -> None:
         process = Process(target=self._start_camera, args=(self.shared_array, self.shared_flag))
         self._processes.append(process)
         process.start()
 
-    def _activate_voice_command_handling(self):
+    def _activate_voice_command_handling(self) -> None:
         process = Process(
             target=self._GPIO_Process,
             args=(self._start_listening_for_voice_commands, self.shared_flag)
@@ -98,13 +95,13 @@ class CarControl:
         self._processes.append(process)
         process.start()
 
-    def _GPIO_Process(self, func, *args):
+    def _GPIO_Process(self, func, *args) -> None:
         GPIO.setmode(GPIO.BOARD) # set GPIO mode as BOARD for all classes using GPIO pins
         GPIO.setwarnings(False) # disable GPIO warnings
         func(*args) # call parameter method
         GPIO.cleanup() # cleanup all classes using GPIO pins
 
-    def _start_listening_for_voice_commands(self, flag):
+    def _start_listening_for_voice_commands(self, flag) -> None:
         # setup objects
         for roboObject in self._roboObjects:
             roboObject.setup()
@@ -135,7 +132,7 @@ class CarControl:
         for roboObject in self._roboObjects:
             roboObject.cleanup()
 
-    def _start_camera(self, shared_array, flag):
+    def _start_camera(self, shared_array, flag) -> None:
         self._camera.setup()
 
         while not flag.value:
@@ -159,7 +156,7 @@ class CarControl:
 
         return objectToCommands
 
-    def _check_if_X11_connected(self):
+    def _check_if_X11_connected(self) -> int:
         result = subprocess.run(["xset", "q"], capture_output=True, text=True)
         returnCode = result.returncode
 

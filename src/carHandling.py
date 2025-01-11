@@ -74,9 +74,7 @@ class CarHandling(RoboObject):
 			}
 		}
 
-	# TODO: add valiity checks for all arguments
-
-	def setup(self):
+	def setup(self) -> None:
 		GPIO.setup(self._leftBackward, GPIO.OUT)
 		GPIO.setup(self._leftForward, GPIO.OUT)
 		GPIO.setup(self._rightBackward, GPIO.OUT)
@@ -92,8 +90,7 @@ class CarHandling(RoboObject):
 
 		self._gpioThrottle = {True: GPIO.HIGH, False: GPIO.LOW}
 
-	def handle_voice_command(self, command):
-		print("Command: " + command)
+	def handle_voice_command(self, command: str) -> None:
 		if command in self._direction_commands:
 			newGpioValues = self._direction_commands[command]["gpioValues"]
 			self._adjust_gpio_values(newGpioValues)
@@ -102,7 +99,7 @@ class CarHandling(RoboObject):
 			print("Adjusting speed...")
 			self._adjust_speed(command)
 
-	def print_commands(self):
+	def print_commands(self) -> None:
 		allDictsWithCommands: dict = {}
 		allDictsWithCommands.update(self._direction_commands)
 		allDictsWithCommands.update(self._speed_commands)
@@ -111,7 +108,7 @@ class CarHandling(RoboObject):
 
 		self._print_commands(title, allDictsWithCommands)
 
-	def get_command_validity(self, command) -> str:
+	def get_command_validity(self, command: str) -> str:
 		# check if direction remains unchanged
 		if command in self._direction_commands:
 			if self._direction == self._direction_commands[command]["direction"]:
@@ -134,7 +131,7 @@ class CarHandling(RoboObject):
 		return "valid"
 
 
-	def cleanup(self):
+	def cleanup(self) -> None:
 		self._pwmA.stop()
 		self._pwmB.stop()
 
@@ -157,10 +154,10 @@ class CarHandling(RoboObject):
 
 		return speedCommands
 
-	def _adjust_direction_value(self, direction):
+	def _adjust_direction_value(self, direction: str) -> None:
 		self._direction = direction
 
-	def _adjust_speed(self, command: str):
+	def _adjust_speed(self, command: str) -> None:
 		adjustSpeed: bool = False
 
 		if command == self._userCommands["speed"]["increaseSpeedCommand"]:
@@ -178,11 +175,11 @@ class CarHandling(RoboObject):
 		if adjustSpeed:
 			self._change_duty_cycle()
 
-	def _change_duty_cycle(self):
+	def _change_duty_cycle(self) -> None:
 		for pwm in [self._pwmA, self._pwmB]:
 			pwm.ChangeDutyCycle(self._speed)
 
-	def _adjust_gpio_values(self, gpioValues):
+	def _adjust_gpio_values(self, gpioValues) -> None:
 		leftForwardValue, rightForwardValue, leftBackwardValue, rightBackwardValue = gpioValues
 
 		GPIO.output(self._leftForward, self._gpioThrottle[leftForwardValue])
@@ -190,7 +187,7 @@ class CarHandling(RoboObject):
 		GPIO.output(self._leftBackward, self._gpioThrottle[leftBackwardValue])
 		GPIO.output(self._rightBackward, self._gpioThrottle[rightBackwardValue])
 
-	def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
+	def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs) -> None:
 		super()._check_argument_validity(pins, userCommands, **kwargs)
 
 		self._check_for_placeholder_in_command(userCommands["exactSpeedCommand"])

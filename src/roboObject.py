@@ -67,7 +67,7 @@ class RoboObject:
 
         return boardToBcmPins
 
-    def _print_commands(self, title, dicts):
+    def _print_commands(self, title: str, dicts: dict) -> None:
         maxCommandLength = max(len(command) for command in dicts.keys()) + 1
 
         print(title)
@@ -75,7 +75,7 @@ class RoboObject:
             print(f"{command.ljust(maxCommandLength)}: {v['description']}")
         print()
 
-    def _format_command(self, command, param):
+    def _format_command(self, command, param) -> str:
         return command.format(param=param)
 
     @classmethod

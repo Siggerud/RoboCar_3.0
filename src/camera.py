@@ -41,7 +41,7 @@ class Camera:
             4: "Reverse"
         }
 
-    def setup(self):
+    def setup(self) -> None:
         self._picam2 = Picamera2()
 
         # set resolution, format and rotation of camera feed
@@ -51,7 +51,7 @@ class Camera:
         self._picam2.configure(config)
         self._picam2.start()
 
-    def show_camera_feed(self, shared_array):
+    def show_camera_feed(self, shared_array) -> None:
         tStart: float = time() # start timer for calculating fps
 
         # get raw image
@@ -80,17 +80,17 @@ class Camera:
         # calculate fps
         self._calculate_fps(tStart)
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         cv2.destroyAllWindows()
         self._picam2.close()
 
-    def set_car_enabled(self):
+    def set_car_enabled(self) -> None:
         self._carEnabled = True
 
-    def set_servo_enabled(self):
+    def set_servo_enabled(self) -> None:
         self._servoEnabled = True
 
-    def add_array_dict(self, arrayDict):
+    def add_array_dict(self, arrayDict: dict) -> None:
         self._arrayDict = arrayDict
 
     def _set_text_positions(self) -> list[tuple]:
@@ -106,13 +106,13 @@ class Camera:
 
         return positions
 
-    def _calculate_fps(self, startTime):
+    def _calculate_fps(self, startTime: float) -> None:
         endTime: float = time()
         loopTime: float = endTime - startTime
 
         self._fps = self._weightPrevFps * self._fps + self._weightNewFps * (1 / loopTime)
 
-    def _get_zoomed_image(self, image):
+    def _get_zoomed_image(self, image) -> None:
         halfZoomDisplayWidth = int(self._dispW / (2 * self._zoomValue))
         halfZoomDisplayHeight = int(self._dispH / (2 * self._zoomValue))
 
@@ -123,7 +123,7 @@ class Camera:
 
         return im
 
-    def _add_text_to_cam_feed(self, image, shared_array):
+    def _add_text_to_cam_feed(self, image, shared_array) -> None:
         # display fps
         cv2.putText(image, self._get_fps_text(), self._fpsPos, self._font, self._scale, self._colour,
                     self._thickness)
@@ -161,10 +161,10 @@ class Camera:
     def _get_fps_text(self) -> str:
         return str(int(self._fps)) + " FPS"
 
-    def _set_HUD_active_value(self, shared_array):
+    def _set_HUD_active_value(self, shared_array) -> None:
         self._hudActive = shared_array[self._arrayDict["HUD"]]
 
-    def _set_zoom_value(self, shared_array):
+    def _set_zoom_value(self, shared_array) -> None:
         self._zoomValue = shared_array[self._arrayDict["Zoom"]]
 
     def _get_direction_value(self, number) -> str:

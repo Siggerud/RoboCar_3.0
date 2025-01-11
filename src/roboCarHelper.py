@@ -4,7 +4,7 @@ class RobocarHelper:
 
     @staticmethod
     def map_value_to_new_scale(inputValue, newScaleMinValue, newScaleMaxValue, valuePrecision, oldScaleMinValue=-1,
-                               oldScaleMaxValue=1):
+                               oldScaleMaxValue=1) -> float:
         newScaleSpan = newScaleMaxValue - newScaleMinValue
         oldScaleSpan = oldScaleMaxValue - oldScaleMinValue
 
@@ -22,12 +22,12 @@ class RobocarHelper:
         return combinedKeys
 
     @staticmethod
-    def print_startup_error(error):
+    def print_startup_error(error) -> None:
         print("Something went wrong during startup. Exiting...")
         print(error)
 
     @staticmethod
-    def round_nearest(x, a):
+    def round_nearest(x, a) -> float:
         return round(x / a) * a
 
 

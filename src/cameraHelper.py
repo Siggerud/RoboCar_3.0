@@ -58,9 +58,7 @@ class CameraHelper(RoboObject):
             }
         }
 
-    #TODO: add valiity checks for all arguments
-
-    def handle_voice_command(self, command: str):
+    def handle_voice_command(self, command: str) -> None:
         print(command)
         if command in self._hudCommands:
             self._set_hud_value(command)
@@ -69,7 +67,7 @@ class CameraHelper(RoboObject):
         elif command in self._zoomIncrementCommands:
             self._increment_zoom_value(command)
 
-    def print_commands(self):
+    def print_commands(self) -> None:
         allDictsWithCommands: dict = {}
         allDictsWithCommands.update(self._hudCommands)
         allDictsWithCommands.update(self._zoomIncrementCommands)
@@ -170,7 +168,7 @@ class CameraHelper(RoboObject):
 
         return zoomCommands
 
-    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
+    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs) -> None:
         super()._check_argument_validity(pins, userCommands, **kwargs)
 
         self._check_for_placeholder_in_command(userCommands["zoomExactCommand"])

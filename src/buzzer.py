@@ -27,7 +27,17 @@ class Buzzer(RoboObject):
     def get_command_validity(self, command) -> str:
         return "valid" # honking commands are always valid
 
-    def handle_voice_command(self, command):
+    """
+    Handles voice commands for the buzzer.
+
+    This method processes the given voice command and triggers the buzzer to honk
+    for a specified duration based on the command.
+
+    Parameters:
+    command (str): The voice command to be processed. It can be one of the predefined
+                   commands to start honking or honk for a specified time.
+    """
+    def handle_voice_command(self, command) -> None:
         if command in self._buzzCommand:
             honkTime = self._defaultHonkTime
         elif command in self._buzzForSpecifiedTimeCommands:
@@ -36,7 +46,7 @@ class Buzzer(RoboObject):
 
         self._buzz(honkTime)
 
-    def print_commands(self):
+    def print_commands(self) -> None:
         allDictsWithCommands: dict = {}
         allDictsWithCommands.update(self._buzzCommand)
         allDictsWithCommands.update(self._variableCommands)
@@ -49,7 +59,7 @@ class Buzzer(RoboObject):
                                                        self._buzzForSpecifiedTimeCommands]
                                                       )
 
-    def _buzz(self, honkTime):
+    def _buzz(self, honkTime) -> None:
         GPIO.output(self._buzzerPin, GPIO.HIGH)
         sleep(honkTime)
         GPIO.output(self._buzzerPin, GPIO.LOW)
@@ -66,7 +76,7 @@ class Buzzer(RoboObject):
 
         return honkCommands
 
-    def _check_argument_validity(self, pins, userCommands, **kwargs):
+    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs) -> None:
         super()._check_argument_validity(pins, userCommands)
         self._check_if_num_is_greater_than_or_equal_to_number(kwargs["defaultHonkTime"], 0,"default honk time")
 
