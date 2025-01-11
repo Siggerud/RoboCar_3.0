@@ -56,7 +56,7 @@ def setup_camera_helper(parser, *args):
     maxZoomValue = float(cameraSpecs["max_zoom_value"])
     zoomIncrement = float(cameraSpecs["zoom_step"])
 
-    cameraHelper = CameraHelper(commands, maxZoomValue, zoomIncrement)
+    cameraHelper = CameraHelper(commands, maxZoomValue, zoomIncrement, *args)
 
     return cameraHelper
 
