@@ -4,7 +4,10 @@ from roboObject import RoboObject
 
 class ServoHandling(RoboObject):
     def __init__(self, servoPins: list, minAngles: list, maxAngles: list, userCommands: dict):
-        super().__init__(servoPins, userCommands)
+        super().__init__(
+            servoPins,
+            {**userCommands["basicCommands"], **userCommands["exactAngleCommands"]}
+        )
 
         self._minAngles: dict = {
             "horizontal": minAngles[0],
