@@ -72,6 +72,6 @@ class Buzzer(RoboObject):
 
         self._check_if_num_is_greater_than_or_equal_to_zero(kwargs["maxHonkTime"], "max honk time")
 
-        self._check_for_placeholder_in_command(userCommands["buzz_for_specified_time"])
+        self._check_for_placeholder_in_command(userCommands["buzzForSpecifiedTimeCommand"])
 
 
