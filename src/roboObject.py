@@ -46,7 +46,7 @@ class RoboObject:
             raise OutOfRangeException(f"{variableName} should be greater than zero")
 
     def _check_command_length(self, commands: dict):
-        for command in list(commands.keys()):
+        for command in list(commands.values()):
             if len(command.split()) < 2:
                 raise InvalidCommandException(f"Command {command} is too short. Command should be minimum two words")
 
