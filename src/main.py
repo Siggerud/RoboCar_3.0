@@ -79,6 +79,7 @@ def setup_buzzer(parser) -> Buzzer:
     try:
         buzzer = Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
     except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
+        RobocarHelper.print_startup_error(e)
         exit()
 
     return buzzer
