@@ -86,13 +86,13 @@ def setup_buzzer(parser) -> Buzzer:
 def setup_servo(parser):
     servoDataHorizontal = parser["Servo.handling.specs.horizontal"]
 
-    servoPinHorizontal: int = RobocarHelper.convert_from_board_number_to_bcm_number(servoDataHorizontal.getint("ServoPin"))
+    servoPinHorizontal: int = servoDataHorizontal.getint("ServoPin")
     minAngleHorizontal: int = servoDataHorizontal.getint("MinAngle")
     maxAngleHorizontal: int = servoDataHorizontal.getint("MaxAngle")
 
     servoDataHorizontal = parser[f"Servo.handling.specs.vertical"]
 
-    servoPinVertical: int = RobocarHelper.convert_from_board_number_to_bcm_number(servoDataHorizontal.getint("ServoPin"))
+    servoPinVertical: int = servoDataHorizontal.getint("ServoPin")
     minAngleVertical: int = servoDataHorizontal.getint("MinAngle")
     maxAngleVertical: int = servoDataHorizontal.getint("MaxAngle")
 

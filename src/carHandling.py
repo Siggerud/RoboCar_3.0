@@ -4,6 +4,8 @@ from roboObject import RoboObject
 
 class CarHandling(RoboObject):
 	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT, speedStep, userCommands):
+		super().__init__([leftBackward, leftForward, rightBackward, rightForward, enA, enB], userCommands)
+
 		self._leftBackward: int = leftBackward
 		self._leftForward: int = leftForward
 		self._rightBackward: int = rightBackward
@@ -56,6 +58,8 @@ class CarHandling(RoboObject):
 			}
 		}
 
+	# TODO: add valiity checks for all arguments
+
 	def setup(self):
 		GPIO.setup(self._leftBackward, GPIO.OUT)
 		GPIO.setup(self._leftForward, GPIO.OUT)
@@ -89,7 +93,7 @@ class CarHandling(RoboObject):
 		allDictsWithCommands.update(self._variableCommands)
 		title: str = "Car handling commands:"
 
-		RobocarHelper.print_commands(title, allDictsWithCommands)
+		self._print_commands(title, allDictsWithCommands)
 
 	def get_command_validity(self, command) -> str:
 		# check if direction remains unchanged
@@ -132,7 +136,7 @@ class CarHandling(RoboObject):
 	def _set_exact_speed_commands(self, userCommand: str) -> dict:
 		speedCommands: dict = {}
 		for speed in range(self._pwmMinTT, self._pwmMaxTT + 1):
-			command = RobocarHelper.format_command(userCommand, str(speed))
+			command = self._format_command(userCommand, str(speed))
 			speedCommands[command] = speed
 
 		return speedCommands

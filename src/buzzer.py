@@ -2,12 +2,10 @@ import RPi.GPIO as GPIO
 from time import sleep
 from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
-from robo import Robo
 
-class Buzzer(RoboObject, Robo):
-    def __init__(self, buzzerPin: int, defaultHonkTime: float, maxHonkTime: float, userCommands: dict):
-        super().__init__()
-        self._check_argument_validity(buzzerPin, defaultHonkTime, maxHonkTime, userCommands)
+class Buzzer(RoboObject):
+    def __init__(self, buzzerPin: int, defaultHonkTime: float, maxHonkTime: float, userCommands: dict, **kwargs):
+        super().__init__([buzzerPin], userCommands, defaultHonkTime=defaultHonkTime, maxHonkTime=maxHonkTime)
         
         self._buzzerPin: int = buzzerPin
         self._defaultHonkTime: float = defaultHonkTime
@@ -44,15 +42,12 @@ class Buzzer(RoboObject, Robo):
         allDictsWithCommands.update(self._variableCommands)
         title: str = "Honk commands:"
 
-        RobocarHelper.print_commands(title, allDictsWithCommands)
+        self._print_commands(title, allDictsWithCommands)
 
     def get_voice_commands(self) -> list[str]:
         return RobocarHelper.chain_together_dict_keys([self._buzzCommand,
                                                        self._buzzForSpecifiedTimeCommands]
                                                       )
-
-    def cleanup(self):
-        pass
 
     def _buzz(self, honkTime):
         GPIO.output(self._buzzerPin, GPIO.HIGH)
@@ -64,21 +59,19 @@ class Buzzer(RoboObject, Robo):
         stepValue: float = 0.1
         honkCommands: dict = {}
         while honkTime <= (self._maxHonkTime + stepValue):
-            command = RobocarHelper.format_command(userCommand, str(round(honkTime, 1)))
+            command = self._format_command(userCommand, str(round(honkTime, 1)))
             honkCommands[command] = round(honkTime, 1) # round honkTime to avoid floating numbers with many decimals
 
             honkTime += stepValue
 
         return honkCommands
 
-    def _check_argument_validity(self, buzzerPin, defaultHonkTime, maxHonkTime, userCommands):
-        self._check_if_pin_num_is_valid([buzzerPin])
+    def _check_argument_validity(self, buzzerPin, userCommands, **kwargs):
+        super()._check_argument_validity(pins=[buzzerPin], commands=userCommands)
 
-        self._check_if_num_is_greater_than_or_equal_to_zero(defaultHonkTime, "default honk time")
+        self._check_if_num_is_greater_than_or_equal_to_zero(kwargs["defaultHonkTime"], "default honk time")
 
-        self._check_if_num_is_greater_than_or_equal_to_zero(maxHonkTime, "max honk time")
-
-        self._check_command_length(userCommands)
+        self._check_if_num_is_greater_than_or_equal_to_zero(kwargs["maxHonkTime"], "max honk time")
 
         self._check_for_placeholder_in_command(userCommands["buzz_for_specified_time"])
 

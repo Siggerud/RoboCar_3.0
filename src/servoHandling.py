@@ -4,6 +4,8 @@ from roboObject import RoboObject
 
 class ServoHandling(RoboObject):
     def __init__(self, servoPins, minAngles, maxAngles, userCommands):
+        super.__init__(servoPins, userCommands)
+
         self._minAngles: dict = {
             "horizontal": minAngles[0],
             "vertical": minAngles[1]
@@ -20,8 +22,8 @@ class ServoHandling(RoboObject):
         self._pwmAbsoluteMax: int = 2500  # value all the way to the left or up
 
         self._servoPins: dict = {
-            "horizontal": servoPins[0],
-            "vertical": servoPins[1]
+            "horizontal": self._boardToBcmPins[servoPins[0]], # convert from board number to bcm number
+            "vertical": self._boardToBcmPins[servoPins[1]]
         }
 
         self._servoPwmNeutralValue: int = 1500  # neutral (0 degrees)
@@ -83,6 +85,8 @@ class ServoHandling(RoboObject):
             }
         }
 
+    # TODO: add valiity checks for all arguments
+
     def setup(self):
         for pin in list(self._servoPins.values()):
             self._pigpioPwm.set_mode(pin, pigpio.OUTPUT)
@@ -109,7 +113,7 @@ class ServoHandling(RoboObject):
         allDictsWithCommands.update(self._variableCommands)
         title: str = "Servo handling commands:"
 
-        RobocarHelper.print_commands(title, allDictsWithCommands)
+        self._print_commands(title, allDictsWithCommands)
 
     def get_voice_commands(self) -> list[str]:
             return RobocarHelper.chain_together_dict_keys([self._lookOffsetCommands,
@@ -203,7 +207,7 @@ class ServoHandling(RoboObject):
         exactAngleCommands: dict = {}
 
         for angle in range:
-            userCommand = RobocarHelper.format_command(command, str(abs(angle))) # take the absolute value, because the user will always say a positive value
+            userCommand = self._format_command(command, str(abs(angle))) # take the absolute value, because the user will always say a positive value
             exactAngleCommands[userCommand] = {
                 "plane": plane,
                 "pwmValue": self._angleToPwmValues[angle]

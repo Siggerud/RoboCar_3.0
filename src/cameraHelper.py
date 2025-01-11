@@ -3,6 +3,7 @@ from roboObject import RoboObject
 
 class CameraHelper(RoboObject):
     def __init__(self, userCommands: dict, maxZoomValue: float, zoomIncrement: float, car=None, servo=None):
+        super().__init__([], userCommands)
         self._car = car
         self._servo = servo
 
@@ -51,8 +52,7 @@ class CameraHelper(RoboObject):
             }
         }
 
-    def setup(self):
-        pass
+    #TODO: add valiity checks for all arguments
 
     def handle_voice_command(self, command: str):
         print(command)
@@ -70,7 +70,7 @@ class CameraHelper(RoboObject):
         allDictsWithCommands.update(self._variableCommands)
         title: str = "Camera commands:"
 
-        RobocarHelper.print_commands(title, allDictsWithCommands)
+        self._print_commands(title, allDictsWithCommands)
 
     def get_command_validity(self, command: str) -> str:
         if command in self._hudCommands: # check if display is already on or off
@@ -91,13 +91,13 @@ class CameraHelper(RoboObject):
 
         return "valid"
 
-    def add_car(self, car):
+    def add_car(self, car) -> None:
         self._car = car
 
-    def add_servo(self, servo):
+    def add_servo(self, servo) -> None:
         self._servo = servo
 
-    def update_control_values_for_video_feed(self, shared_array):
+    def update_control_values_for_video_feed(self, shared_array) -> None:
         if self._servo:
             shared_array[self._arrayDict["horizontal servo"]] = self._servo.get_current_servo_angle("horizontal")
             shared_array[self._arrayDict["vertical servo"]] = self._servo.get_current_servo_angle("vertical")
@@ -116,17 +116,14 @@ class CameraHelper(RoboObject):
             self._zoomIncrementCommands
         ])
 
-    def get_HUD_active(self):
+    def get_HUD_active(self) -> bool:
         return self._hudActive
 
-    def get_zoom_value(self):
+    def get_zoom_value(self) -> float:
         return self._zoomValue
 
     def get_array_dict(self) -> dict:
         return self._arrayDict
-
-    def cleanup(self):
-        pass
 
     def _set_array_dict(self) -> dict:
         arrayDict: dict = {}
@@ -141,13 +138,13 @@ class CameraHelper(RoboObject):
 
         return arrayDict
 
-    def _set_hud_value(self, command: str):
+    def _set_hud_value(self, command: str) -> None:
         self._hudActive = self._hudCommands[command]["hudValue"]
 
-    def _set_zoom_value(self, command: str):
+    def _set_zoom_value(self, command: str) -> None:
         self._zoomValue = self._zoomExactCommands[command]
 
-    def _increment_zoom_value(self, command: str):
+    def _increment_zoom_value(self, command: str) -> None:
         if command == self._userCommands["zoomCommands"]["zoomOutCommand"]:
             self._zoomValue -= self._zoomIncrement
         elif command == self._userCommands["zoomCommands"]["zoomInCommand"]:
@@ -160,7 +157,7 @@ class CameraHelper(RoboObject):
         stepValue: float = 0.1
         zoomCommands: dict = {}
         while zoomValue <= (self._maxZoomValue + stepValue):
-            command: str = RobocarHelper.format_command(userCommand, str(round(zoomValue, 1)))
+            command: str = self._format_command(userCommand, str(round(zoomValue, 1)))
             zoomCommands[command] = round(zoomValue, 1) # round zoomValue to avoid floating numbers with many decimals
 
             zoomValue += stepValue
