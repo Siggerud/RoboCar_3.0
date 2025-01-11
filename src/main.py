@@ -11,6 +11,10 @@ from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
 
+def print_error_message_and_exit(errorMessage):
+    RobocarHelper.print_startup_error(errorMessage)
+    exit()
+
 def setup_signal_lights(parser):
     signalSpecs = parser["Signal.light.specs"]
 
@@ -21,10 +25,12 @@ def setup_signal_lights(parser):
 
         blinkTime: float = float(signalSpecs["blink_time"])
     except ValueError as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
-    signalLights = SignalLights(greenLightPin, yellowLightPin, redLightPin, blinkTime)
+    try:
+        signalLights = SignalLights(greenLightPin, yellowLightPin, redLightPin, blinkTime)
+    except (OutOfRangeException, InvalidPinException) as e:
+        print_error_message_and_exit(e)
 
     return signalLights
 
@@ -35,8 +41,7 @@ def setup_camera(parser):
         resolutionWidth: int = cameraSpecs.getint("ResolutionWidth")
         resolutionHeight: int = cameraSpecs.getint("ResolutionHeight")
     except ValueError as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     resolution: tuple = (resolutionWidth, resolutionHeight)
     camera = Camera(resolution)
@@ -68,14 +73,12 @@ def setup_camera_helper(parser, *args):
         maxZoomValue = float(cameraSpecs["max_zoom_value"])
         zoomIncrement = float(cameraSpecs["zoom_step"])
     except ValueError as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     try:
         cameraHelper = CameraHelper(commands, maxZoomValue, zoomIncrement, *args)
     except (OutOfRangeException, InvalidCommandException) as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     return cameraHelper
 
@@ -88,8 +91,7 @@ def setup_buzzer(parser) -> Buzzer:
         defaultHonkTime: float = buzzerSpecs.getfloat("default_buzz_time")
         maxHonkTime: float = buzzerSpecs.getfloat("max_buzz_time")
     except ValueError as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     buzzCommands = parser["Buzzer.commands"]
     commands: dict = {
@@ -100,8 +102,7 @@ def setup_buzzer(parser) -> Buzzer:
     try:
         buzzer = Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
     except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     return buzzer
 
@@ -120,8 +121,7 @@ def setup_servo(parser):
         maxAngleVertical: int = servoDataHorizontal.getint("MaxAngle")
 
     except ValueError as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     servoCommands = parser["Servo.commands"]
 
@@ -153,8 +153,7 @@ def setup_servo(parser):
             commands
         )
     except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
-        RobocarHelper.print_startup_error(e)
-        exit() #TODO: make this into a method
+        print_error_message_and_exit(e)
 
     return servo
 
@@ -167,8 +166,7 @@ def setup_audio_handler(parser):
     try:
         audioHandler = AudioHandler(exitCommand, language)
     except MicrophoneNotConnected as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     return audioHandler
 
@@ -190,8 +188,7 @@ def setup_car(parser):
 
         speedStep: int = carHandlingSpecs.getint("speed_step")
     except ValueError as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     # define car commands
     carHandlingCommands = parser["Car.handling.commands"]
@@ -229,8 +226,7 @@ def setup_car(parser):
             commands
         )
     except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     return car
 
@@ -264,8 +260,7 @@ def setup_car_controller(parser):
     try:
         carController = CarControl(car, servo, camera, cameraHelper, honk, signalLights, exitCommand)
     except (X11ForwardingError) as e:
-        RobocarHelper.print_startup_error(e)
-        exit()
+        print_error_message_and_exit(e)
 
     return carController
 

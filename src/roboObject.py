@@ -81,7 +81,7 @@ class RoboObject:
     @classmethod
     def _add_pin_to_board_pins_in_use(cls, pin):
         cls._boardPinsInUse.append(pin)
-        print(cls._boardPinsInUse)
+
 
 
 

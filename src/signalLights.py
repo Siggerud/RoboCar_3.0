@@ -3,7 +3,7 @@ from time import sleep
 from roboObject import RoboObject
 
 class SignalLights(RoboObject):
-    def __init__(self, greenLightPin, yellowLightPin, redLightPin, blinkTime):
+    def __init__(self, greenLightPin: int, yellowLightPin: int, redLightPin: int, blinkTime: float):
         super().__init__(
             [greenLightPin, yellowLightPin, redLightPin],
             {},
@@ -54,7 +54,7 @@ class SignalLights(RoboObject):
 
     def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
         super()._check_argument_validity(pins, userCommands, **kwargs)
-        print("checking")
+
         self._check_if_num_is_in_interval(kwargs["blinkTime"], 0.1, 10, "blinkTime")
 
 
