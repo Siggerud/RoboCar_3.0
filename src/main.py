@@ -9,7 +9,7 @@ import os
 from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
-from exceptions import InvalidArgumentException
+from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
 
 def setup_signal_lights(parser):
     signalSpecs = parser["Signal.light.specs"]
@@ -78,7 +78,8 @@ def setup_buzzer(parser) -> Buzzer:
 
     try:
         buzzer = Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
-    except InvalidArgumentException:
+    except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
+
         exit()
 
     return buzzer
