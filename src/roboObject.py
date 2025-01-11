@@ -8,7 +8,7 @@ class RoboObject:
         self._bcmPins: list = [2, 3, 4, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 5, 6, 12, 13, 19, 16, 26, 20, 21]
         self._boardToBcmPins: dict = self._get_board_to_bcm_pins()
 
-        self._check_argument_validity(pins, commands)
+        self._check_argument_validity(pins, commands, **kwargs)
 
     def cleanup(self):
         pass
