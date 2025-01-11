@@ -6,7 +6,9 @@ class ServoHandling(RoboObject):
     def __init__(self, servoPins: list, minAngles: list, maxAngles: list, userCommands: dict):
         super().__init__(
             servoPins,
-            {**userCommands["basicCommands"], **userCommands["exactAngleCommands"]}
+            {**userCommands["basicCommands"], **userCommands["exactAngleCommands"]},
+            minAngles=minAngles,
+            maxAngles=maxAngles
         )
 
         self._minAngles: dict = {
@@ -108,6 +110,15 @@ class ServoHandling(RoboObject):
             self._move_servo(self._exactAngleCommands[command]["plane"],
                              self._exactAngleCommands[command]["pwmValue"]
                             )
+
+    def get_current_servo_angle(self, plane) -> int:
+        return self._pwmToAngleValues[self._currentPwmValue[plane]]
+
+    def cleanup(self):
+        print("Cleaning up servo")
+        self._center_servo_positions()  # center camera when exiting
+        for pin in list(self._servoPins.values()):
+            self._pigpioPwm.set_PWM_dutycycle(pin, 0)
 
     def print_commands(self):
         allDictsWithCommands: dict = {}
@@ -230,11 +241,19 @@ class ServoHandling(RoboObject):
 
         return pwmValue
 
-    def get_current_servo_angle(self, plane) -> int:
-        return self._pwmToAngleValues[self._currentPwmValue[plane]]
+    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
+        super()._check_argument_validity(pins, userCommands, **kwargs)
 
-    def cleanup(self):
-        print("Cleaning up servo")
-        self._center_servo_positions() # center camera when exiting
-        for pin in list(self._servoPins.values()):
-            self._pigpioPwm.set_PWM_dutycycle(pin, 0)
+        self._check_for_placeholder_in_command(userCommands["lookRightExact"])
+        self._check_for_placeholder_in_command(userCommands["lookLeftExact"])
+        self._check_for_placeholder_in_command(userCommands["lookUpExact"])
+        self._check_for_placeholder_in_command(userCommands["lookDownExact"])
+
+        # check that angles are within the correct range
+        self._check_if_num_is_in_interval(kwargs["minAngles"][0], -90, 1, "Minimum horizontal angle")
+        self._check_if_num_is_in_interval(kwargs["minAngles"][1], -90, 1, "Maximum vertical angle")
+
+        self._check_if_num_is_in_interval(kwargs["maxAngles"][0], 1, 90, "Maximum horizontal angle")
+        self._check_if_num_is_in_interval(kwargs["maxAngles"][1], 1, 90, "Maximum vertical angle")
+
+

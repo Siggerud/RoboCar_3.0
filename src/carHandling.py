@@ -193,9 +193,11 @@ class CarHandling(RoboObject):
 	def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
 		super()._check_argument_validity(pins, userCommands, **kwargs)
 
+		self._check_for_placeholder_in_command(userCommands["speed"]["exactSpeedCommand"])
+
 		self._check_if_num_is_in_interval(kwargs["pwmMinTT"], 0, 100, "MinimumMotorPWM")
 		self._check_if_num_is_in_interval(kwargs["pwmMaxTT"], 0, 100, "MaximumMotorPWM")
-		print("checking")
+
 		self._check_if_num_is_in_interval(kwargs["speedStep"], 1, 100, "speed_step")
 
 

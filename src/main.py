@@ -87,15 +87,20 @@ def setup_buzzer(parser) -> Buzzer:
 def setup_servo(parser):
     servoDataHorizontal = parser["Servo.handling.specs.horizontal"]
 
-    servoPinHorizontal: int = servoDataHorizontal.getint("ServoPin")
-    minAngleHorizontal: int = servoDataHorizontal.getint("MinAngle")
-    maxAngleHorizontal: int = servoDataHorizontal.getint("MaxAngle")
+    try:
+        servoPinHorizontal: int = servoDataHorizontal.getint("ServoPin")
+        minAngleHorizontal: int = servoDataHorizontal.getint("MinAngle")
+        maxAngleHorizontal: int = servoDataHorizontal.getint("MaxAngle")
 
-    servoDataHorizontal = parser[f"Servo.handling.specs.vertical"]
+        servoDataHorizontal = parser[f"Servo.handling.specs.vertical"]
 
-    servoPinVertical: int = servoDataHorizontal.getint("ServoPin")
-    minAngleVertical: int = servoDataHorizontal.getint("MinAngle")
-    maxAngleVertical: int = servoDataHorizontal.getint("MaxAngle")
+        servoPinVertical: int = servoDataHorizontal.getint("ServoPin")
+        minAngleVertical: int = servoDataHorizontal.getint("MinAngle")
+        maxAngleVertical: int = servoDataHorizontal.getint("MaxAngle")
+
+    except ValueError as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
 
     servoCommands = parser["Servo.commands"]
 
@@ -184,19 +189,23 @@ def setup_car(parser):
         "speed": speedCommands
     }
 
-    # define car handling
-    car = CarHandling(
-        leftBackward,
-        leftForward,
-        rightBackward,
-        rightForward,
-        enA,
-        enB,
-        minPwmTT,
-        maxPwmTT,
-        speedStep,
-        commands
-    )
+    try:
+        # define car handling
+        car = CarHandling(
+            leftBackward,
+            leftForward,
+            rightBackward,
+            rightForward,
+            enA,
+            enB,
+            minPwmTT,
+            maxPwmTT,
+            speedStep,
+            commands
+        )
+    except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
 
     return car
 
