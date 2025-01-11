@@ -4,7 +4,10 @@ from roboObject import RoboObject
 
 class CarHandling(RoboObject):
 	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT, speedStep, userCommands):
-		super().__init__([leftBackward, leftForward, rightBackward, rightForward, enA, enB], userCommands)
+		super().__init__(
+			[leftBackward, leftForward, rightBackward, rightForward, enA, enB],
+			{**userCommands["direction"], **userCommands["speed"]}
+		)
 
 		self._leftBackward: int = leftBackward
 		self._leftForward: int = leftForward
