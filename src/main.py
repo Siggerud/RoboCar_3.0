@@ -145,19 +145,23 @@ def setup_audio_handler(parser):
 def setup_car(parser):
     carHandlingSpecs = parser["Car.handling.specs"]
 
-    # define GPIO pins
-    rightForward: int = carHandlingSpecs.getint("RightForward")
-    rightBackward: int = carHandlingSpecs.getint("RightBackward")
-    leftForward: int = carHandlingSpecs.getint("LeftForward")
-    leftBackward: int = carHandlingSpecs.getint("LeftBackward")
-    enA: int = carHandlingSpecs.getint("EnA")
-    enB: int = carHandlingSpecs.getint("EnB")
+    try:
+        # define GPIO pins
+        rightForward: int = carHandlingSpecs.getint("RightForward")
+        rightBackward: int = carHandlingSpecs.getint("RightBackward")
+        leftForward: int = carHandlingSpecs.getint("LeftForward")
+        leftBackward: int = carHandlingSpecs.getint("LeftBackward")
+        enA: int = carHandlingSpecs.getint("EnA")
+        enB: int = carHandlingSpecs.getint("EnB")
 
-    # define pwm values
-    minPwmTT: int = carHandlingSpecs.getint("MinimumMotorPWM")
-    maxPwmTT: int = carHandlingSpecs.getint("MaximumMotorPWM")
+        # define pwm values
+        minPwmTT: int = carHandlingSpecs.getint("MinimumMotorPWM")
+        maxPwmTT: int = carHandlingSpecs.getint("MaximumMotorPWM")
 
-    speedStep: int = carHandlingSpecs.getint("speed_step")
+        speedStep: int = carHandlingSpecs.getint("speed_step")
+    except ValueError as e:
+        RobocarHelper.print_startup_error(e)
+        exit()
 
     # define car commands
     carHandlingCommands = parser["Car.handling.commands"]

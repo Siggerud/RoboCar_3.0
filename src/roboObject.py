@@ -29,6 +29,10 @@ class RoboObject:
         self._check_if_pins_are_valid(pins)
         self._check_command_length(commands)
 
+    def _check_if_num_is_in_interval(self, num, lowerBound, upperBound, variableName: str):
+        if num < lowerBound or num > upperBound:
+            raise OutOfRangeException(f"{variableName} should be between {lowerBound} and {upperBound}")
+
     def _check_if_pins_are_valid(self, pins: list):
         for pin in pins:
             # check that the pin number is a valid pin number

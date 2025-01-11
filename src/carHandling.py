@@ -3,7 +3,17 @@ from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
 
 class CarHandling(RoboObject):
-	def __init__(self, leftBackward, leftForward, rightBackward, rightForward, enA, enB, pwmMinTT, pwmMaxTT, speedStep, userCommands):
+	def __init__(self,
+				 leftBackward: int,
+				 leftForward :int,
+				 rightBackward :int,
+				 rightForward: int,
+				 enA: int,
+				 enB: int,
+				 pwmMinTT: int,
+				 pwmMaxTT: int,
+				 speedStep: int,
+				 userCommands: dict):
 		super().__init__(
 			[leftBackward, leftForward, rightBackward, rightForward, enA, enB],
 			{**userCommands["direction"], **userCommands["speed"]}
@@ -176,6 +186,14 @@ class CarHandling(RoboObject):
 		GPIO.output(self._rightForward, self._gpioThrottle[rightForwardValue])
 		GPIO.output(self._leftBackward, self._gpioThrottle[leftBackwardValue])
 		GPIO.output(self._rightBackward, self._gpioThrottle[rightBackwardValue])
+
+	def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs):
+		super()._check_argument_validity(pins, userCommands, **kwargs)
+
+		self._check_if_num_is_in_interval(kwargs["pwmMinTT"], 0, 100, "MinimumMotorPWM")
+		self._check_if_num_is_in_interval(kwargs["pwmMaxTT"], 0, 100, "MaximumMotorPWM")
+		print("checking")
+		self._check_if_num_is_in_interval(kwargs["speedStep"], 1, 100, "speed_step")
 
 
 

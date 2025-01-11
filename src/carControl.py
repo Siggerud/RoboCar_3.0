@@ -74,6 +74,7 @@ class CarControl:
             roboObject.print_commands()
 
         print(f"Exit command : {self._exitCommand}")
+        print()
 
     def _set_shared_array_dict(self):
         arrayDict: dict = {}
