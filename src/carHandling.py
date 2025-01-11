@@ -16,7 +16,10 @@ class CarHandling(RoboObject):
 				 userCommands: dict):
 		super().__init__(
 			[leftBackward, leftForward, rightBackward, rightForward, enA, enB],
-			{**userCommands["direction"], **userCommands["speed"]}
+			{**userCommands["direction"], **userCommands["speed"]},
+			pwmMinTT=pwmMinTT,
+			pwmMaxTT=pwmMaxTT,
+			speedStep=speedStep
 		)
 
 		self._leftBackward: int = leftBackward
