@@ -3,7 +3,11 @@ from roboObject import RoboObject
 
 class CameraHelper(RoboObject):
     def __init__(self, userCommands: dict, maxZoomValue: float, zoomIncrement: float, car=None, servo=None):
-        super().__init__([], userCommands)
+        super().__init__(
+            [],
+            {**userCommands["hudCommands"], **userCommands["zoomCommands"]}
+        )
+
         self._car = car
         self._servo = servo
 
