@@ -12,13 +12,14 @@ parser.read(path.join(path.dirname(__file__), 'config.ini'))
 
 # get pin for start button
 try:
-    pin = parser["Start.button"].getint("pin")
+    pin: int = parser["Start.button"].getint("pin")
 except ValueError:
     print("Invalid start button pin value")
     exit()
 
 # get repo path
 repoPath = parser["Repo.path"]["path"]
+runFileFullPath: str = path.join(repoPath, "RoboCar_3.0/src/main.py")
 if not path.exists(repoPath):
     print("Invalid repo path")
     exit()
