@@ -5,7 +5,7 @@ from servoHandling import ServoHandling
 from carControl import CarControl, X11ForwardingError
 from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
-import os
+from os import path
 from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneNotConnected
 from buzzer import Buzzer
@@ -267,7 +267,7 @@ def setup_car_controller(parser):
 
 # set up parser to read input values
 parser = ConfigParser()
-parser.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+parser.read(path.join(path.dirname(__file__), 'config.ini'))
 
 carController = setup_car_controller(parser)
 
