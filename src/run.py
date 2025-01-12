@@ -20,7 +20,7 @@ except ValueError:
 # get repo path
 repoPath = parser["Repo.path"]["path"]
 runFileFullPath: str = path.join(repoPath, "RoboCar_3.0/src/main.py")
-if not path.exists(repoPath):
+if not path.exists(runFileFullPath):
     print("Invalid repo path")
     exit()
 
@@ -31,7 +31,7 @@ try:
         print("Waiting for button press...")
         GPIO.wait_for_edge(pin, GPIO.FALLING)
         sleep(0.3) # wait for a little while to avoid double registrations of button press
-        subprocess.run(['python', repoPath])
+        subprocess.run(['python', runFileFullPath])
 
 except KeyboardInterrupt:
     pass
