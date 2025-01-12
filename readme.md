@@ -265,6 +265,10 @@ Red LED<br />
 29 -> +<br />
 GND -> -<br />
 
+#### Raspberry pi to button
+38 -> button <br />
+GND -> button <br />
+
 #### L289 to motors
 L289 right and left should be based on looking at the
 l289 from above reading the text. <br /> 
@@ -301,7 +305,8 @@ Breadboard <br />
 1 green LED light<br />
 1 yellow LED light <br />
 1 red LED light<br />
-3 330 Ohm resistor
+3 330 Ohm resistor<br />
+1 button
 
 #### Structural components
 3D printed parts <br />

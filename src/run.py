@@ -17,7 +17,7 @@ except ValueError:
     print("Invalid start button pin value")
     exit()
 
-# get repo path
+# get full path to run file
 repoPath = parser["Repo.path"]["path"]
 runFileFullPath: str = path.join(repoPath, "RoboCar_3.0/src/main.py")
 if not path.exists(runFileFullPath):
