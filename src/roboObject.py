@@ -2,7 +2,7 @@ from exceptions import InvalidPinException, OutOfRangeException, InvalidCommandE
 
 class RoboObject:
     _boardPinsInUse: list[int] = []
-    _commands: list[str] = []
+    _commandsInUse: list[str] = []
 
     def __init__(self, pins: list, commands: dict, **kwargs):
         self._boardPins: list = [3, 5, 7, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24, 26, 29, 31, 32, 33, 35, 36, 37, 38, 40]
@@ -49,10 +49,10 @@ class RoboObject:
 
     def _check_if_command_already_exists(self, commands: dict):
         for command in list(commands.keys()):
-            if command in self._commands:
+            if command in self._commandsInUse:
                 raise InvalidCommandException(f"Command {command} already exists")
 
-            self._add_command_to_commands(command)
+            self._add_command_to_commands_in_use(command)
 
     def _check_if_num_is_greater_than_or_equal_to_number(self, num, lowerBound, variableName: str):
         if num <= lowerBound:
@@ -92,8 +92,8 @@ class RoboObject:
         cls._boardPinsInUse.append(pin)
 
     @classmethod
-    def _add_command_to_commands(cls, command):
-        cls._commands.append(command)
+    def _add_command_to_commands_in_use(cls, command):
+        cls._commandsInUse.append(command)
 
 
 
