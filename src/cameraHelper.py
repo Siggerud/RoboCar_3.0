@@ -130,17 +130,10 @@ class CameraHelper(RoboObject):
         return self._arrayDict
 
     def _set_array_dict(self) -> dict:
-        arrayDict: dict = {}
-        cameraInputs: list = []
-        if self._car:
-            cameraInputs.extend(["speed", "direction"])
-        if self._servo:
-            cameraInputs.extend(["horizontal servo", "vertical servo"])
-        cameraInputs.extend(["HUD", "Zoom"])
-        for index, cameraInput in enumerate(cameraInputs):
-            arrayDict[cameraInput] = index
-
-        return arrayDict
+        cameraInputs = ["speed", "direction"] if self._car else []
+        cameraInputs += ["horizontal servo", "vertical servo"] if self._servo else []
+        cameraInputs += ["HUD", "Zoom"]
+        return {cameraInput: index for index, cameraInput in enumerate(cameraInputs)}
 
     def _set_hud_value(self, command: str) -> None:
         self._hudActive = self._hudCommands[command]["hudValue"]

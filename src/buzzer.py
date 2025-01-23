@@ -21,10 +21,10 @@ class Buzzer(RoboObject):
             }
         }
 
-    def setup(self):
+    def setup(self) -> None:
         GPIO.setup(self._buzzerPin, GPIO.OUT)
 
-    def get_command_validity(self, command) -> str:
+    def get_command_validity(self, command: str) -> str:
         return "valid" # honking commands are always valid
 
     """
@@ -37,21 +37,14 @@ class Buzzer(RoboObject):
     command (str): The voice command to be processed. It can be one of the predefined
                    commands to start honking or honk for a specified time.
     """
-    def handle_voice_command(self, command) -> None:
-        if command in self._buzzCommand:
-            honkTime = self._defaultHonkTime
-        elif command in self._buzzForSpecifiedTimeCommands:
-            print("Honking for a specified time")
-            honkTime = self._buzzForSpecifiedTimeCommands[command]
-
-        self._buzz(honkTime)
+    def handle_voice_command(self, command: str) -> None:
+        honkTime: float = self._buzzCommand.get(command, self._buzzForSpecifiedTimeCommands.get(command))
+        if honkTime is not None:
+            self._buzz(honkTime)
 
     def print_commands(self) -> None:
-        allDictsWithCommands: dict = {}
-        allDictsWithCommands.update(self._buzzCommand)
-        allDictsWithCommands.update(self._variableCommands)
+        allDictsWithCommands: dict = {**self._buzzCommand, **self._variableCommands}
         title: str = "Honk commands:"
-
         self._print_commands(title, allDictsWithCommands)
 
     def get_voice_commands(self) -> list[str]:
@@ -59,12 +52,12 @@ class Buzzer(RoboObject):
                                                        self._buzzForSpecifiedTimeCommands]
                                                       )
 
-    def _buzz(self, honkTime) -> None:
+    def _buzz(self, honkTime: float) -> None:
         GPIO.output(self._buzzerPin, GPIO.HIGH)
         sleep(honkTime)
         GPIO.output(self._buzzerPin, GPIO.LOW)
 
-    def _set_honk_for_specified_time_commands(self, userCommand: str) -> dict:
+    def _set_honk_for_specified_time_commands(self, userCommand: str) -> dict[str, float]:
         honkTime: float = 0.1
         stepValue: float = 0.1
         honkCommands: dict = {}
@@ -76,7 +69,7 @@ class Buzzer(RoboObject):
 
         return honkCommands
 
-    def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs) -> None:
+    def _check_argument_validity(self, pins: list[int], userCommands: dict[str, str], **kwargs) -> None:
         super()._check_argument_validity(pins, userCommands)
         self._check_if_num_is_greater_than_or_equal_to_number(kwargs["defaultHonkTime"], 0,"default honk time")
 

@@ -3,7 +3,7 @@ from roboObject import RoboObject
 from roboCarHelper import RobocarHelper
 
 class CameraServoHandling(RoboObject):
-    def __init__(self, servoPins: list, minAngles: list, maxAngles: list, userCommands: dict):
+    def __init__(self, servoPins: list[int], minAngles: list[int], maxAngles: list[int], userCommands: dict):
         super().__init__(
             servoPins,
             {**userCommands["basicCommands"], **userCommands["exactAngleCommands"]},

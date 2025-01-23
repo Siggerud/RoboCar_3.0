@@ -179,7 +179,7 @@ class CarHandling(RoboObject):
 		for pwm in [self._pwmA, self._pwmB]:
 			pwm.ChangeDutyCycle(self._speed)
 
-	def _adjust_gpio_values(self, gpioValues) -> None:
+	def _adjust_gpio_values(self, gpioValues: tuple[int, int, int, int]) -> None:
 		leftForwardValue, rightForwardValue, leftBackwardValue, rightBackwardValue = gpioValues
 
 		GPIO.output(self._leftForward, self._gpioThrottle[leftForwardValue])
@@ -187,7 +187,7 @@ class CarHandling(RoboObject):
 		GPIO.output(self._leftBackward, self._gpioThrottle[leftBackwardValue])
 		GPIO.output(self._rightBackward, self._gpioThrottle[rightBackwardValue])
 
-	def _check_argument_validity(self, pins: list, userCommands: dict, **kwargs) -> None:
+	def _check_argument_validity(self, pins: list[int], userCommands: dict[str, str], **kwargs) -> None:
 		super()._check_argument_validity(pins, userCommands, **kwargs)
 
 		self._check_for_placeholder_in_command(userCommands["exactSpeedCommand"])

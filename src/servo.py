@@ -4,7 +4,7 @@ from roboCarHelper import RobocarHelper
 class Servo:
     pi = pigpio.pi()
 
-    def __init__(self, pin: int, ):
+    def __init__(self, pin: int):
         self._servoPin: int = pin
 
         self._pwmAbsoluteMin: int = 500  # value all the way to the right or down
@@ -29,16 +29,11 @@ class Servo:
         return self._current_angle
 
     def _get_angle_mapped_to_pwm_values(self) -> dict[int: float]:
-        angleToPwmValues: dict = {}
-
         minAngle: int = -90
         maxAngle: int = 90
-        for angle in range(minAngle, maxAngle + 1):
-            angleToPwmValues[angle] = self._angle_to_pwm(angle)
+        return {angle: self._angle_to_pwm(angle) for angle in range(minAngle, maxAngle + 1)}
 
-        return angleToPwmValues
-
-    def _angle_to_pwm(self, angle) -> float:
+    def _angle_to_pwm(self, angle: int) -> float:
         pwmValue: float = RobocarHelper.map_value_to_new_scale(
                 angle,
                 self._pwmAbsoluteMin,

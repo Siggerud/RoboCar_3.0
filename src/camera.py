@@ -140,20 +140,20 @@ class Camera:
                 horizontalAngleValue = int(shared_array[self._arrayDict["horizontal servo"]])
                 verticalAngleValue = int(shared_array[self._arrayDict["vertical servo"]])
 
-                angleText = f"Angle: H{horizontalAngleValue}/V{verticalAngleValue}"
+                angleText: str = f"Angle: H{horizontalAngleValue}/V{verticalAngleValue}"
                 cv2.putText(image, angleText, self._get_origin(counter), self._font, self._scale, self._colour,
                             self._thickness)
                 counter += 1
 
             if self._carEnabled:
                 speedValue = int(shared_array[self._arrayDict["speed"]])
-                speedText = f"Speed: {speedValue}%"
+                speedText: str = f"Speed: {speedValue}%"
                 cv2.putText(image, speedText, self._get_origin(counter), self._font, self._scale, self._colour,
                             self._thickness)
                 counter += 1
 
-                directionValue = self._get_direction_value(shared_array[self._arrayDict["direction"]])
-                directionText = f"Direction: {directionValue}"
+                directionValue: str = self._get_direction_value(shared_array[self._arrayDict["direction"]])
+                directionText: str = f"Direction: {directionValue}"
                 cv2.putText(image, directionText, self._get_origin(counter), self._font, self._scale, self._colour,
                             self._thickness)
                 counter += 1
@@ -167,8 +167,8 @@ class Camera:
     def _set_zoom_value(self, shared_array) -> None:
         self._zoomValue = shared_array[self._arrayDict["Zoom"]]
 
-    def _get_direction_value(self, number) -> str:
+    def _get_direction_value(self, number: int) -> str:
         return self._number_to_directionValue[number]
 
-    def _get_origin(self, count) -> tuple:
+    def _get_origin(self, count: int) -> tuple:
         return self._textPositions[count]
