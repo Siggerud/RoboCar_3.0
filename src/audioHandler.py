@@ -99,7 +99,11 @@ class AudioHandler:
             "Spanish (Paraguay)": "es-PY"
         }
 
-        return languagesToLanguageCodes[language]
+        try:
+            return languagesToLanguageCodes[language]
+        except KeyError:
+            print(f"Language {language} not found, defaulting to English (United States)")
+            return "en-US"
 
 
 class MicrophoneNotConnected(Exception):
