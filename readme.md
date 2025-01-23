@@ -1,5 +1,5 @@
 # Robocar
-![Alt text](Images/robocar2.jpg)
+![Alt text](Images/robocar.jpg)
 The robocar with Xbox controller
 #Todo: add updated picture
 <br />
@@ -214,14 +214,18 @@ of your choice.
 1. Power your xbox controller and wait for it to connect to the pi
 2. Connect to your pi via RealVNC
 3. Open this project in a terminal 
-4. Run src/main.py
+4. Run the command 
+```
+python src/run.py
+```
+5. Press button to start car
 
 ## Driving and controlling the car
 Give the commands given in the startup message when running the program.
 
 ### Exiting the program
-Give the exit command given in the start up message. This command can be changed
-in the config file.
+Give the exit command given in the start up message to return to stand by mode. To start car again just press the
+button again. To exit completely from stand by mode, press Ctrl + C.
 
 ## Appendix
 
