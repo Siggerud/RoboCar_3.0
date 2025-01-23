@@ -1,7 +1,7 @@
 from carHandling import CarHandling
 from camera import Camera
 from cameraHelper import CameraHelper
-from servoHandling import ServoHandling
+from cameraServoHandling import CameraServoHandling
 from carControl import CarControl, X11ForwardingError
 from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
@@ -146,7 +146,7 @@ def setup_servo(parser):
     }
 
     try:
-        servo = ServoHandling(
+        servo = CameraServoHandling(
             [servoPinHorizontal, servoPinVertical],
             [minAngleHorizontal, minAngleVertical],
             [maxAngleHorizontal, maxAngleVertical],

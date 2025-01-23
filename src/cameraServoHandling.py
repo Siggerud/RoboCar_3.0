@@ -2,7 +2,7 @@ from servo import Servo
 from roboObject import RoboObject
 from roboCarHelper import RobocarHelper
 
-class ServoHandling(RoboObject):
+class CameraServoHandling(RoboObject):
     def __init__(self, servoPins: list, minAngles: list, maxAngles: list, userCommands: dict):
         super().__init__(
             servoPins,
