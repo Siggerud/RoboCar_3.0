@@ -46,9 +46,10 @@ class CarControl:
     def start(self) -> None:
         self._print_start_up_message()
 
-        self._get_camera_ready() # this needs to be first method called
-        self._activate_camera()
+        self._get_camera_ready()
 
+        # start processes
+        self._activate_camera()
         self._activate_voice_command_handling()
 
     def cleanup(self) -> None:
