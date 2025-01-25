@@ -302,6 +302,7 @@ L289N motor driver <br />
 #### Other electrical components
 Raspberry Pi 4 model B <br />
 Raspberry pi Camera Module V2 <br />
+Battery pack holding 6AA batteries <br />
 Powerbank 10000mah <br />
 2 SG90 servos <br />
 Passive buzzer <br />
