@@ -1,7 +1,7 @@
 import subprocess
 from multiprocessing import Process, Array, Value, Queue
 import RPi.GPIO as GPIO
-from stabilizer import Stabilizer
+from mpu6050Handler import MPU6050Handler
 
 class CarControl:
     def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, exitCommand):
@@ -20,7 +20,7 @@ class CarControl:
         ]
 
         #TODO: move this to main and add to config file
-        self._stabilizer = Stabilizer()
+        self._stabilizer = MPU6050Handler()
 
         self._camera = camera
         self._signalLights = signalLights
@@ -117,7 +117,7 @@ class CarControl:
 
     def _stabilize_car(self, flag) -> None:
         while not flag.value:
-            self._stabilizer.stabilize()
+            self._stabilizer.get_angles()
 
     def _start_listening_for_voice_commands(self, flag) -> None:
         # setup objects
