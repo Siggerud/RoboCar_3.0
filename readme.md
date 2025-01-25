@@ -304,6 +304,12 @@ L289 MOTORB Left -> Left motor front - <br />
 L289 VMS -> Batterypack +-<br />
 L289 GND -> Batterypack -
 
+#### MPU6050 to Raspberry pi
+MPU6050 VCC -> 5V <br />
+MPU6050 GND -> GND <br />
+MPU6050 SDA -> 3 (SDA) <br />
+MPU6050 SCL -> 5 (SCL) <br />
+
 ### Parts list
 
 #### Car handling
@@ -318,6 +324,7 @@ Raspberry pi Camera Module V2 <br />
 Battery pack holding 6AA batteries <br />
 Powerbank 10000mah <br />
 2 SG90 servos <br />
+MPU6050<br />
 Passive buzzer <br />
 Breadboard <br />
 1 green LED light<br />
