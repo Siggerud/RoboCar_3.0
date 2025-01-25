@@ -54,6 +54,7 @@ class CarControl:
         self._activate_camera()
 
         self._activate_voice_command_handling()
+        self._start_car_stabilization()
 
     def cleanup(self) -> None:
         # close all threads
@@ -91,7 +92,7 @@ class CarControl:
         self._processes.append(process)
         process.start()
 
-    def _start_car_stabilization(self, flag) -> None:
+    def _start_car_stabilization(self) -> None:
         process = Process(
             target=self._stabilize_car,
             args=(self.shared_flag, )
