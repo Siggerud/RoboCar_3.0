@@ -11,14 +11,14 @@ class Stabilizer:
 
         # Print the sensor data
         if accelerometer_data["x"] > 0.5:
-            print("tilting car forward")
-        elif accelerometer_data["x"] < -0.5:
             print("tilting car backward")
+        elif accelerometer_data["x"] < -0.5:
+            print("tilting car forward")
 
         if accelerometer_data["y"] > 0.5:
-            print("tilting car to the left")
-        elif accelerometer_data["y"] < -0.5:
             print("tilting car to the right")
+        elif accelerometer_data["y"] < -0.5:
+            print("tilting car to the left")
 
         # Wait for 1 second
         sleep(1)
