@@ -204,6 +204,19 @@ with sr.Microphone(device_index=1) as source:
 
 If the output is what you communicated, the speech recognition works.
 
+### Setup gyro and accelerometer
+#### Enable I2C
+```
+sudo raspi-config
+```
+
+Go to Interface options -> I2C -> Enable
+
+#### Install mpu6050 library for raspberry pi
+```
+pip install mpu6050-raspberrypi
+```
+
 ### Add changes to config file if necessary
 All components are setup through a config file that can be modified by you.
 You can specify which pins you are using, angle rotation range for the camera
