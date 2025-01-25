@@ -10,12 +10,11 @@ class Stabilizer:
         accelerometer_data = self._mpu6050.get_accel_data()
 
         # Print the sensor data
-        """
         if accelerometer_data["x"] > 0.5:
             print("tilting car backward")
         elif accelerometer_data["x"] < -0.5:
             print("tilting car forward")
-        """
+
         if accelerometer_data["y"] > 0.5:
             print("tilting car to the right")
             print(accelerometer_data["y"])
