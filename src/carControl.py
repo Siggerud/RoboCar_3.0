@@ -1,6 +1,7 @@
 import subprocess
 from multiprocessing import Process, Array, Value, Queue
 import RPi.GPIO as GPIO
+from stabilizer import Stabilizer
 
 class CarControl:
     def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, exitCommand):
@@ -17,6 +18,9 @@ class CarControl:
             self._cameraHelper,
             self._honk
         ]
+
+        #TODO: move this to main and add to config file
+        self._stabilizer = Stabilizer()
 
         self._camera = camera
         self._signalLights = signalLights
@@ -87,6 +91,14 @@ class CarControl:
         self._processes.append(process)
         process.start()
 
+    def _start_car_stabilization(self, flag) -> None:
+        process = Process(
+            target=self._stabilize_car,
+            args=(self.shared_flag, )
+        )
+        self._processes.append(process)
+        process.start()
+
     def _activate_voice_command_handling(self) -> None:
         process = Process(
             target=self._GPIO_Process,
@@ -100,6 +112,10 @@ class CarControl:
         GPIO.setwarnings(False) # disable GPIO warnings
         func(*args) # call parameter method
         GPIO.cleanup() # cleanup all classes using GPIO pins
+
+    def _stabilize_car(self, flag) -> None:
+        while not flag.value:
+            self._stabilizer.stabilize()
 
     def _start_listening_for_voice_commands(self, flag) -> None:
         # setup objects
