@@ -243,48 +243,15 @@ button again. To exit completely from stand by mode, press Ctrl + C.
 ## Appendix
 
 ### Wiring
+All board pins are given in the <u>board</u> layout, not the BCM layout.
 #### Raspberry Pi to L289
-22 -> IN2 <br />
-18 -> IN1 <br />
-16 -> IN4 <br />
-15 -> IN3 <br />
-11 -> ENA <br />
-13 -> ENB <br /> 
+GPIO 22 -> IN2 <br />
+GPIO 18 -> IN1 <br />
+GPIO 16 -> IN4 <br />
+GPIO 15 -> IN3 <br />
+GPIO 11 -> ENA <br />
+GPIO 13 -> ENB <br /> 
 GND -> GND
-
-#### Raspberry pi to horizontal servo
-37 -> SignalWire <br />
-3.3V -> + <br />
-GND -> -
-
-#### Raspberry pi to vertical servo
-33 -> SignalWire <br />
-3.3V -> + <br />
-GND -> -
-
-#### Raspberry pi to camera
-Cameraslot -> Camera
-
-#### Raspberry pi to passive buzzer
-36 -> +<br />
-GND -> -
-
-#### Raspberry pi to LEDs
-Green LED<br />
-32 -> +<br />
-GND -> -<br />
-<br />
-Yellow LED<br />
-31 -> +<br />
-GND -> -<br />
-
-Red LED<br />
-29 -> +<br />
-GND -> -<br />
-
-#### Raspberry pi to button
-38 -> button <br />
-GND -> button <br />
 
 #### L289 to motors
 L289 right and left should be based on looking at the
@@ -305,10 +272,44 @@ L289 VMS -> Batterypack +-<br />
 L289 GND -> Batterypack -
 
 #### MPU6050 to Raspberry pi
-MPU6050 VCC -> 5V <br />
-MPU6050 GND -> GND <br />
-MPU6050 SDA -> 3 (SDA) <br />
-MPU6050 SCL -> 5 (SCL) <br />
+VCC -> 5V <br />
+GND -> GND <br />
+SDA -> GPIO 3 (SDA) <br />
+SCL -> GPIO 5 (SCL) <br />
+=======
+#### Raspberry pi to horizontal servo
+GPIO 37 -> SignalWire <br />
+3.3V -> + <br />
+GND -> -
+
+#### Raspberry pi to vertical servo
+GPIO 33 -> SignalWire <br />
+3.3V -> + <br />
+GND -> -
+
+#### Raspberry pi to camera
+Cameraslot -> Camera
+
+#### Raspberry pi to passive buzzer
+GPIO 36 -> +<br />
+GND -> -
+
+#### Raspberry pi to LEDs
+Green LED<br />
+GPIO 32 -> +<br />
+GND -> -<br />
+<br />
+Yellow LED<br />
+GPIO 31 -> +<br />
+GND -> -<br />
+
+Red LED<br />
+GPIO 29 -> +<br />
+GND -> -<br />
+
+#### Raspberry pi to button
+GPIO 38 -> button <br />
+GND -> button <br />
 
 ### Parts list
 
