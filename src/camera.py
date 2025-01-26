@@ -3,6 +3,7 @@ import os
 os.environ["LIBCAMERA_LOG_LEVELS"] = "3" #disable info and warning logging
 from picamera2 import Picamera2
 from time import time
+from roboCarHelper import RobocarHelper
 
 class Camera:
     def __init__(self, resolution, rotation=True):
@@ -27,8 +28,6 @@ class Camera:
         self._servoEnabled: bool = False
 
         self._fps: float = 0.0
-        self._weightPrevFps: float = 0.9
-        self._weightNewFps: float = 0.1
         self._fpsPos: tuple = (10, 30)
 
         self._arrayDict = None
@@ -110,7 +109,7 @@ class Camera:
         endTime: float = time()
         loopTime: float = endTime - startTime
 
-        self._fps = self._weightPrevFps * self._fps + self._weightNewFps * (1 / loopTime)
+        self._fps = RobocarHelper.low_pass_filter(self._fps, (1 / loopTime))
 
     def _get_zoomed_image(self, image) -> None:
         halfZoomDisplayWidth = int(self._dispW / (2 * self._zoomValue))

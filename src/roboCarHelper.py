@@ -3,6 +3,10 @@ class RobocarHelper:
         pass
 
     @staticmethod
+    def low_pass_filter(currentValue: float, previousValue: float, confidenceFactor:float=0.1) -> float:
+        return previousValue * (1 - confidenceFactor) + currentValue * confidenceFactor
+
+    @staticmethod
     def map_value_to_new_scale(inputValue, newScaleMinValue, newScaleMaxValue, valuePrecision, oldScaleMinValue=-1,
                                oldScaleMaxValue=1) -> float:
         newScaleSpan = newScaleMaxValue - newScaleMinValue
