@@ -18,9 +18,16 @@ class Stabilizer:
         yAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["y"])
         zAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["z"])
 
-        # Calculate the angle and convert from radian to degrees
-        self._xAngle = RobocarHelper.low_pass_filter(self._calculate_angles_in_degrees(xAccel, zAccel), self._xAngle)
-        self._yAngle = RobocarHelper.low_pass_filter(self._calculate_angles_in_degrees(yAccel, zAccel), self._xAngle)
+        # Calculate the latest angles
+        newXAngle = self._calculate_angles_in_degrees(xAccel, zAccel)
+        newYAngle = self._calculate_angles_in_degrees(yAccel, zAccel)
+
+        # Apply low pass filter to the angles to limit the effect of acceleration noise
+        # on the reading of gravity vectors
+        confidenceFactor = 0.3
+
+        self._xAngle = RobocarHelper.low_pass_filter(newXAngle, self._xAngle, confidenceFactor)
+        self._yAngle = RobocarHelper.low_pass_filter(newYAngle, self._yAngle, confidenceFactor)
 
         print(f"xAngle: {self._xAngle}, yAngle: {self._yAngle}")
 
