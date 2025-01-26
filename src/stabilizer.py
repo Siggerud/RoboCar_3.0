@@ -32,7 +32,7 @@ class Stabilizer:
         print(f"xAngle: {self._xAngle}, yAngle: {self._yAngle}")
 
         # Wait for 1 second
-        sleep(1)
+        sleep(0.1)
 
     def _set_value_equal_to_1_if_greater(self, accelValue):
         if accelValue > 1:
