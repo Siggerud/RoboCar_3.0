@@ -6,30 +6,34 @@ from roboCarHelper import RobocarHelper
 class Stabilizer:
     def __init__(self, address: int = 0x68):
         self._mpu6050 = mpu6050(address)
-        self._xAngle = 0
-        self._yAngle = 0
+        self._rollAngle = 0
+        self._pitchAngle = 0
+
+        #TODO: add axis inputs to config file
+        self._pitchAxis = "y"
+        self._rollAxis = "x"
 
     def stabilize(self):
         # Read the sensor data
         accelerometer_data = self._mpu6050.get_accel_data(g=True)  # get value in gravity units
 
         # Print the sensor data
-        xAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["x"])
-        yAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["y"])
-        zAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["z"])
+        rollAccel = self._set_value_equal_to_1_if_greater(accelerometer_data[self._rollAxis])
+        pitchAccel = self._set_value_equal_to_1_if_greater(accelerometer_data[self._pitchAxis])
+        yawAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["z"])
 
         # Calculate the latest angles
-        newXAngle = self._calculate_angles_in_degrees(xAccel, zAccel)
-        newYAngle = self._calculate_angles_in_degrees(yAccel, zAccel)
+        newRollAngle = self._calculate_angles_in_degrees(rollAccel, yawAccel)
+        newPitchAngle = self._calculate_angles_in_degrees(pitchAccel, yawAccel)
 
         # Apply low pass filter to the angles to limit the effect of acceleration noise
         # on the reading of gravity vectors
         confidenceFactor = 0.3
 
-        self._xAngle = RobocarHelper.low_pass_filter(newXAngle, self._xAngle, confidenceFactor)
-        self._yAngle = RobocarHelper.low_pass_filter(newYAngle, self._yAngle, confidenceFactor)
+        self._rollAngle = RobocarHelper.low_pass_filter(newRollAngle, self._rollAngle, confidenceFactor)
+        self._pitchAngle = RobocarHelper.low_pass_filter(newPitchAngle, self._pitchAngle, confidenceFactor)
 
-        print(f"xAngle: {self._xAngle}, yAngle: {self._yAngle}")
+        print(f"xAngle: {self._rollAngle}, yAngle: {self._pitchAngle}")
 
         # Wait for 1 second
         sleep(0.1)

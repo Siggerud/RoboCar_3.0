@@ -139,7 +139,7 @@ class CarHandling(RoboObject):
 		return RobocarHelper.chain_together_dict_keys([self._direction_commands,
 										 self._speed_commands,
 										 self._exact_speed_commands])
-
+	#TODO: add property decorators
 	def get_current_speed(self) -> int:
 		return int(self._speed)
 
