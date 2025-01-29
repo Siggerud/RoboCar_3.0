@@ -1,42 +1,55 @@
 from mpu6050 import mpu6050
-from time import sleep
+from time import sleep, time
 from math import atan, pi
 from roboCarHelper import RobocarHelper
 
 class Stabilizer:
     def __init__(self, address: int = 0x68):
         self._mpu6050 = mpu6050(address)
-        self._rollAngle = 0
-        self._pitchAngle = 0
+        self._rollAccelAngle = 0
+        self._pitchAccelAngle = 0
 
-        #TODO: add axis inputs to config file
-        self._pitchAxis = "y"
-        self._rollAxis = "x"
+        self._time = 0
+        self._tLoop = 0
+
+        self._rollComp = 0
+        self._pitchComp = 0
+
+        self._confidenceFactor = 0.90
 
     def stabilize(self):
+        tStart = time()
         # Read the sensor data
         accelerometer_data = self._mpu6050.get_accel_data(g=True)  # get value in gravity units
 
-        # Print the sensor data
-        rollAccel = self._set_value_equal_to_1_if_greater(accelerometer_data[self._rollAxis])
-        pitchAccel = self._set_value_equal_to_1_if_greater(accelerometer_data[self._pitchAxis])
+        # unpack the accelerometer data
+        rollAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["y"])
+        pitchAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["x"])
         yawAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["z"])
 
-        # Calculate the latest angles
-        newRollAngle = self._calculate_angles_in_degrees(rollAccel, yawAccel)
-        newPitchAngle = self._calculate_angles_in_degrees(pitchAccel, yawAccel)
+        # Calculate the latest angles based on accelerometer data
+        self._rollAccelAngle = self._calculate_angles_in_degrees(rollAccel, yawAccel)
+        self._pitchAccelAngle = self._calculate_angles_in_degrees(pitchAccel, yawAccel)
 
-        # Apply low pass filter to the angles to limit the effect of acceleration noise
-        # on the reading of gravity vectors
-        confidenceFactor = 0.3
+        # Read the gyro data
+        gyro_data = self._mpu6050.get_gyro_data()
 
-        self._rollAngle = RobocarHelper.low_pass_filter(newRollAngle, self._rollAngle, confidenceFactor)
-        self._pitchAngle = RobocarHelper.low_pass_filter(newPitchAngle, self._pitchAngle, confidenceFactor)
+        # unpack the gyro data
+        xGyro = gyro_data["x"]
+        yGyro = gyro_data["y"]
 
-        print(f"xAngle: {self._rollAngle}, yAngle: {self._pitchAngle}")
+        # Calculate the latest angles deltas based on gyro data
+        rollGyroAngleDelta = xGyro * self._tLoop
+        pitchGyroAngleDelta = yGyro * self._tLoop
 
-        # Wait for 1 second
-        sleep(0.1)
+        # calculate the complimentary angles based on data from both the accelerometer and the gyro data
+        self._rollComp = self._rollAccelAngle * (1 - self._confidenceFactor) + self._confidenceFactor * (self._rollComp + rollGyroAngleDelta)
+        self._pitchComp = self._pitchAccelAngle * (1 - self._confidenceFactor) + self._confidenceFactor * (self._pitchComp + pitchGyroAngleDelta)
+
+        print(f"rollAngle: {self._rollComp}, pitchAngle: {self._pitchComp}")
+
+        tStop = time()
+        self._tLoop = tStop - tStart
 
     def _set_value_equal_to_1_if_greater(self, accelValue):
         if accelValue > 1:
