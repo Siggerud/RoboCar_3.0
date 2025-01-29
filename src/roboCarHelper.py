@@ -3,7 +3,7 @@ class RobocarHelper:
         pass
 
     @staticmethod
-    def low_pass_filter(currentValue: float, previousValue: float, confidenceFactor:float=0.1) -> float:
+    def low_pass_filter(previousValue: float, currentValue: float, confidenceFactor:float=0.1) -> float:
         return previousValue * (1 - confidenceFactor) + currentValue * confidenceFactor
 
     @staticmethod
