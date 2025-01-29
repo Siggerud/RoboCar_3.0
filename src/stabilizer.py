@@ -43,6 +43,7 @@ class Stabilizer:
         pitchGyroAngleDelta = yGyro * self._tLoop
 
         # calculate the complimentary angles based on data from both the accelerometer and the gyro data
+        self._rollComp = RobocarHelper.low_pass_filter(self._rollAccelAngle, )
         self._rollComp = self._rollAccelAngle * (1 - self._confidenceFactor) + self._confidenceFactor * (self._rollComp + rollGyroAngleDelta)
         self._pitchComp = self._pitchAccelAngle * (1 - self._confidenceFactor) + self._confidenceFactor * (self._pitchComp + pitchGyroAngleDelta)
 
