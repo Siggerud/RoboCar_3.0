@@ -21,7 +21,6 @@ class Stabilizer:
         self._confidenceFactor = 0.92
         self._errorFactor = 0.01
 
-        self._count = 0
 
     def stabilize(self):
         tStart = time()
@@ -56,12 +55,12 @@ class Stabilizer:
         # calculate the steady state error values
         self._errorRoll = self._errorRoll + (self._rollAccelAngle - self._rollComp) * self._tLoop
         self._errorPitch = self._errorPitch + (self._pitchAccelAngle - self._pitchComp) * self._tLoop
-        self._count += 1
-        if self._count % 10 == 0:
-            print(f"rollA: {round(self._rollAccelAngle, 2)}, rollC: {round(self._rollComp, 2)}, pitchA: {round(self._pitchAccelAngle, 2)}, pitchC: {round(self._pitchComp, 2)}")
+
+        print(f"rollA: {round(self._rollAccelAngle, 2)}, rollC: {round(self._rollComp, 2)}, pitchA: {round(self._pitchAccelAngle, 2)}, pitchC: {round(self._pitchComp, 2)}")
 
         tStop = time()
         self._tLoop = tStop - tStart
+        sleep(0.25)
 
     def _set_value_equal_to_1_if_greater(self, accelValue):
         if accelValue > 1:
