@@ -60,7 +60,6 @@ class Stabilizer:
 
         tStop = time()
         self._tLoop = tStop - tStart
-        sleep(0.25)
 
     def _set_value_equal_to_1_if_greater(self, accelValue):
         if accelValue > 1:
