@@ -15,7 +15,11 @@ class Stabilizer:
         self._rollComp = 0
         self._pitchComp = 0
 
-        self._confidenceFactor = 0.90
+        self._errorRoll = 0
+        self._errorPitch = 0
+
+        self._confidenceFactor = 0.92
+        self._errorFactor = 0.01
 
     def stabilize(self):
         tStart = time()
@@ -42,12 +46,16 @@ class Stabilizer:
         rollGyroAngleDelta = xGyro * self._tLoop
         pitchGyroAngleDelta = yGyro * self._tLoop
 
-        # calculate the complimentary angles based on data from both the accelerometer and the gyro data
-        self._rollComp = RobocarHelper.low_pass_filter(self._rollAccelAngle, )
-        self._rollComp = self._rollAccelAngle * (1 - self._confidenceFactor) + self._confidenceFactor * (self._rollComp + rollGyroAngleDelta)
-        self._pitchComp = self._pitchAccelAngle * (1 - self._confidenceFactor) + self._confidenceFactor * (self._pitchComp + pitchGyroAngleDelta)
+        # calculate the complimentary angles based on data from both the accelerometer and the gyro data. We use
+        # the low pass filter as a complimentary filter in this case
+        self._rollComp = RobocarHelper.low_pass_filter((self._rollComp + rollGyroAngleDelta), self._rollAccelAngle, self._confidenceFactor) + self._errorRoll * self._errorFactor
+        self._pitchComp = RobocarHelper.low_pass_filter((self._pitchComp + pitchGyroAngleDelta), self._pitchAccelAngle, self._confidenceFactor) + self._errorPitch * self._errorFactor
 
-        print(f"rollAngle: {self._rollComp}, pitchAngle: {self._pitchComp}")
+        # calculate the steady state error values
+        self._errorRoll = self._errorRoll + (self._rollAccelAngle - self._rollComp) * self._tLoop
+        self._errorPitch = self._errorPitch + (self._pitchAccelAngle - self._pitchComp) * self._tLoop
+
+        print(f"rollA: {self._rollAccelAngle}, pitchA: {self._pitchAccelAngle}, rollC: {self._rollComp}, pitchC: {self._pitchComp}")
 
         tStop = time()
         self._tLoop = tStop - tStart
