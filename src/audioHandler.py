@@ -6,6 +6,7 @@ class AudioHandler:
         self._exitCommand: str = exitCommand
         self._recognizer = sr.Recognizer()
         self._languageCode: str = self._get_language_code(language)
+        #TODO: start a while loop that waits for microphone connection
         self._deviceIndex: int = self._get_device_index()
         self._queue = None
 

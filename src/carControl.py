@@ -6,6 +6,7 @@ from stabilizer import Stabilizer
 class CarControl:
     def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, exitCommand):
         if not self._check_if_X11_connected():
+            #TODO: start a while loop that waits for X11 connection
             raise X11ForwardingError("X11 forwarding not detected.")
 
         self._car = car

@@ -3,49 +3,49 @@ from time import sleep, time
 from math import atan, pi
 from roboCarHelper import RobocarHelper
 
+
 class Stabilizer:
     def __init__(self, address: int = 0x68):
         self._mpu6050 = mpu6050(address)
-        self._rollAccelAngle = 0
-        self._pitchAccelAngle = 0
+        self._rollAccelAngle: float = 0
+        self._pitchAccelAngle: float = 0
 
-        self._time = 0
-        self._tLoop = 0
+        self._time: float = 0
+        self._tLoop: float = 0
 
-        self._rollComp = 0
-        self._pitchComp = 0
+        self._rollComp: float = 0
+        self._pitchComp: float = 0
 
-        self._errorRoll = 0
-        self._errorPitch = 0
+        self._errorRoll: float = 0
+        self._errorPitch: float = 0
 
-        self._confidenceFactor = 0.92
-        self._errorFactor = 0.01
-
+        self._confidenceFactor: float = 0.92
+        self._errorFactor: float = 0.01
 
     def stabilize(self):
-        tStart = time()
+        tStart: float = time()
         # Read the sensor data
-        accelerometer_data = self._mpu6050.get_accel_data(g=True)  # get value in gravity units
+        accelerometer_data: dict[str: float] = self._mpu6050.get_accel_data(g=True)  # get value in gravity units
 
         # unpack the accelerometer data
-        rollAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["y"])
-        pitchAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["x"])
-        yawAccel = self._set_value_equal_to_1_if_greater(accelerometer_data["z"])
+        rollAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data["y"])
+        pitchAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data["x"])
+        yawAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data["z"])
 
         # Calculate the latest angles based on accelerometer data
         self._rollAccelAngle = self._calculate_angles_in_degrees(rollAccel, yawAccel)
         self._pitchAccelAngle = self._calculate_angles_in_degrees(pitchAccel, yawAccel)
 
         # Read the gyro data
-        gyro_data = self._mpu6050.get_gyro_data()
+        gyro_data: dict[str: float] = self._mpu6050.get_gyro_data()
 
         # unpack the gyro data
-        xGyro = gyro_data["x"]
-        yGyro = gyro_data["y"]
+        xGyro: float = gyro_data["x"]
+        yGyro: float = gyro_data["y"]
 
         # Calculate the latest angles deltas based on gyro data
-        rollGyroAngleDelta = xGyro * self._tLoop
-        pitchGyroAngleDelta = yGyro * self._tLoop
+        rollGyroAngleDelta: float = xGyro * self._tLoop
+        pitchGyroAngleDelta: float = yGyro * self._tLoop
 
         # calculate the complimentary angles based on data from both the accelerometer and the gyro data. We use
         # the low pass filter as a complimentary filter in this case
@@ -58,14 +58,14 @@ class Stabilizer:
 
         print(f"rollA: {round(self._rollAccelAngle, 2)}, rollC: {round(self._rollComp, 2)}, pitchA: {round(self._pitchAccelAngle, 2)}, pitchC: {round(self._pitchComp, 2)}")
 
-        tStop = time()
+        tStop: float = time()
         self._tLoop = tStop - tStart
 
-    def _set_value_equal_to_1_if_greater(self, accelValue):
+    #TODO: make a test of this method
+    def _set_value_equal_to_1_if_greater(self, accelValue: float) -> float:
         if accelValue > 1:
             return 1
         return accelValue
 
-    def _calculate_angles_in_degrees(self, opposite, adjacent):
+    def _calculate_angles_in_degrees(self, opposite: float, adjacent: float) -> float:
         return atan(opposite / adjacent) * 180 / pi
-
