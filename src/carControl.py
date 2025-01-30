@@ -123,7 +123,7 @@ class CarControl:
         # setup objects
         for roboObject in self._roboObjects:
             roboObject.setup()
-
+        #TODO: add try catch for keyboard interrupt for all processes
         self._signalLights.setup()
 
         while not flag.value:
