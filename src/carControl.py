@@ -1,6 +1,7 @@
 import subprocess
 from multiprocessing import Process, Array, Value, Queue
 import RPi.GPIO as GPIO
+from time import sleep
 
 class CarControl:
     def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, exitCommand):
@@ -164,11 +165,19 @@ class CarControl:
         return objectToCommands
 
     def _check_if_X11_connected(self) -> int:
-        result = subprocess.run(["xset", "q"], capture_output=True, text=True)
-        returnCode = result.returncode
-
-        if not returnCode:
-            print("Succesful connection to forwarded X11 server\n")
+        treshold = 3
+        numOfTries = 0
+        sleepTime = 5
+        while numOfTries < treshold:
+            result = subprocess.run(["xset", "q"], capture_output=True, text=True)
+            returnCode = result.returncode
+            numOfTries += 1
+            if not returnCode:
+                print("Succesful connection to forwarded X11 server\n")
+                break
+            else:
+                print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n")
+                sleep(sleepTime)
 
         return not returnCode
 

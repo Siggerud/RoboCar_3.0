@@ -32,7 +32,6 @@ try:
         GPIO.wait_for_edge(pin, GPIO.FALLING)
         sleep(0.3) # wait for a little while to avoid double registrations of button press
         subprocess.run(['python', runFileFullPath])
-
 except KeyboardInterrupt:
     pass
 finally:

@@ -225,7 +225,7 @@ Give the commands given in the startup message when running the program.
 
 ### Exiting the program
 Give the exit command given in the start up message to return to stand by mode. To start car again just press the
-button again. To exit completely from stand by mode, press Ctrl + C.
+button again. To exit completely, press Ctrl + C.
 
 ## Appendix
 

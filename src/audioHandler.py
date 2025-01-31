@@ -1,5 +1,5 @@
 import speech_recognition as sr
-import sounddevice # to avoid lots of ALSA error
+import sounddevice  # to avoid lots of ALSA error
 
 class AudioHandler:
     def __init__(self, exitCommand, language):
