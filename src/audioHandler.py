@@ -1,12 +1,17 @@
 import speech_recognition as sr
 import sounddevice  # to avoid lots of ALSA error
+import subprocess
+from time import sleep
 
 class AudioHandler:
-    def __init__(self, exitCommand, language):
-        self._exitCommand: str = exitCommand
-        self._recognizer = sr.Recognizer()
-        self._languageCode: str = self._get_language_code(language)
+    def __init__(self, exitCommand: str, language: str, microphoneName: str):
+        if not self._check_if_headphones_connected(microphoneName):
+            raise MicrophoneException("Microphones are not connected via bluetooth")
         self._deviceIndex: int = self._get_device_index()
+        self._exitCommand: str = exitCommand
+        self._headPhoneName: str = microphoneName
+        self._languageCode: str = self._get_language_code(language)
+        self._recognizer = sr.Recognizer()
         self._queue = None
 
     def setup(self, queue) -> None:
@@ -56,13 +61,29 @@ class AudioHandler:
 
         return spokenWords.lower().strip()
 
+    def _check_if_headphones_connected(self, headPhoneName: str) -> bool:
+        sleepTime: int = 10
+        numOfTries: int = 0
+        treshold: int = 5
+        while numOfTries < treshold:
+            output: str = subprocess.check_output("bluetoothctl devices Connected", shell=True).decode("utf-8")
+
+            numOfTries += 1
+            if headPhoneName not in output:
+                print(f"Headphone {headPhoneName} not connected. Trying again in {sleepTime} seconds...\n"
+                      f"Number of retries: {treshold - numOfTries}\n")
+                sleep(sleepTime)
+
+        return headPhoneName in output
+
+
     def _get_device_index(self) -> int:
         connectedMicrophones: list = sr.Microphone.list_microphone_names()
         for index, microphone in enumerate(connectedMicrophones):
             if microphone == "pulse":
                 return index
 
-        raise MicrophoneNotConnected("Microphone is not connected")
+        raise MicrophoneException("No 'pulse' microphone found. Follow readme for proper microphone setup")
 
     def _get_language_code(self, language) -> str:
         languagesToLanguageCodes: dict = {
@@ -106,5 +127,5 @@ class AudioHandler:
             return "en-US"
 
 
-class MicrophoneNotConnected(Exception):
+class MicrophoneException(Exception):
     pass

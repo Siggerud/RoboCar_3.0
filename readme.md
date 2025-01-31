@@ -88,9 +88,9 @@ sudo systemctl start pigpiod
 ```
 
 ### Set up speech recognition
-#### Connect your headphones to bluetooth
+#### Connect your headphones/microphones to bluetooth
 
-Start bluetooth and scan for heaphones
+Start bluetooth and scan for headphones/microphones
 ```
 sudo systemctl start bluetooth
 ```
@@ -101,12 +101,30 @@ bluetoothctl
 scan on
 ```
 
-Copy the number before the name of your headphones
+Copy the number before the name of your microphone
 ```
 pair XX:XX:XX:XX:XX:XX
 connect XX:XX:XX:XX:XX:XX
 trust XX:XX:XX:XX:XX:XX
 ```
+
+Get the name of your microphone
+```
+devices
+```
+
+You should see it in this format
+```
+Device XX:XX:XX:XX:XX:XX NameOfMicrophone
+```
+
+Copy the name of your microphone and paste it in the config file under Audio specs
+```
+[Audio.specs]
+language = English (United States)
+microphone_name = NameOfMicrophone
+```
+
 
 Exit bluetooth
 ```

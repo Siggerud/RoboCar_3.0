@@ -165,7 +165,7 @@ class CarControl:
         return objectToCommands
 
     def _check_if_X11_connected(self) -> int:
-        treshold = 3
+        treshold = 5
         numOfTries = 0
         sleepTime = 5
         while numOfTries < treshold:
@@ -176,7 +176,7 @@ class CarControl:
                 print("Succesful connection to forwarded X11 server\n")
                 break
             else:
-                print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n. "
+                print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n"
                       f"Number of retries: {treshold - numOfTries}\n")
                 sleep(sleepTime)
 
