@@ -5,8 +5,8 @@ from time import sleep
 
 class AudioHandler:
     def __init__(self, exitCommand: str, language: str, microphoneName: str):
-        if not self._check_if_headphones_connected(microphoneName):
-            raise MicrophoneException("Microphones are not connected via bluetooth")
+        self._check_if_headphones_connected(microphoneName)
+
         self._deviceIndex: int = self._get_device_index()
         self._exitCommand: str = exitCommand
         self._headPhoneName: str = microphoneName
@@ -61,7 +61,7 @@ class AudioHandler:
 
         return spokenWords.lower().strip()
 
-    def _check_if_headphones_connected(self, headPhoneName: str) -> bool:
+    def _check_if_headphones_connected(self, headPhoneName: str) -> None:
         sleepTime: int = 10
         numOfTries: int = 0
         treshold: int = 5
@@ -73,9 +73,11 @@ class AudioHandler:
                 print(f"Headphone {headPhoneName} not connected. Trying again in {sleepTime} seconds...\n"
                       f"Number of retries: {treshold - numOfTries}\n")
                 sleep(sleepTime)
+            else:
+                print(f"Headphone {headPhoneName} connected\n")
+                return
 
-        return headPhoneName in output
-
+        raise MicrophoneException(f"Headphone {headPhoneName} not connected via bluetooth")
 
     def _get_device_index(self) -> int:
         connectedMicrophones: list = sr.Microphone.list_microphone_names()

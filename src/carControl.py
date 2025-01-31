@@ -5,8 +5,7 @@ from time import sleep
 
 class CarControl:
     def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, exitCommand):
-        if not self._check_if_X11_connected():
-            raise X11ForwardingError("X11 forwarding not detected.")
+        self._check_if_X11_connected()
 
         self._car = car
         self._servo = servo
@@ -164,23 +163,23 @@ class CarControl:
 
         return objectToCommands
 
-    def _check_if_X11_connected(self) -> int:
-        treshold = 5
-        numOfTries = 0
-        sleepTime = 5
+    def _check_if_X11_connected(self) -> None:
+        treshold: int = 5
+        numOfTries: int = 0
+        sleepTime: int = 5
         while numOfTries < treshold:
             result = subprocess.run(["xset", "q"], capture_output=True, text=True)
-            returnCode = result.returncode
+            returnCode: int = result.returncode
             numOfTries += 1
             if not returnCode:
                 print("Succesful connection to forwarded X11 server\n")
-                break
+                return
             else:
                 print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n"
                       f"Number of retries: {treshold - numOfTries}\n")
                 sleep(sleepTime)
 
-        return not returnCode
+        raise X11ForwardingError("X11 forwarding not detected.")
 
 
 class X11ForwardingError(Exception):
