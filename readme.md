@@ -70,6 +70,11 @@ Install opencv-python
 pip install opencv-python
 ```
 
+Install pytest (Optional, only if you want to run tests)
+```
+pip install pytest
+```
+
 ### Setting up pigpio
 We need pigpio to control our servo, otherwise
 there will be a lot of jitter.
