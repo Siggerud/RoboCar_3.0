@@ -109,37 +109,43 @@ class CarControl:
 
         self._signalLights.setup()
 
-        while not flag.value:
-            command: str = self._queue.get()
+        try:
+            while not flag.value:
+                command: str = self._queue.get()
 
-            if command == self._exitCommand:
-                break
+                if command == self._exitCommand:
+                    break
 
-            try:
-                commandValidity: str = self._commandToObjects[command].get_command_validity(command)
-            except KeyError:
-                commandValidity: str = "invalid"
+                try:
+                    commandValidity: str = self._commandToObjects[command].get_command_validity(command)
+                except KeyError:
+                    commandValidity: str = "invalid"
 
-            # signal if the command was valid, partially valid or invalid
-            signalColor = self._commandValidityToSignalColor[commandValidity]
-            self._signalLights.blink(signalColor)
+                # signal if the command was valid, partially valid or invalid
+                signalColor = self._commandValidityToSignalColor[commandValidity]
+                self._signalLights.blink(signalColor)
 
-            # execute command if it is valid
-            if commandValidity == "valid":
-                self._commandToObjects[command].handle_voice_command(command)
-                self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
-
-        # cleanup objects
-        for roboObject in self._roboObjects:
-            roboObject.cleanup()
+                # execute command if it is valid
+                if commandValidity == "valid":
+                    self._commandToObjects[command].handle_voice_command(command)
+                    self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
+        except KeyboardInterrupt:
+            flag.value = True
+        finally:
+            # cleanup objects
+            for roboObject in self._roboObjects:
+                roboObject.cleanup()
 
     def _start_camera(self, shared_array, flag) -> None:
         self._camera.setup()
 
-        while not flag.value:
-            self._camera.show_camera_feed(shared_array)
-
-        self._camera.cleanup()
+        try:
+            while not flag.value:
+                self._camera.show_camera_feed(shared_array)
+        except KeyboardInterrupt:
+            flag.value = True
+        finally:
+            self._camera.cleanup()
 
     def _get_all_objects_mapped_to_commands(self) -> dict:
         objectsToCommands: dict = {}

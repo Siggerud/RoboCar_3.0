@@ -282,7 +282,6 @@ shared_flag = carController.get_flag()
 try:
     while not shared_flag.value:
         audioHandler.set_audio_command(shared_flag)
-
 except KeyboardInterrupt:
     shared_flag.value = True # set event to stop all active processes
 finally:
