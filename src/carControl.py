@@ -177,6 +177,7 @@ class CarControl:
                 break
             else:
                 print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n")
+                print(f"Number of retries: {treshold - numOfTries}\n")
                 sleep(sleepTime)
 
         return not returnCode
