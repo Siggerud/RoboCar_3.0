@@ -176,8 +176,8 @@ class CarControl:
                 print("Succesful connection to forwarded X11 server\n")
                 break
             else:
-                print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n")
-                print(f"Number of retries: {treshold - numOfTries}\n")
+                print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n. "
+                      f"Number of retries: {treshold - numOfTries}\n")
                 sleep(sleepTime)
 
         return not returnCode
