@@ -1,6 +1,6 @@
 import speech_recognition as sr
 import sounddevice
-import os
+import subprocess
 
 deviceIndex = int(input("Enter the device index: "))
 
@@ -15,3 +15,5 @@ with sr.Microphone(device_index=deviceIndex) as source:
     # Save audio to a file for debugging
     with open("output.wav", "wb") as f:
         f.write(audio_text.get_wav_data())
+
+subprocess.run(["aplay", "output.wav"])
