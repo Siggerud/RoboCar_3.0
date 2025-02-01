@@ -228,6 +228,11 @@ Go to Interface options -> I2C -> Enable
 pip install mpu6050-raspberrypi
 ```
 
+#### Set roll- and pitch axis in config file
+Look at the MPU6050. If the x is pointing to the front or back of the car,
+you set the x as pitch axis and y as roll axis. If the x points to the
+side of the car, you just switch the values.
+
 ### Add changes to config file if necessary
 All components are setup through a config file that can be modified by you.
 You can specify which pins you are using, angle rotation range for the camera

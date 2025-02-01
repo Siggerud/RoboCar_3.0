@@ -5,7 +5,7 @@ from stabilizer import Stabilizer
 from time import sleep
 
 class CarControl:
-    def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, exitCommand):
+    def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, stabilizer, exitCommand):
         self._check_if_X11_connected()
 
         self._car = car
@@ -19,8 +19,7 @@ class CarControl:
             self._honk
         ]
 
-        #TODO: move this to main and add to config file
-        self._stabilizer = Stabilizer()
+        self._stabilizer = stabilizer
 
         self._camera = camera
         self._signalLights = signalLights

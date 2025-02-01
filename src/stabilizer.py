@@ -5,8 +5,12 @@ from roboCarHelper import RobocarHelper
 
 
 class Stabilizer:
-    def __init__(self, address: int = 0x68):
+    def __init__(self, rollAxis: str, pitchAxis: str, address: int = 0x68):
         self._mpu6050 = mpu6050(address)
+        self._rollAxis: str = rollAxis
+        self._pitchAxis: str = pitchAxis
+        self._yawAxis: str = "z"
+
         self._rollAccelAngle: float = 0
         self._pitchAccelAngle: float = 0
 
@@ -28,9 +32,9 @@ class Stabilizer:
         accelerometer_data: dict[str: float] = self._mpu6050.get_accel_data(g=True)  # get value in gravity units
 
         # unpack the accelerometer data
-        rollAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data["y"])
-        pitchAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data["x"])
-        yawAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data["z"])
+        rollAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data[self._rollAxis])
+        pitchAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data[self._pitchAxis])
+        yawAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data[self._yawAxis])
 
         # Calculate the latest angles based on accelerometer data
         self._rollAccelAngle = self._calculate_angles_in_degrees(rollAccel, yawAccel)

@@ -9,6 +9,7 @@ from os import path
 from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneException
 from buzzer import Buzzer
+from stabilizer import Stabilizer
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
 
 def print_error_message_and_exit(errorMessage):
@@ -231,6 +232,14 @@ def setup_car(parser):
 
     return car
 
+def setup_stabilizer():
+    stabilizerSpecs = parser["Stabilizer"]
+    rollAxis: str = stabilizerSpecs["roll_axis"]
+    pitchAxis: str = stabilizerSpecs["pitch_axis"]
+
+    #TODO: add validation checks of arguments
+    return Stabilizer(rollAxis, pitchAxis)
+
 def setup_car_controller(parser):
     # setup car
     car = setup_car(parser)
@@ -255,11 +264,14 @@ def setup_car_controller(parser):
     # setup signal lights
     signalLights = setup_signal_lights(parser)
 
+    # setup stabilizer
+    stabilizer = setup_stabilizer()
+
     exitCommand = parser["Global.commands"]["exit"]
 
     # set up car controller
     try:
-        carController = CarControl(car, servo, camera, cameraHelper, honk, signalLights, exitCommand)
+        carController = CarControl(car, servo, camera, cameraHelper, honk, signalLights, stabilizer, exitCommand)
     except (X11ForwardingError) as e:
         print_error_message_and_exit(e)
 
