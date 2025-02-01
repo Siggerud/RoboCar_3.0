@@ -4,8 +4,8 @@ import subprocess
 from time import sleep
 import os
 
-deviceIndex = int(input("Enter the device index: "))
-sleepTime = 3
+deviceIndex: int = int(input("Enter the device index: "))
+sleepTime: int = 3
 
 # Initialize recognizer class (for recognizing the speech)
 r = sr.Recognizer()

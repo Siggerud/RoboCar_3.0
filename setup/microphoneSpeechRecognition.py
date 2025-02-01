@@ -2,8 +2,8 @@ import speech_recognition as sr
 import sounddevice
 from time import sleep
 
-deviceIndex = int(input("Enter the device index: "))
-sleepTime = 3
+deviceIndex: int = int(input("Enter the device index: "))
+sleepTime: int = 3
 
 # Initialize recognizer class (for recognizing the speech)
 r = sr.Recognizer()

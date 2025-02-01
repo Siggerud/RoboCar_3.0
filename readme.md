@@ -107,9 +107,19 @@ scan on
 ```
 
 Copy the number before the name of your microphone
+
+Pair microphone
 ```
 pair XX:XX:XX:XX:XX:XX
+```
+
+connect microphone
+```
 connect XX:XX:XX:XX:XX:XX
+```
+
+Trust microphone
+```
 trust XX:XX:XX:XX:XX:XX
 ```
 
