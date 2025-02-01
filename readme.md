@@ -177,14 +177,11 @@ python setup/microphoneDeviceIndex.py
 ```
 
 Run the script below to test your microphone. Insert the device index you found
-in the previous step when prompted
+in the previous step when prompted. <br />
+The script will record your voice and save it to a file. After
+the recording it will play the recording back to you, and then delete the file.
 ```
 python setup/microphoneRecordingSetup.py
-```
-
-Play recording
-```
-aplay output.wav
 ```
 
 If the step above went as expected, try the speech recognition
