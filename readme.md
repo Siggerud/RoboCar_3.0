@@ -170,6 +170,12 @@ Install sounddevice to avoid massive debug logging
 pip install sounddevice
 ```
 
+Run setup/microphoneDeviceIndex to find the index of your microphone. It should
+be labelled "pulse"
+```
+python setup/microphoneDeviceIndex.py
+```
+
 Insert index in this script to test microphone recording
 ```
 import speech_recognition as sr
