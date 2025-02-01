@@ -16,4 +16,4 @@ with sr.Microphone(device_index=deviceIndex) as source:
     with open("output.wav", "wb") as f:
         f.write(audio_text.get_wav_data())
 
-subprocess.run(["aplay", "output.wav"])
+subprocess.run(["aplay", "output.wav", "-q"])
