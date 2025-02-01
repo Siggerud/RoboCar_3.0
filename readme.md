@@ -189,7 +189,7 @@ Add the device index again when prompted. Say a few words when the program
 tells you to talk. The program will then output what it heard. Ideally it should
 be what you said, or something very similar.
 ```
-
+python setup/speechRecognitionSetup.py
 ```
 
 If the output is what you communicated, the speech recognition works.
