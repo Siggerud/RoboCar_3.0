@@ -123,6 +123,17 @@ Trust microphone
 trust XX:XX:XX:XX:XX:XX
 ```
 
+#### Add microphone name to config file Alternative 1
+If you only have one microphone connected to your pi, you can add the name of the microphone
+by a script. However as this is not tested on any other pi than my own, you
+will be asked to confirm the name of the microphone before writing it to the config file.<br />
+
+Run the script below
+```
+python setup/setMicrophoneName.py
+```
+
+#### Add microphone name to config file Alternative 2
 Get the name of your microphone
 ```
 devices
