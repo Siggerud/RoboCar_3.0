@@ -2,12 +2,11 @@ import subprocess
 from multiprocessing import Process, Array, Value, Queue
 import RPi.GPIO as GPIO
 from stabilizer import Stabilizer
+from time import sleep
 
 class CarControl:
     def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, exitCommand):
-        if not self._check_if_X11_connected():
-            #TODO: start a while loop that waits for X11 connection
-            raise X11ForwardingError("X11 forwarding not detected.")
+        self._check_if_X11_connected()
 
         self._car = car
         self._servo = servo
@@ -127,37 +126,43 @@ class CarControl:
         #TODO: add try catch for keyboard interrupt for all processes
         self._signalLights.setup()
 
-        while not flag.value:
-            command: str = self._queue.get()
+        try:
+            while not flag.value:
+                command: str = self._queue.get()
 
-            if command == self._exitCommand:
-                break
+                if command == self._exitCommand:
+                    break
 
-            try:
-                commandValidity: str = self._commandToObjects[command].get_command_validity(command)
-            except KeyError:
-                commandValidity: str = "invalid"
+                try:
+                    commandValidity: str = self._commandToObjects[command].get_command_validity(command)
+                except KeyError:
+                    commandValidity: str = "invalid"
 
-            # signal if the command was valid, partially valid or invalid
-            signalColor = self._commandValidityToSignalColor[commandValidity]
-            self._signalLights.blink(signalColor)
+                # signal if the command was valid, partially valid or invalid
+                signalColor = self._commandValidityToSignalColor[commandValidity]
+                self._signalLights.blink(signalColor)
 
-            # execute command if it is valid
-            if commandValidity == "valid":
-                self._commandToObjects[command].handle_voice_command(command)
-                self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
-
-        # cleanup objects
-        for roboObject in self._roboObjects:
-            roboObject.cleanup()
+                # execute command if it is valid
+                if commandValidity == "valid":
+                    self._commandToObjects[command].handle_voice_command(command)
+                    self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
+        except KeyboardInterrupt:
+            flag.value = True
+        finally:
+            # cleanup objects
+            for roboObject in self._roboObjects:
+                roboObject.cleanup()
 
     def _start_camera(self, shared_array, flag) -> None:
         self._camera.setup()
 
-        while not flag.value:
-            self._camera.show_camera_feed(shared_array)
-
-        self._camera.cleanup()
+        try:
+            while not flag.value:
+                self._camera.show_camera_feed(shared_array)
+        except KeyboardInterrupt:
+            flag.value = True
+        finally:
+            self._camera.cleanup()
 
     def _get_all_objects_mapped_to_commands(self) -> dict:
         objectsToCommands: dict = {}
@@ -175,14 +180,23 @@ class CarControl:
 
         return objectToCommands
 
-    def _check_if_X11_connected(self) -> int:
-        result = subprocess.run(["xset", "q"], capture_output=True, text=True)
-        returnCode = result.returncode
+    def _check_if_X11_connected(self) -> None:
+        treshold: int = 5
+        numOfTries: int = 0
+        sleepTime: int = 5
+        while numOfTries < treshold:
+            result = subprocess.run(["xset", "q"], capture_output=True, text=True)
+            returnCode: int = result.returncode
+            numOfTries += 1
+            if not returnCode:
+                print("Succesful connection to forwarded X11 server\n")
+                return
+            else:
+                print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n"
+                      f"Number of retries: {treshold - numOfTries}\n")
+                sleep(sleepTime)
 
-        if not returnCode:
-            print("Succesful connection to forwarded X11 server\n")
-
-        return not returnCode
+        raise X11ForwardingError("X11 forwarding not detected.")
 
 
 class X11ForwardingError(Exception):

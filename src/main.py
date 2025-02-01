@@ -7,7 +7,7 @@ from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
 from os import path
 from signalLights import SignalLights
-from audioHandler import AudioHandler, MicrophoneNotConnected
+from audioHandler import AudioHandler, MicrophoneException
 from buzzer import Buzzer
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
 
@@ -160,12 +160,13 @@ def setup_servo(parser):
 def setup_audio_handler(parser):
     audioSpecs = parser["Audio.specs"]
     language: str = audioSpecs["language"]
+    microphoneName: str = audioSpecs["microphone_name"]
 
     exitCommand: str = parser["Global.commands"]["exit"]
 
     try:
-        audioHandler = AudioHandler(exitCommand, language)
-    except MicrophoneNotConnected as e:
+        audioHandler = AudioHandler(exitCommand, language, microphoneName)
+    except MicrophoneException as e:
         print_error_message_and_exit(e)
 
     return audioHandler
@@ -282,7 +283,6 @@ shared_flag = carController.get_flag()
 try:
     while not shared_flag.value:
         audioHandler.set_audio_command(shared_flag)
-
 except KeyboardInterrupt:
     shared_flag.value = True # set event to stop all active processes
 finally:

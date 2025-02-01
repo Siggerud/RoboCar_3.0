@@ -70,6 +70,11 @@ Install opencv-python
 pip install opencv-python
 ```
 
+Install pytest (Optional, only if you want to run tests)
+```
+pip install pytest
+```
+
 ### Setting up pigpio
 We need pigpio to control our servo, otherwise
 there will be a lot of jitter.
@@ -88,9 +93,9 @@ sudo systemctl start pigpiod
 ```
 
 ### Set up speech recognition
-#### Connect your headphones to bluetooth
+#### Connect your headphones/microphones to bluetooth
 
-Start bluetooth and scan for heaphones
+Start bluetooth and scan for headphones/microphones
 ```
 sudo systemctl start bluetooth
 ```
@@ -101,12 +106,51 @@ bluetoothctl
 scan on
 ```
 
-Copy the number before the name of your headphones
+Copy the number before the name of your microphone
+
+Pair microphone
 ```
 pair XX:XX:XX:XX:XX:XX
+```
+
+connect microphone
+```
 connect XX:XX:XX:XX:XX:XX
+```
+
+Trust microphone
+```
 trust XX:XX:XX:XX:XX:XX
 ```
+
+#### Add microphone name to config file Alternative 1
+If you only have one microphone connected to your pi, you can add the name of the microphone
+by a script. However as this is not tested on any other pi than my own, you
+will be asked to confirm the name of the microphone before writing it to the config file.<br />
+
+Run the script below
+```
+python setup/setMicrophoneName.py
+```
+
+#### Add microphone name to config file Alternative 2
+Get the name of your microphone
+```
+devices
+```
+
+You should see it in this format
+```
+Device XX:XX:XX:XX:XX:XX NameOfMicrophone
+```
+
+Copy the name of your microphone and paste it in the config file under Audio specs
+```
+[Audio.specs]
+language = English (United States)
+microphone_name = NameOfMicrophone
+```
+
 
 Exit bluetooth
 ```
@@ -147,59 +191,26 @@ Install sounddevice to avoid massive debug logging
 pip install sounddevice
 ```
 
-Insert index in this script to test microphone recording
+Run setup/microphoneDeviceIndex to find the index of your microphone. It should
+be labelled "pulse"
 ```
-import speech_recognition as sr
-import sounddevice
-import os
-
-# Initialize recognizer class (for recognizing the speech)
-r = sr.Recognizer()
-r.dynamic_energy_threshold = True
-r.energy_threshold = 400  # Experiment with values between 300 and 1500
-
-with sr.Microphone(device_index=1) as source:  # Replace with your microphone index
-    print("Talk")
-    audio_text = r.listen(source)
-    # Save audio to a file for debugging
-    with open("output.wav", "wb") as f:
-        f.write(audio_text.get_wav_data())
+python setup/microphoneDeviceIndex.py
 ```
 
-Play recording
+Run the script below to test your microphone. Insert the device index you found
+in the previous step when prompted. <br />
+The script will record your voice and save it to a file. After
+the recording it will play the recording back to you, and then delete the file.
 ```
-aplay output.wav
+python setup/microphoneRecordingSetup.py
 ```
 
-If the step above went as expected, try the speech recognition
+If the step above went as expected, try the speech recognition.<br />
+Add the device index again when prompted. Say a few words when the program
+tells you to talk. The program will then output what it heard. Ideally it should
+be what you said, or something very similar.
 ```
-import speech_recognition as sr
-import sounddevice
-import os
-
-# Initialize recognizer class (for recognizing the speech)
-r = sr.Recognizer()
-r.dynamic_energy_threshold = True
-r.energy_threshold = 400  # Experiment with values between 300 and 1500
-
-
-# Reading Microphone as source
-# listening the speech and store in audio_text variable
-with sr.Microphone(device_index=1) as source:
-    print("Talk")
-    audio_text = r.listen(source)
-    print("Time over, thanks")
-    # recoginze_() method will throw a request
-    # error if the API is unreachable,
-    # hence using exception handling
-
-    try:
-        # using google speech recognition
-        print("Text: " + r.recognize_google(audio_text))
-    except sr.UnknownValueError:
-        print("Sorry, I did not get that")
-    except sr.RequestError as e:
-        print(f"Could not request results from Google Speech Recognition; {e}") 
+python setup/speechRecognitionSetup.py
 ```
 
 If the output is what you communicated, the speech recognition works.
@@ -238,7 +249,7 @@ Give the commands given in the startup message when running the program.
 
 ### Exiting the program
 Give the exit command given in the start up message to return to stand by mode. To start car again just press the
-button again. To exit completely from stand by mode, press Ctrl + C.
+button again. To exit completely, press Ctrl + C.
 
 ## Appendix
 
