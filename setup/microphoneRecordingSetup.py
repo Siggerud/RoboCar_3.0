@@ -6,6 +6,7 @@ import os
 
 deviceIndex = int(input("Enter the device index: "))
 sleepTime = 3
+
 # Initialize recognizer class (for recognizing the speech)
 r = sr.Recognizer()
 r.dynamic_energy_threshold = True
