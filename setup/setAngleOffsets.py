@@ -12,10 +12,9 @@ if answer == "q":
     exit()
 #TODO: add validition checks of answers
 print("\nGetting offset angles...")
-#TODO: get the average offset
 numOfIterations = 100
 sleepTime = 0.1
-print(f"This takes approximately {numOfIterations * sleepTime} seconds...")
+print(f"This takes approximately {int(numOfIterations * sleepTime)} seconds...")
 offsetXReadings: list = []
 offsetYReadings: list = []
 for _ in range(numOfIterations):
@@ -29,8 +28,8 @@ for _ in range(numOfIterations):
     # sleep to not overload mpu6050 sensor
     sleep(0.1)
 
-offsetX: float = sum(offsetXReadings) / numOfIterations
-offsetY: float = sum(offsetYReadings) / numOfIterations
+offsetX: float = round(sum(offsetXReadings) / numOfIterations, 3)
+offsetY: float = round(sum(offsetYReadings) / numOfIterations, 3)
 
 print(f"Found offsets: x-axis {offsetX}°, y-axis {offsetY}°")
 answer: str = input("Do you want to write these values to the config file? (y/n)\n")

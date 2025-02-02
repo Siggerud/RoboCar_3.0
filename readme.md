@@ -239,7 +239,7 @@ and it could be hard to get it exactly right. This might make the servos
 try to adjust the car too soon or too late, so you can specify an offset in the config
 file. The easiest way to this is by running the command below.
 ```
-python setRollAndPitchAngleOffsets.py
+python setAngleOffsets.py
 ```
 
 ### Add changes to config file if necessary
