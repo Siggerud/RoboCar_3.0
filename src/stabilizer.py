@@ -44,8 +44,8 @@ class Stabilizer:
         gyro_data: dict[str: float] = self._mpu6050.get_gyro_data()
 
         # unpack the gyro data
-        xGyro: float = gyro_data["x"]
-        yGyro: float = gyro_data["y"]
+        xGyro: float = gyro_data[self._pitchAxis]
+        yGyro: float = gyro_data[self._rollAxis]
 
         # Calculate the latest angles deltas based on gyro data
         rollGyroAngleDelta: float = xGyro * self._tLoop
