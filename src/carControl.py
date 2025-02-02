@@ -115,8 +115,11 @@ class CarControl:
         GPIO.cleanup() # cleanup all classes using GPIO pins
 
     def _stabilize_car(self, flag) -> None:
-        while not flag.value:
-            self._stabilizer.stabilize()
+        try:
+            while not flag.value:
+                self._stabilizer.stabilize()
+        except KeyboardInterrupt:
+            flag.value = True
 
     def _start_listening_for_voice_commands(self, flag) -> None:
         # setup objects
