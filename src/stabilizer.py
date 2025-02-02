@@ -5,11 +5,14 @@ from roboCarHelper import RobocarHelper
 
 
 class Stabilizer:
-    def __init__(self, rollAxis: str, pitchAxis: str, address: int = 0x68):
-        self._mpu6050 = mpu6050(address)
+    def __init__(self, rollAxis: str, pitchAxis: str, offsets: dict[str: float]):
+        self._mpu6050 = mpu6050(0x68)
         self._rollAxis: str = rollAxis
         self._pitchAxis: str = pitchAxis
         self._yawAxis: str = "z"
+
+        self._offsetRoll = offsets[rollAxis]
+        self._offsetPitch = offsets[pitchAxis]
 
         self._rollAccelAngle: float = 0
         self._pitchAccelAngle: float = 0
@@ -36,9 +39,9 @@ class Stabilizer:
         pitchAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data[self._pitchAxis])
         yawAccel: float = self._set_value_equal_to_1_if_greater(accelerometer_data[self._yawAxis])
 
-        # Calculate the latest angles based on accelerometer data
-        self._rollAccelAngle = self._calculate_angles_in_degrees(rollAccel, yawAccel)
-        self._pitchAccelAngle = self._calculate_angles_in_degrees(pitchAccel, yawAccel)
+        # Calculate the latest angles based on accelerometer data and subtract the offsets
+        self._rollAccelAngle = self._calculate_angles_in_degrees(rollAccel, yawAccel) - self._offsetRoll
+        self._pitchAccelAngle = self._calculate_angles_in_degrees(pitchAccel, yawAccel) - self._offsetPitch
 
         # Read the gyro data
         gyro_data: dict[str: float] = self._mpu6050.get_gyro_data()

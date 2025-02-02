@@ -237,8 +237,19 @@ def setup_stabilizer():
     rollAxis: str = stabilizerSpecs["roll_axis"]
     pitchAxis: str = stabilizerSpecs["pitch_axis"]
 
+    try:
+        offsetX: float = stabilizerSpecs.getfloat("offset_x")
+        offsetY: float = stabilizerSpecs.getfloat("offset_y")
+    except ValueError as e:
+        print_error_message_and_exit(e)
+
+    offsets: dict[str: float] = {
+        "x": offsetX,
+        "y": offsetY
+    }
+
     #TODO: add validation checks of arguments
-    return Stabilizer(rollAxis, pitchAxis)
+    return Stabilizer(rollAxis, pitchAxis, offsets)
 
 def setup_car_controller(parser):
     # setup car
