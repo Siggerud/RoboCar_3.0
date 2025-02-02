@@ -65,17 +65,20 @@ class AudioHandler:
         sleepTime: int = 10
         numOfTries: int = 0
         treshold: int = 5
-        while numOfTries < treshold:
-            output: str = subprocess.check_output("bluetoothctl devices Connected", shell=True).decode("utf-8")
+        try:
+            while numOfTries < treshold:
+                output: str = subprocess.check_output("bluetoothctl devices Connected", shell=True).decode("utf-8")
 
-            numOfTries += 1
-            if headPhoneName not in output:
-                print(f"Headphone {headPhoneName} not connected. Trying again in {sleepTime} seconds...\n"
-                      f"Number of retries: {treshold - numOfTries}\n")
-                sleep(sleepTime)
-            else:
-                print(f"Headphone {headPhoneName} connected\n")
-                return
+                numOfTries += 1
+                if headPhoneName not in output:
+                    print(f"Headphone {headPhoneName} not connected. Trying again in {sleepTime} seconds...\n"
+                          f"Number of retries: {treshold - numOfTries}\n")
+                    sleep(sleepTime)
+                else:
+                    print(f"Headphone {headPhoneName} connected\n")
+                    return
+        except KeyboardInterrupt:
+            raise MicrophoneException(f"User aborted connecting microphone")
 
         raise MicrophoneException(f"Headphone {headPhoneName} not connected via bluetooth")
 
