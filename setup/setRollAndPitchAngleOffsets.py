@@ -27,8 +27,6 @@ if answer == "n":
 print("\nWriting offsets to config file...")
 config = ConfigParser()
 config.read("../src/config.ini")
-sections = config.sections()
-print("Sections in config file:", sections)
 config["Stabilizer"]["offset_x"] = str(offsetX)
 config["Stabilizer"]["offset_y"] = str(offsetY)
 with open("../src/config.ini", "w") as configFile:
