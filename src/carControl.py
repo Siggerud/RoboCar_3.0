@@ -186,17 +186,20 @@ class CarControl:
         treshold: int = 5
         numOfTries: int = 0
         sleepTime: int = 5
-        while numOfTries < treshold:
-            result = subprocess.run(["xset", "q"], capture_output=True, text=True)
-            returnCode: int = result.returncode
-            numOfTries += 1
-            if not returnCode:
-                print("Succesful connection to forwarded X11 server\n")
-                return
-            else:
-                print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n"
-                      f"Number of retries: {treshold - numOfTries}\n")
-                sleep(sleepTime)
+        try:
+            while numOfTries < treshold:
+                result = subprocess.run(["xset", "q"], capture_output=True, text=True)
+                returnCode: int = result.returncode
+                numOfTries += 1
+                if not returnCode:
+                    print("Succesful connection to forwarded X11 server\n")
+                    return
+                else:
+                    print(f"Failed to connect to X11 server. Trying again in {sleepTime} seconds...\n"
+                          f"Number of retries: {treshold - numOfTries}\n")
+                    sleep(sleepTime)
+        except KeyboardInterrupt:
+            raise X11ForwardingError("User aborted connecting to forwarded X11 server")
 
         raise X11ForwardingError("X11 forwarding not detected.")
 
