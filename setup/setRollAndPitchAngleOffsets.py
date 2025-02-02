@@ -18,7 +18,7 @@ zAccel: float = mpu.get_accel_data()["z"]
 offsetX: float  = round(atan(xAccel / zAccel) / 2 / pi * 360, 3)
 offsetY: float  = round(atan(yAccel / zAccel) / 2 / pi * 360, 3)
 
-print(f"Found offsets: x-axis {offsetX}°, y-axis {offsetY}")
+print(f"Found offsets: x-axis {offsetX}°, y-axis {offsetY}°")
 answer: str = input("Do you want to write these values to the config file? (y/n)\n")
 if answer == "n":
     print("Quitting setup of offset angles")
@@ -28,7 +28,7 @@ print("\nWriting offsets to config file...")
 config = ConfigParser()
 config.read("../src/config.ini")
 config["Stabilizer"]["offset_x"] = str(offsetX)
-config["Stabilizer"]["offset_y"] = str(offsetY, 3)
+config["Stabilizer"]["offset_y"] = str(offsetY)
 with open("../src/config.ini", "w") as configFile:
     config.write(configFile)
 print(f"offset_x value set to {offsetX} and offset_y value set to {offsetY}")
