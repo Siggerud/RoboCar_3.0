@@ -233,6 +233,15 @@ Look at the MPU6050. If the x is pointing to the front or back of the car,
 you set the x as pitch axis and y as roll axis. If the x points to the
 side of the car, you just switch the values.
 
+#### Reset roll- and pitch angles (Optional)
+Your MPU6050 sensor might not be completely parallel to the horizontal plane,
+and it could be hard to get it exactly right. This might make the servos
+try to adjust the car too soon or too late, so you can specify an offset in the config
+file. The easiest way to this is by running the command below.
+```
+python setRollAndPitchAngleOffsets.py
+```
+
 ### Add changes to config file if necessary
 All components are setup through a config file that can be modified by you.
 You can specify which pins you are using, angle rotation range for the camera
