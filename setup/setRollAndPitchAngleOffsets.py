@@ -1,6 +1,7 @@
 from mpu6050 import mpu6050
 from math import atan, pi
 from configparser import ConfigParser
+from time import sleep
 
 mpu = mpu6050(0x68)
 
@@ -11,12 +12,25 @@ if answer == "q":
     exit()
 #TODO: add validition checks of answers
 print("\nGetting offset angles...")
-xAccel: float = mpu.get_accel_data()["x"]
-yAccel: float = mpu.get_accel_data()["y"]
-zAccel: float = mpu.get_accel_data()["z"]
+#TODO: get the average offset
+numOfIterations = 100
+sleepTime = 0.1
+print(f"This takes approximately {numOfIterations * sleepTime} seconds...")
+offsetXReadings: list = []
+offsetYReadings: list = []
+for _ in range(numOfIterations):
+    xAccel: float = mpu.get_accel_data()["x"]
+    yAccel: float = mpu.get_accel_data()["y"]
+    zAccel: float = mpu.get_accel_data()["z"]
 
-offsetX: float  = round(atan(xAccel / zAccel) / 2 / pi * 360, 3)
-offsetY: float  = round(atan(yAccel / zAccel) / 2 / pi * 360, 3)
+    offsetXReadings.append(round(atan(xAccel / zAccel) / 2 / pi * 360, 3))
+    offsetYReadings.append(round(atan(yAccel / zAccel) / 2 / pi * 360, 3))
+
+    # sleep to not overload mpu6050 sensor
+    sleep(0.1)
+
+offsetX: float = sum(offsetXReadings) / numOfIterations
+offsetY: float = sum(offsetYReadings) / numOfIterations
 
 print(f"Found offsets: x-axis {offsetX}°, y-axis {offsetY}°")
 answer: str = input("Do you want to write these values to the config file? (y/n)\n")
