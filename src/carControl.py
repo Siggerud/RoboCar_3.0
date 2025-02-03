@@ -53,7 +53,7 @@ class CarControl:
         self._activate_voice_command_handling()
 
     def cleanup(self) -> None:
-        # close all threads
+        # close all processes
         for process in self._processes:
             process.join()
 

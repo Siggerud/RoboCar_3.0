@@ -1,7 +1,7 @@
 # Robocar
 ![Alt text](Images/robocar.jpg)
 The robocar with Xbox controller
-#Todo: add updated picture
+
 <br />
 <br />
 ![Alt text](Images/camFeedScreenshot.png)

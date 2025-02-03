@@ -20,6 +20,7 @@ class Servo:
 
     def cleanup(self) -> None:
         self.pi.set_servo_pulsewidth(self._servoPin, 0)
+        #TODO: add sleep to give time for servo to center
 
     def move_to_angle(self, angle: int) -> None:
         self.pi.set_servo_pulsewidth(self._servoPin, self._angleToPwm[angle])
