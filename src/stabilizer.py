@@ -6,6 +6,8 @@ from roboCarHelper import RobocarHelper
 
 class Stabilizer:
     def __init__(self, rollAxis: str, pitchAxis: str, offsets: dict[str: float]):
+        self._validate_input(rollAxis, pitchAxis, offsets)
+
         self._mpu6050 = mpu6050(0x68)
         self._rollAxis: str = rollAxis
         self._pitchAxis: str = pitchAxis
@@ -79,3 +81,15 @@ class Stabilizer:
 
     def _calculate_angles_in_degrees(self, opposite: float, adjacent: float) -> float:
         return atan(opposite / adjacent) * 180 / pi
+
+    def _validate_input(self, rollAxis: str, pitchAxis: str, offsets: dict[str: float]):
+        if {rollAxis, pitchAxis} != {"x", "y"}:
+            raise StabilizerException("Inputs for roll- and pitch axis must be x and y")
+
+        for offset in offsets.values():
+            if offset < -90 or offset > 90:
+                raise StabilizerException("Offset value too high, must be between -90 and 90")
+
+
+class StabilizerException(Exception):
+    pass

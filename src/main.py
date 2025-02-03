@@ -9,7 +9,7 @@ from os import path
 from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneException
 from buzzer import Buzzer
-from stabilizer import Stabilizer
+from stabilizer import Stabilizer, StabilizerException
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
 
 def print_error_message_and_exit(errorMessage):
@@ -248,8 +248,12 @@ def setup_stabilizer():
         "y": offsetY
     }
 
-    #TODO: add validation checks of arguments
-    return Stabilizer(rollAxis, pitchAxis, offsets)
+    try:
+        stabilizer = Stabilizer(rollAxis, pitchAxis, offsets)
+    except StabilizerException as e:
+        print_error_message_and_exit(e)
+
+    return stabilizer
 
 def setup_car_controller(parser):
     # setup car
