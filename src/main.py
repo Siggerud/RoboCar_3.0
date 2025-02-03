@@ -10,7 +10,7 @@ from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneException
 from buzzer import Buzzer
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
-
+#TODO: add all exceptions in the same file
 def print_error_message_and_exit(errorMessage):
     RobocarHelper.print_startup_error(errorMessage)
     exit()
