@@ -1,5 +1,6 @@
 import pigpio
 from roboCarHelper import RobocarHelper
+from time import sleep
 
 class Servo:
     pi = pigpio.pi()
@@ -20,7 +21,7 @@ class Servo:
 
     def cleanup(self) -> None:
         self.pi.set_servo_pulsewidth(self._servoPin, 0)
-        #TODO: add sleep to give time for servo to center
+        sleep(0.01)
 
     def move_to_angle(self, angle: int) -> None:
         self.pi.set_servo_pulsewidth(self._servoPin, self._angleToPwm[angle])
