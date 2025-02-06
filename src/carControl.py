@@ -113,8 +113,8 @@ class CarControl:
             while not flag.value:
                 command: str = self._queue.get()
 
-                if command == self._exitCommand:
-                    break
+                #if command == self._exitCommand:
+                #    break
 
                 try:
                     commandValidity: str = self._commandToObjects[command].get_command_validity(command)
