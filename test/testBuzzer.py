@@ -7,7 +7,7 @@ from buzzer import Buzzer
 
 @pytest.fixture
 def buzzer():
-    return Buzzer(1, 0.3, 4, {"buzzCommand": "start honking", "buzzForSpecifiedTimeCommand": "honk {param}"})
+    return Buzzer(38, 0.3, 4, {"buzzCommand": "start honking", "buzzForSpecifiedTimeCommand": "honk {param}"})
 
 def test_get_command_validity(buzzer):
     honker = buzzer
