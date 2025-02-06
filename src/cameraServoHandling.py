@@ -97,11 +97,12 @@ class CameraServoHandling(RoboObject):
         return self._servos[plane].get_current_angle()
 
     def cleanup(self) -> None:
-        print("Cleaning up servos")
         self._center_servo_positions()  # center camera when exiting
         for servo in list(self._servos.values()):
             servo.move_to_angle(self._neutralAngle)
             servo.cleanup()
+        from time import sleep
+        sleep(5)
 
     def print_commands(self) -> None:
         allDictsWithCommands: dict = {}
