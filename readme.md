@@ -1,6 +1,6 @@
 # Robocar
 ![Alt text](Images/robocar.jpg)
-The robocar with Xbox controller
+The robocar
 
 <br />
 <br />
