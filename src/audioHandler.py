@@ -23,9 +23,8 @@ class AudioHandler:
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
         with sr.Microphone(device_index=self._deviceIndex) as source:
-            self._recognizer.adjust_for_ambient_noise(source)
-
             while not flag.value:
+                self._recognizer.adjust_for_ambient_noise(source)
                 print("Talk")
                 while True:
                     audio_text: str = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
