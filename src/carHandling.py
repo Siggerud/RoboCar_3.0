@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
-
+from gpioValues import GpioValues
 
 class CarHandling(RoboObject):
     def __init__(self,
@@ -55,14 +55,14 @@ class CarHandling(RoboObject):
         #TODO: make the gpiovalues into a dataclass instead
         self._direction_commands: dict[str: dict] = {
             directionCommands["turnLeftCommand"]: {"description": "Turns car left",
-                                                   "gpioValues": self._set_gpio_values([False, True, True, False]), "direction": "Left"},
+                                                   "gpioValues": GpioValues(False, True, True, False), "direction": "Left"},
             directionCommands["turnRightCommand"]: {"description": "Turns car right",
-                                                    "gpioValues": self._set_gpio_values([True, False, False, True]), "direction": "Right"},
+                                                    "gpioValues": GpioValues(True, False, False, True), "direction": "Right"},
             directionCommands["driveCommand"]: {"description": "Drives car forward",
-                                                "gpioValues": self._set_gpio_values([False, False, True, True]), "direction": "Forward"},
+                                                "gpioValues": GpioValues(False, False, True, True), "direction": "Forward"},
             directionCommands["reverseCommand"]: {"description": "Reverses car",
-                                                  "gpioValues": self._set_gpio_values([True, True, False, False]), "direction": "Reverse"},
-            directionCommands["stopCommand"]: {"description": "Stops car", "gpioValues": self._set_gpio_values([False, False, False, False]),
+                                                  "gpioValues": GpioValues(True, True, False, False), "direction": "Reverse"},
+            directionCommands["stopCommand"]: {"description": "Stops car", "gpioValues": GpioValues(False, False, False, False),
                                                "direction": "Stopped"},
         }
 
@@ -187,23 +187,11 @@ class CarHandling(RoboObject):
         for pwm in [self._pwmA, self._pwmB]:
             pwm.ChangeDutyCycle(self._speed)
 
-    def _adjust_gpio_values(self, gpioValues: dict[str: bool]) -> None:
-        GPIO.output(self._leftForward, self._gpioThrottle[gpioValues["leftForward"]])
-        GPIO.output(self._rightForward, self._gpioThrottle[gpioValues["rightForward"]])
-        GPIO.output(self._leftBackward, self._gpioThrottle[gpioValues["leftBackward"]])
-        GPIO.output(self._rightBackward, self._gpioThrottle[gpioValues["rightBackward"]])
-
-    def _set_gpio_values(self, gpioValues: list[bool]) -> dict[str: bool]:
-        leftForwardValue, rightForwardValue, leftBackwardValue, rightBackwardValue = gpioValues
-
-        gpioValues: dict = {
-            "leftForward": leftForwardValue,
-            "rightForward": rightForwardValue,
-            "leftBackward": leftBackwardValue,
-            "rightBackward": rightBackwardValue
-        }
-
-        return gpioValues
+    def _adjust_gpio_values(self, gpioValues: GpioValues) -> None:
+        GPIO.output(self._leftForward, self._gpioThrottle[gpioValues.leftForward])
+        GPIO.output(self._rightForward, self._gpioThrottle[gpioValues.rightForward])
+        GPIO.output(self._leftBackward, self._gpioThrottle[gpioValues.leftBackward])
+        GPIO.output(self._rightBackward, self._gpioThrottle[gpioValues.rightBackward])
 
     def _check_argument_validity(self, pins: list[int], userCommands: dict[str, str], **kwargs) -> None:
         super()._check_argument_validity(pins, userCommands, **kwargs)
