@@ -21,7 +21,7 @@ class Servo:
 
     def cleanup(self) -> None:
         self.pi.set_servo_pulsewidth(self._servoPin, 0)
-        sleep(0.05)
+        sleep(5)
 
     def move_to_angle(self, angle: int) -> None:
         self.pi.set_servo_pulsewidth(self._servoPin, self._angleToPwm[angle])
