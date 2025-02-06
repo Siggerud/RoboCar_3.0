@@ -11,11 +11,11 @@ class Buzzer(RoboObject):
         self._defaultHonkTime: float = defaultHonkTime
         self._maxHonkTime: float = maxHonkTime
 
-        self._buzzCommand: dict = {userCommands["buzzCommand"]: {"description": "starts honking"}}
-        self._buzzForSpecifiedTimeCommands: dict = self._set_honk_for_specified_time_commands(userCommands["buzzForSpecifiedTimeCommand"])
+        self._buzzCommand: dict[str: dict] = {userCommands["buzzCommand"]: {"description": "Starts honking"}}
+        self._buzzForSpecifiedTimeCommands: dict[str: float] = self._set_honk_for_specified_time_commands(userCommands["buzzForSpecifiedTimeCommand"])
 
         # mainly for printing at startup
-        self._variableCommands = {
+        self._variableCommands: dict[str: dict] = {
             userCommands["buzzForSpecifiedTimeCommand"].replace("param", "time"): {
                 "description": "Honks for the specified time"
             }
@@ -38,9 +38,11 @@ class Buzzer(RoboObject):
                    commands to start honking or honk for a specified time.
     """
     def handle_voice_command(self, command: str) -> None:
-        honkTime: float = self._buzzCommand.get(command, self._buzzForSpecifiedTimeCommands.get(command))
-        if honkTime is not None:
-            self._buzz(honkTime)
+        if command in self._buzzCommand:
+            honkTime: float = self._defaultHonkTime
+        elif command in self._buzzForSpecifiedTimeCommands:
+            honkTime: float = self._buzzForSpecifiedTimeCommands[command]
+        self._buzz(honkTime)
 
     def print_commands(self) -> None:
         allDictsWithCommands: dict = {**self._buzzCommand, **self._variableCommands}
