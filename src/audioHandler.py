@@ -1,7 +1,7 @@
 import speech_recognition as sr
 import sounddevice  # to avoid lots of ALSA error
 import subprocess
-from time import sleep
+from time import sleep, time
 
 class AudioHandler:
     def __init__(self, exitCommand: str, language: str, microphoneName: str):
@@ -24,7 +24,9 @@ class AudioHandler:
         # listening the speech and store in audio_text variable
         with sr.Microphone(device_index=self._deviceIndex) as source:
             while not flag.value:
+                tStart = time()
                 self._recognizer.adjust_for_ambient_noise(source)
+                print(time() - tStart)
                 print("Talk")
                 while True:
                     audio_text: str = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
