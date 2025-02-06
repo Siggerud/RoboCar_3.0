@@ -25,28 +25,29 @@ class AudioHandler:
         with sr.Microphone(device_index=self._deviceIndex) as source:
             self._recognizer.adjust_for_ambient_noise(source)
 
-            print("Talk")
-            while True:
-                audio_text: str = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
-                try:
-                    # using google speech recognition
-                    spokenWords = self._recognizer.recognize_google(audio_text, language=self._languageCode)
-                    break
-                except sr.UnknownValueError:
-                    # if nothing intelligible is picked up, then try again
-                    continue
-                except sr.RequestError as e:
-                    print(f"Could not request results from Google Speech Recognition; {e}")
-                    break
+            while not flag.value:
+                print("Talk")
+                while True:
+                    audio_text: str = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
+                    try:
+                        # using google speech recognition
+                        spokenWords = self._recognizer.recognize_google(audio_text, language=self._languageCode)
+                        break
+                    except sr.UnknownValueError:
+                        # if nothing intelligible is picked up, then try again
+                        continue
+                    except sr.RequestError as e:
+                        print(f"Could not request results from Google Speech Recognition; {e}")
+                        break
 
-            spokenWords = self._clean_up_spoken_words(spokenWords)
+                spokenWords = self._clean_up_spoken_words(spokenWords)
 
-            # set flag value to true if command is exit command
-            if spokenWords == self._exitCommand:
-                flag.value = True
+                # set flag value to true if command is exit command
+                if spokenWords == self._exitCommand:
+                    flag.value = True
 
-            # set the command in IPC
-            self._queue.put(spokenWords)
+                # set the command in IPC
+                self._queue.put(spokenWords)
 
     def _clean_up_spoken_words(self, spokenWords: str) -> str:
         if "°" in spokenWords:  # change out degree symbol
