@@ -47,6 +47,7 @@ class AudioHandler:
 
                 # set flag value to true if command is exit command
                 if spokenWords == self._exitCommand:
+                    flag.value = True
                     break
 
                 sleep(0.3)
