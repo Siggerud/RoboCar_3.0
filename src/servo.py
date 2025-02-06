@@ -1,6 +1,5 @@
 import pigpio
 from roboCarHelper import RobocarHelper
-from time import sleep
 
 class Servo:
     pi = pigpio.pi()

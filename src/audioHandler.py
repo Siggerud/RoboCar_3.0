@@ -42,12 +42,12 @@ class AudioHandler:
 
                 spokenWords = self._clean_up_spoken_words(spokenWords)
 
-                # set flag value to true if command is exit command
-                if spokenWords == self._exitCommand:
-                    flag.value = True
-
                 # set the command in IPC
                 self._queue.put(spokenWords)
+
+                # set flag value to true if command is exit command
+                if spokenWords != self._exitCommand:
+                    sleep(0.3)
 
     def _clean_up_spoken_words(self, spokenWords: str) -> str:
         if "°" in spokenWords:  # change out degree symbol
