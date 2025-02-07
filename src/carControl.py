@@ -101,7 +101,7 @@ class CarControl:
         GPIO.setwarnings(False) # disable GPIO warnings
         func(*args) # call parameter method
         GPIO.cleanup() # cleanup all classes using GPIO pins
-
+    # add this to a seperate controller class
     def _start_listening_for_voice_commands(self, flag) -> None:
         # setup objects
         for roboObject in self._roboObjects:
