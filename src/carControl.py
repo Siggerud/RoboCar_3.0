@@ -76,7 +76,7 @@ class CarControl:
 
         print(f"Exit command : {self._exitCommand}")
         print()
-
+    # TODO: remove this
     def _set_shared_array_dict(self) -> None:
         arrayDict: dict = {}
         cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]

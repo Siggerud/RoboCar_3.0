@@ -133,6 +133,7 @@ class CameraHelper(RoboObject):
         cameraInputs = ["speed", "direction"] if self._car else []
         cameraInputs += ["horizontal servo", "vertical servo"] if self._servo else []
         cameraInputs += ["HUD", "Zoom"]
+
         return {cameraInput: index for index, cameraInput in enumerate(cameraInputs)}
 
     def _set_hud_value(self, command: str) -> None:

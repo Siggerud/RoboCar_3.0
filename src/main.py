@@ -243,6 +243,8 @@ def setup_car_controller(parser):
 
     # setup camera
     camera = setup_camera(parser)
+    #TODO: camerahelper dict should be based on what is in camera, and the setting of servo
+    # and car should build the dict in camera
 
     # setup camerahelper
     cameraHelper = setup_camera_helper(parser, car, servo)

@@ -52,7 +52,6 @@ class CarHandling(RoboObject):
         self._userCommands: dict = userCommands
 
         directionCommands: dict[str: str] = userCommands["direction"]
-        #TODO: make the gpiovalues into a dataclass instead
         self._direction_commands: dict[str: dict] = {
             directionCommands["turnLeftCommand"]: {"description": "Turns car left",
                                                    "gpioValues": GpioValues(False, True, True, False), "direction": "Left"},
