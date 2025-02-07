@@ -275,7 +275,10 @@ audioHandler = setup_audio_handler(parser)
 audioHandler.setup(commandHandler.get_queue())
 
 # setup car controller
-carController = CarControl(camera, commandHandler)
+try:
+    carController = CarControl(camera, commandHandler)
+except X11ForwardingError as e:
+    print_error_message_and_exit(e)
 
 # start car
 carController.start()
