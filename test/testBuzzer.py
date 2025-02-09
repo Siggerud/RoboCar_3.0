@@ -14,7 +14,7 @@ def test_get_command_validity(buzzer):
     assert buzzer.get_command_validity("my command") == "valid"
 
 @patch("RPi.GPIO.output")
-@patch("time.sleep")
+@patch("buzzer.sleep")
 def test_buzz_time(mockSleep, buzzer):
     buzzer.handle_voice_command("start honking")
 
