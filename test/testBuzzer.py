@@ -26,3 +26,4 @@ def test_buzz_time(mockSleep, mockGPIO, buzzer):
     buzzer.handle_voice_command("start honking")
 
     mockGPIO.assert_called()
+    mockSleep.assert_called()
