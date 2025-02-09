@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../s
 
 import pytest
 from buzzer import Buzzer
+from unittest.mock import patch
 
 @pytest.fixture
 def buzzer():
@@ -11,3 +12,10 @@ def buzzer():
 
 def test_get_command_validity(buzzer):
     assert buzzer.get_command_validity("my command") == "valid"
+
+@patch("RPi.GPIO.output")
+@patch("time.sleep")
+def test_buzz_time(mockSleep, buzzer):
+    buzzer.handle_voice_command("start honking")
+
+    mockSleep.assert_called_once_with(0.3)
