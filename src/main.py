@@ -249,7 +249,7 @@ def setup_command_handler(parser, camera):
     # setup camerahelper
     cameraHelper = setup_camera_helper(parser, car, servo)
     cameraHelper.set_array_dict(camera.get_array_dict())
-
+    print(camera.get_array_dict())
     # setup signal lights
     signalLights = setup_signal_lights(parser)
 
