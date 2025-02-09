@@ -20,8 +20,6 @@ class CarControl:
         return self.shared_flag
 
     def start(self) -> None:
-        self._print_start_up_message()
-
         # start processes
         self._activate_camera()
         self._activate_voice_command_handling()
