@@ -49,10 +49,10 @@ class CameraHelper(RoboObject):
             zoomCommands["zoomOutCommand"]: {"description": "zooms out by the default increment value"}
         }
 
-        self._arrayDict: dict = self._set_array_dict()
+        self._arrayDict: dict[str: int] = None
 
         # mainly for printing at startup
-        self._variableCommands: dict = {
+        self._variableCommands: dict[str: dict] = {
             zoomCommands["zoomExactCommand"].replace("param", "zoom"): {
                 "description": "Zooms camera to the specified zoom value"
             }
