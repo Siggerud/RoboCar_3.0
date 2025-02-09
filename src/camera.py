@@ -34,7 +34,7 @@ class Camera:
             "HUD": 0,
             "Zoom": 1
         }
-        self._indexCounter: int = 0
+        self._indexCounter: int = len(self._arrayDict)
 
         self._number_to_directionValue: dict = {
             0: "Stopped",
@@ -82,17 +82,15 @@ class Camera:
 
     def set_car_enabled(self) -> None:
         self._carEnabled = True
-        self._arrayDict["speed"] = self._indexCounter
-        self._indexCounter += 1
-        self._arrayDict["direction"] = self._indexCounter
-        self._indexCounter += 1
+
+        self._arrayDict.update({"speed": self._indexCounter, "direction": self._indexCounter + 1})
+        self._indexCounter += 2
 
     def set_servo_enabled(self) -> None:
         self._servoEnabled = True
-        self._arrayDict["horizontal servo"] = self._indexCounter
-        self._indexCounter += 1
-        self._arrayDict["vertical servo"] = self._indexCounter
-        self._indexCounter += 1
+
+        self._arrayDict.update({"horizontal servo": self._indexCounter, "vertical servo": + 1})
+        self._indexCounter += 2
 
     def get_array_dict(self) -> dict[str: int]:
         return self._arrayDict

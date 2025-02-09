@@ -270,7 +270,7 @@ camera = setup_camera(parser)
 
 # setup command handler
 commandHandler = setup_command_handler(parser, camera)
-print(camera.get_array_dict())
+
 audioHandler = setup_audio_handler(parser)
 audioHandler.setup(commandHandler.get_queue())
 
