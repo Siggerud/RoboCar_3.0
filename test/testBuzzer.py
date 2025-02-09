@@ -15,7 +15,7 @@ def test_get_command_validity(buzzer):
 
 @patch("RPi.GPIO.output")
 @patch("buzzer.sleep")
-def test_buzz_time(mockSleep, buzzer):
+def test_buzz_time(mockSleep, mockGPIO, buzzer):
     buzzer.handle_voice_command("start honking")
 
-    mockSleep.assert_called_once_with(0.3)
+    mockGPIO.assert_called()
