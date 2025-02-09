@@ -10,5 +10,4 @@ def buzzer():
     return Buzzer(38, 0.3, 4, {"buzzCommand": "start honking", "buzzForSpecifiedTimeCommand": "honk {param}"})
 
 def test_get_command_validity(buzzer):
-    honker = buzzer
-    pass
+    assert buzzer.get_command_validity() == "valid"
