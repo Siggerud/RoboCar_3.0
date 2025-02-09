@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../s
 
 import pytest
 from buzzer import Buzzer
+from roboObject import RoboObject
 from unittest.mock import patch
 
 @pytest.fixture
@@ -12,6 +13,12 @@ def buzzer():
 
 def test_get_command_validity(buzzer):
     assert buzzer.get_command_validity("my command") == "valid"
+
+@pytest.fixture(autouse=True)
+def reset_robo_object():
+    yield
+    RoboObject._boardPinsInUse.clear()
+    RoboObject._commandsInUse.clear()
 
 @patch("RPi.GPIO.output")
 @patch("buzzer.sleep")
