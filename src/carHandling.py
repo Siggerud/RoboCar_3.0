@@ -147,10 +147,12 @@ class CarHandling(RoboObject):
                                                        self._speed_commands,
                                                        self._exact_speed_commands])
 
-    def get_current_speed(self) -> int:
+    @property
+    def current_speed(self) -> int:
         return int(self._speed)
 
-    def get_current_turn_value(self) -> str:
+    @property
+    def current_turn_value(self) -> str:
         return self._direction
 
     def _set_exact_speed_commands(self, userCommand: str) -> dict:

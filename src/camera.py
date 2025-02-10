@@ -92,7 +92,8 @@ class Camera:
         self._arrayDict.update({"horizontal servo": self._indexCounter, "vertical servo": + 1})
         self._indexCounter += 2
 
-    def get_array_dict(self) -> dict[str: int]:
+    @property
+    def array_dict(self) -> dict[str: int]:
         return self._arrayDict
 
     def _setup(self) -> None:

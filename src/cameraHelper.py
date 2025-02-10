@@ -107,8 +107,8 @@ class CameraHelper(RoboObject):
             shared_array[self._arrayDict["vertical servo"]] = self._servo.get_current_servo_angle("vertical")
 
         if self._car:
-            shared_array[self._arrayDict["speed"]] = self._car.get_current_speed()
-            shared_array[self._arrayDict["direction"]] = self._directionValue_to_number[self._car.get_current_turn_value()]
+            shared_array[self._arrayDict["speed"]] = self._car.current_speed
+            shared_array[self._arrayDict["direction"]] = self._directionValue_to_number[self._car.current_turn_value]
 
         shared_array[self._arrayDict["HUD"]] = float(self._hudActive)
         shared_array[self._arrayDict["Zoom"]] = self._zoomValue
@@ -119,12 +119,6 @@ class CameraHelper(RoboObject):
             self._zoomExactCommands,
             self._zoomIncrementCommands
         ])
-
-    def get_HUD_active(self) -> bool:
-        return self._hudActive
-
-    def get_zoom_value(self) -> float:
-        return self._zoomValue
 
     def set_array_dict(self, arrayDict: dict[str: int]) -> None:
         self._arrayDict = arrayDict

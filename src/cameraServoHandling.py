@@ -94,7 +94,7 @@ class CameraServoHandling(RoboObject):
             self._center_servo_positions()
 
     def get_current_servo_angle(self, plane) -> int:
-        return self._servos[plane].get_current_angle()
+        return self._servos[plane].current_angle
 
     def cleanup(self) -> None:
         self._center_servo_positions()  # center camera when exiting

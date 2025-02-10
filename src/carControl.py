@@ -16,7 +16,8 @@ class CarControl:
 
         self.shared_flag = Value('b', False)
 
-    def get_flag(self) -> Value:
+    @property
+    def flag(self) -> Value:
         return self.shared_flag
 
     def start(self) -> None:

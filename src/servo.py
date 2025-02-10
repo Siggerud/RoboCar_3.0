@@ -25,7 +25,8 @@ class Servo:
         self.pi.set_servo_pulsewidth(self._servoPin, self._angleToPwm[angle])
         self._current_angle = angle
 
-    def get_current_angle(self) -> int:
+    @property
+    def current_angle(self) -> int:
         return self._current_angle
 
     def _get_angle_mapped_to_pwm_values(self) -> dict[int: float]:

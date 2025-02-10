@@ -248,7 +248,7 @@ def setup_command_handler(parser, camera):
 
     # setup camerahelper
     cameraHelper = setup_camera_helper(parser, car, servo)
-    cameraHelper.set_array_dict(camera.get_array_dict())
+    cameraHelper.set_array_dict(camera.array_dict)
 
     # setup signal lights
     signalLights = setup_signal_lights(parser)
@@ -272,7 +272,7 @@ camera = setup_camera(parser)
 commandHandler = setup_command_handler(parser, camera)
 
 audioHandler = setup_audio_handler(parser)
-audioHandler.setup(commandHandler.get_queue())
+audioHandler.setup(commandHandler.queue)
 
 # setup car controller
 try:
@@ -283,7 +283,7 @@ except X11ForwardingError as e:
 # start car
 carController.start()
 
-shared_flag = carController.get_flag()
+shared_flag = carController.flag
 # keep process running until keyboard interrupt
 try:
     audioHandler.set_audio_command(shared_flag)

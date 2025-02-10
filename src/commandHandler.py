@@ -26,7 +26,8 @@ class CommandHandler:
 
         self._queue = Queue()
 
-    def get_queue(self) -> Queue:
+    @property
+    def queue(self) -> Queue:
         return self._queue
 
     def print_start_up_message(self) -> None:
