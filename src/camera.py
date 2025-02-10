@@ -152,7 +152,7 @@ class Camera:
             if self._servoEnabled:
                 horizontalAngleValue = int(shared_array[self._arrayDict["horizontal servo"]])
                 verticalAngleValue = int(shared_array[self._arrayDict["vertical servo"]])
-
+                print(verticalAngleValue)
                 angleText: str = f"Angle: H{horizontalAngleValue}/V{verticalAngleValue}"
                 cv2.putText(image, angleText, self._get_origin(counter), self._font, self._scale, self._colour,
                             self._thickness)
