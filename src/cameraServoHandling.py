@@ -94,13 +94,11 @@ class CameraServoHandling(RoboObject):
             self._center_servo_positions()
 
     def get_current_servo_angle(self, plane) -> int:
-        return self._servos[plane].get_current_angle()
+        return self._servos[plane].current_angle
 
     def cleanup(self) -> None:
-        print("Cleaning up servos")
         self._center_servo_positions()  # center camera when exiting
         for servo in list(self._servos.values()):
-            servo.move_to_angle(self._neutralAngle)
             servo.cleanup()
 
     def print_commands(self) -> None:
@@ -120,11 +118,11 @@ class CameraServoHandling(RoboObject):
         if command in self._angleCommands:
             plane = self._angleCommands[command]["plane"]
 
-            if self._servos[plane].get_current_angle() == self._angleCommands[command]["angle"]:
+            if self._servos[plane].current_angle == self._angleCommands[command]["angle"]:
                 return "partially valid"
 
         elif command in self._lookCenterCommand:
-            if self._servos["horizontal"].get_current_angle() == self._neutralAngle and self._servos["vertical"].get_current_angle() == self._neutralAngle:
+            if self._servos["horizontal"].current_angle == self._neutralAngle and self._servos["vertical"].get_current_angle() == self._neutralAngle:
                 return "partially valid"
 
         return "valid"

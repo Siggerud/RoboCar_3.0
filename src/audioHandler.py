@@ -1,7 +1,7 @@
 import speech_recognition as sr
 import sounddevice  # to avoid lots of ALSA error
 import subprocess
-from time import sleep
+from time import sleep, time
 
 class AudioHandler:
 
@@ -24,30 +24,36 @@ class AudioHandler:
         # Reading Microphone as source
         # listening the speech and store in audio_text variable
         with sr.Microphone(device_index=self._deviceIndex) as source:
-            self._recognizer.adjust_for_ambient_noise(source)
+            while not flag.value:
+                # adjust to ambient noise on each go
+                self._recognizer.adjust_for_ambient_noise(source)
+                print("Talk")
+                while True:
+                    audio_text: str = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
+                    try:
+                        # using google speech recognition
+                        spokenWords = self._recognizer.recognize_google(audio_text, language=self._languageCode)
+                        break
+                    except sr.UnknownValueError:
+                        # if nothing intelligible is picked up, then try again
+                        continue
+                    except sr.RequestError as e:
+                        print(f"Could not request results from Google Speech Recognition; {e}")
+                        break
 
-            print("Talk")
-            while True:
-                audio_text: str = self._recognizer.listen(source, timeout=None, phrase_time_limit=3)
-                try:
-                    # using google speech recognition
-                    spokenWords = self._recognizer.recognize_google(audio_text, language=self._languageCode)
+                spokenWords = self._clean_up_spoken_words(spokenWords)
+
+                # set the command in IPC
+                self._queue.put(spokenWords)
+
+                # set flag value to true if command is exit command and break out of loop
+                if spokenWords == self._exitCommand:
+                    flag.value = True
                     break
-                except sr.UnknownValueError:
-                    # if nothing intelligible is picked up, then try again
-                    continue
-                except sr.RequestError as e:
-                    print(f"Could not request results from Google Speech Recognition; {e}")
-                    break
 
-            spokenWords = self._clean_up_spoken_words(spokenWords)
-
-            # set flag value to true if command is exit command
-            if spokenWords == self._exitCommand:
-                flag.value = True
-
-            # set the command in IPC
-            self._queue.put(spokenWords)
+                # give some time for the user to observe the effects of the command given before
+                # getting ready for the next command
+                sleep(0.3)
 
     def _clean_up_spoken_words(self, spokenWords: str) -> str:
         if "°" in spokenWords:  # change out degree symbol

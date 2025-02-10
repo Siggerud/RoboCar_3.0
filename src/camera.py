@@ -30,7 +30,11 @@ class Camera:
         self._fps: float = 0.0
         self._fpsPos: tuple = (10, 30)
 
-        self._arrayDict = None
+        self._arrayDict: dict[str: int] = {
+            "HUD": 0,
+            "Zoom": 1
+        }
+        self._indexCounter: int = len(self._arrayDict)
 
         self._number_to_directionValue: dict = {
             0: "Stopped",
@@ -40,44 +44,37 @@ class Camera:
             4: "Reverse"
         }
 
-    def setup(self) -> None:
-        self._picam2 = Picamera2()
+    def show_camera_feed(self, flag, shared_array) -> None:
+        self._setup()
 
-        # set resolution, format and rotation of camera feed
-        config = self._picam2.create_preview_configuration(
-            {"size": (self._dispW, self._dispH), "format": "RGB888"}
-        )
-        self._picam2.configure(config)
-        self._picam2.start()
+        while not flag.value:
+            tStart: float = time() # start timer for calculating fps
 
-    def show_camera_feed(self, shared_array) -> None:
-        tStart: float = time() # start timer for calculating fps
+            # get raw image
+            im = self._picam2.capture_array()
 
-        # get raw image
-        im = self._picam2.capture_array()
+            # flip image if specified by user
+            if self._rotation:
+                im = cv2.flip(im, -1)
 
-        # flip image if specified by user
-        if self._rotation:
-            im = cv2.flip(im, -1)
+            # set HUD active or inactive
+            self._set_HUD_active_value(shared_array)
 
-        # set HUD active or inactive
-        self._set_HUD_active_value(shared_array)
+            # set zoom value
+            self._set_zoom_value(shared_array)
 
-        # set zoom value
-        self._set_zoom_value(shared_array)
+            # resize image when zooming
+            if self._zoomValue != 1.0:
+                im = self._get_zoomed_image(im)
 
-        # resize image when zooming
-        if self._zoomValue != 1.0:
-            im = self._get_zoomed_image(im)
+            # add fps and control values to cam feed
+            self._add_text_to_cam_feed(im, shared_array)
 
-        # add fps and control values to cam feed
-        self._add_text_to_cam_feed(im, shared_array)
+            cv2.imshow("Camera", im)
+            cv2.waitKey(1)
 
-        cv2.imshow("Camera", im)
-        cv2.waitKey(1)
-
-        # calculate fps
-        self._calculate_fps(tStart)
+            # calculate fps
+            self._calculate_fps(tStart)
 
     def cleanup(self) -> None:
         cv2.destroyAllWindows()
@@ -86,11 +83,28 @@ class Camera:
     def set_car_enabled(self) -> None:
         self._carEnabled = True
 
+        self._arrayDict.update({"speed": self._indexCounter, "direction": self._indexCounter + 1})
+        self._indexCounter += 2
+
     def set_servo_enabled(self) -> None:
         self._servoEnabled = True
 
-    def add_array_dict(self, arrayDict: dict) -> None:
-        self._arrayDict = arrayDict
+        self._arrayDict.update({"horizontal servo": self._indexCounter, "vertical servo": self._indexCounter + 1})
+        self._indexCounter += 2
+
+    @property
+    def array_dict(self) -> dict[str: int]:
+        return self._arrayDict
+
+    def _setup(self) -> None:
+        self._picam2 = Picamera2()
+
+        # set resolution, format and rotation of camera feed
+        config = self._picam2.create_preview_configuration(
+            {"size": (self._dispW, self._dispH), "format": "RGB888"}
+        )
+        self._picam2.configure(config)
+        self._picam2.start()
 
     def _set_text_positions(self) -> list[tuple]:
         spacingVertical: int = 30

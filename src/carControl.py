@@ -1,68 +1,38 @@
 import subprocess
-from multiprocessing import Process, Array, Value, Queue
+from multiprocessing import Process, Array, Value
 import RPi.GPIO as GPIO
 from stabilizer import Stabilizer
 from time import sleep
 
 class CarControl:
-    def __init__(self, car, servo, camera, cameraHelper, honk, signalLights, stabilizer, exitCommand):
+    def __init__(self, camera, commandHandler, stabilizer):
         self._check_if_X11_connected()
 
-        self._car = car
-        self._servo = servo
-        self._cameraHelper = cameraHelper
-        self._honk = honk
-        self._roboObjects: list = [
-            self._car,
-            self._servo,
-            self._cameraHelper,
-            self._honk
-        ]
+        self._camera = camera
+        self._commandHandler = commandHandler
 
         self._stabilizer = stabilizer
 
-        self._camera = camera
-        self._signalLights = signalLights
-
         self._processes: list = []
-        self._exitCommand: str = exitCommand
 
-        self._commandToObjects: dict[str: object] = self._get_all_objects_mapped_to_commands()
-
-        self._commandValidityToSignalColor: dict = {
-            "valid": "green",
-            "partially valid": "yellow",
-            "invalid": "red"
-        }
-
-        self.shared_array = self._get_shared_array(self._cameraHelper.get_array_dict())
+        self.shared_array = self._get_shared_array(self._camera.array_dict)
 
         self.shared_flag = Value('b', False)
-        self._queue = Queue()
 
-    def get_flag(self) -> Value:
+    @property
+    def flag(self) -> Value:
         return self.shared_flag
 
-    def get_queue(self) -> Queue:
-        return self._queue
-
     def start(self) -> None:
-        self._print_start_up_message()
-
-        self._get_camera_ready()
-
         # start processes
         self._activate_camera()
         self._activate_voice_command_handling()
         self._start_car_stabilization()
 
     def cleanup(self) -> None:
-        # close all threads
+        # close all processes
         for process in self._processes:
             process.join()
-
-    def _get_camera_ready(self) -> None:
-        self._set_shared_array_dict()
 
     def _get_shared_array(self, shared_array_dict) -> Array:
         # initialize the array list with the same size as the dict that corresponds to the array
@@ -73,19 +43,6 @@ class CarControl:
         arrayList[shared_array_dict["Zoom"]] = 1.0
 
         return Array('d', arrayList)
-
-    def _print_start_up_message(self) -> None:
-        for roboObject in self._roboObjects:
-            roboObject.print_commands()
-
-        print(f"Exit command : {self._exitCommand}")
-        print()
-
-    def _set_shared_array_dict(self) -> None:
-        arrayDict: dict = {}
-        cameraInputs: list = ["speed", "direction", "horizontal servo", "vertical servo", "HUD", "Zoom"]
-        for index, cameraInput in enumerate(cameraInputs):
-            arrayDict[cameraInput] = index
 
     def _activate_camera(self) -> None:
         process = Process(target=self._start_camera, args=(self.shared_array, self.shared_flag))
@@ -103,7 +60,7 @@ class CarControl:
     def _activate_voice_command_handling(self) -> None:
         process = Process(
             target=self._GPIO_Process,
-            args=(self._start_listening_for_voice_commands, self.shared_flag)
+            args=(self._start_listening_for_voice_commands, self.shared_flag, self.shared_array)
         )
         self._processes.append(process)
         process.start()
@@ -121,66 +78,23 @@ class CarControl:
         except KeyboardInterrupt:
             flag.value = True
 
-    def _start_listening_for_voice_commands(self, flag) -> None:
-        # setup objects
-        for roboObject in self._roboObjects:
-            roboObject.setup()
-        #TODO: add try catch for keyboard interrupt for all processes
-        self._signalLights.setup()
+    def _start_listening_for_voice_commands(self, flag, shared_array) -> None:
+        self._commandHandler.print_start_up_message()
 
         try:
-            while not flag.value:
-                command: str = self._queue.get()
-
-                if command == self._exitCommand:
-                    break
-
-                try:
-                    commandValidity: str = self._commandToObjects[command].get_command_validity(command)
-                except KeyError:
-                    commandValidity: str = "invalid"
-
-                # signal if the command was valid, partially valid or invalid
-                signalColor = self._commandValidityToSignalColor[commandValidity]
-                self._signalLights.blink(signalColor)
-
-                # execute command if it is valid
-                if commandValidity == "valid":
-                    self._commandToObjects[command].handle_voice_command(command)
-                    self._cameraHelper.update_control_values_for_video_feed(self.shared_array)
+            self._commandHandler.execute_commands(flag, shared_array)
         except KeyboardInterrupt:
             flag.value = True
         finally:
-            # cleanup objects
-            for roboObject in self._roboObjects:
-                roboObject.cleanup()
+            self._commandHandler.cleanup()
 
     def _start_camera(self, shared_array, flag) -> None:
-        self._camera.setup()
-
         try:
-            while not flag.value:
-                self._camera.show_camera_feed(shared_array)
+            self._camera.show_camera_feed(flag, shared_array)
         except KeyboardInterrupt:
             flag.value = True
         finally:
             self._camera.cleanup()
-
-    def _get_all_objects_mapped_to_commands(self) -> dict:
-        objectsToCommands: dict = {}
-
-        # add commands from all robot objects
-        for roboObject in self._roboObjects:
-            objectsToCommands.update(self._add_object_to_commands(roboObject))
-
-        return objectsToCommands
-
-    def _add_object_to_commands(self, roboObject) -> dict:
-        objectToCommands: dict = {}
-        for command in roboObject.get_voice_commands():
-            objectToCommands[command] = roboObject
-
-        return objectToCommands
 
     def _check_if_X11_connected(self) -> None:
         treshold: int = 5

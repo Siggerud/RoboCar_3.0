@@ -49,10 +49,10 @@ class CameraHelper(RoboObject):
             zoomCommands["zoomOutCommand"]: {"description": "zooms out by the default increment value"}
         }
 
-        self._arrayDict: dict = self._set_array_dict()
+        self._arrayDict: dict[str: int] = None
 
         # mainly for printing at startup
-        self._variableCommands: dict = {
+        self._variableCommands: dict[str: dict] = {
             zoomCommands["zoomExactCommand"].replace("param", "zoom"): {
                 "description": "Zooms camera to the specified zoom value"
             }
@@ -107,8 +107,8 @@ class CameraHelper(RoboObject):
             shared_array[self._arrayDict["vertical servo"]] = self._servo.get_current_servo_angle("vertical")
 
         if self._car:
-            shared_array[self._arrayDict["speed"]] = self._car.get_current_speed()
-            shared_array[self._arrayDict["direction"]] = self._directionValue_to_number[self._car.get_current_turn_value()]
+            shared_array[self._arrayDict["speed"]] = self._car.current_speed
+            shared_array[self._arrayDict["direction"]] = self._directionValue_to_number[self._car.current_turn_value]
 
         shared_array[self._arrayDict["HUD"]] = float(self._hudActive)
         shared_array[self._arrayDict["Zoom"]] = self._zoomValue
@@ -120,20 +120,8 @@ class CameraHelper(RoboObject):
             self._zoomIncrementCommands
         ])
 
-    def get_HUD_active(self) -> bool:
-        return self._hudActive
-
-    def get_zoom_value(self) -> float:
-        return self._zoomValue
-
-    def get_array_dict(self) -> dict:
-        return self._arrayDict
-
-    def _set_array_dict(self) -> dict:
-        cameraInputs = ["speed", "direction"] if self._car else []
-        cameraInputs += ["horizontal servo", "vertical servo"] if self._servo else []
-        cameraInputs += ["HUD", "Zoom"]
-        return {cameraInput: index for index, cameraInput in enumerate(cameraInputs)}
+    def set_array_dict(self, arrayDict: dict[str: int]) -> None:
+        self._arrayDict = arrayDict
 
     def _set_hud_value(self, command: str) -> None:
         self._hudActive = self._hudCommands[command]["hudValue"]

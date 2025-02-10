@@ -3,6 +3,7 @@ from camera import Camera
 from cameraHelper import CameraHelper
 from cameraServoHandling import CameraServoHandling
 from carControl import CarControl, X11ForwardingError
+from commandHandler import CommandHandler
 from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
 from os import path
@@ -11,7 +12,7 @@ from audioHandler import AudioHandler, MicrophoneException
 from buzzer import Buzzer
 from stabilizer import Stabilizer, StabilizerException
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
-
+#TODO: add all exceptions in the same file
 def print_error_message_and_exit(errorMessage):
     RobocarHelper.print_startup_error(errorMessage)
     exit()
@@ -255,7 +256,7 @@ def setup_stabilizer():
 
     return stabilizer
 
-def setup_car_controller(parser):
+def setup_command_handler(parser, camera):
     # setup car
     car = setup_car(parser)
 
@@ -265,16 +266,13 @@ def setup_car_controller(parser):
     # setup honk
     honk = setup_buzzer(parser)
 
-    # setup camera
-    camera = setup_camera(parser)
-
-    # setup camerahelper
-    cameraHelper = setup_camera_helper(parser, car, servo)
-
     # enable objects in camera class
     camera.set_car_enabled()
     camera.set_servo_enabled()
-    camera.add_array_dict(cameraHelper.get_array_dict())
+
+    # setup camerahelper
+    cameraHelper = setup_camera_helper(parser, car, servo)
+    cameraHelper.set_array_dict(camera.array_dict)
 
     # setup signal lights
     signalLights = setup_signal_lights(parser)
@@ -284,32 +282,38 @@ def setup_car_controller(parser):
 
     exitCommand = parser["Global.commands"]["exit"]
 
-    # set up car controller
-    try:
-        carController = CarControl(car, servo, camera, cameraHelper, honk, signalLights, stabilizer, exitCommand)
-    except (X11ForwardingError) as e:
-        print_error_message_and_exit(e)
+    # set up command handler
+    commandHandler = CommandHandler(car, servo, cameraHelper, honk, signalLights, exitCommand)
 
-    return carController
+    return commandHandler
 
 
 # set up parser to read input values
 parser = ConfigParser()
 parser.read(path.join(path.dirname(__file__), 'config.ini'))
 
-carController = setup_car_controller(parser)
+# setup camera
+camera = setup_camera(parser)
+
+# setup command handler
+commandHandler = setup_command_handler(parser, camera)
 
 audioHandler = setup_audio_handler(parser)
-audioHandler.setup(carController.get_queue())
+audioHandler.setup(commandHandler.queue)
+
+# setup car controller
+try:
+    carController = CarControl(camera, commandHandler)
+except X11ForwardingError as e:
+    print_error_message_and_exit(e)
 
 # start car
 carController.start()
 
-shared_flag = carController.get_flag()
+shared_flag = carController.flag
 # keep process running until keyboard interrupt
 try:
-    while not shared_flag.value:
-        audioHandler.set_audio_command(shared_flag)
+    audioHandler.set_audio_command(shared_flag)
 except KeyboardInterrupt:
     shared_flag.value = True # set event to stop all active processes
 finally:
