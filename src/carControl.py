@@ -12,7 +12,7 @@ class CarControl:
 
         self._processes: list = []
 
-        self.shared_array = self._get_shared_array(self._camera.get_array_dict())
+        self.shared_array = self._get_shared_array(self._camera.array_dict)
 
         self.shared_flag = Value('b', False)
 
