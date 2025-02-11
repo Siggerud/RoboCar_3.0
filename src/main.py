@@ -251,7 +251,7 @@ def setup_stabilizer():
     }
 
     try:
-        motionTrackingDevice = (rollAxis, pitchAxis, offsets)
+        motionTrackingDevice = MotionTrackingDevice(rollAxis, pitchAxis, offsets)
     except MotionTrackingDeviceException as e:
         print_error_message_and_exit(e)
 
