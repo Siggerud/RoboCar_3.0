@@ -242,6 +242,8 @@ def setup_stabilizer():
     try:
         offsetX: float = stabilizerSpecs.getfloat("offset_x")
         offsetY: float = stabilizerSpecs.getfloat("offset_y")
+        rollTreshold: int = stabilizerSpecs.getint("roll_treshold")
+        pitchTreshold: int = stabilizerSpecs.getint("pitch_treshold")
     except ValueError as e:
         print_error_message_and_exit(e)
 
@@ -255,7 +257,7 @@ def setup_stabilizer():
     except MotionTrackingDeviceException as e:
         print_error_message_and_exit(e)
 
-    return Stabilizer(motionTrackingDevice)
+    return Stabilizer(motionTrackingDevice, rollTreshold, pitchTreshold)
 
 
 def setup_command_handler(parser, camera):
