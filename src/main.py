@@ -10,7 +10,8 @@ from os import path
 from signalLights import SignalLights
 from audioHandler import AudioHandler, MicrophoneException
 from buzzer import Buzzer
-from stabilizer import Stabilizer, StabilizerException
+from stabilizer import Stabilizer
+from motionTrackingDevice import MotionTrackingDevice, MotionTrackingDeviceException
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
 #TODO: add all exceptions in the same file
 def print_error_message_and_exit(errorMessage):
@@ -250,11 +251,12 @@ def setup_stabilizer():
     }
 
     try:
-        stabilizer = Stabilizer(rollAxis, pitchAxis, offsets)
-    except StabilizerException as e:
+        motionTrackingDevice = (rollAxis, pitchAxis, offsets)
+    except MotionTrackingDeviceException as e:
         print_error_message_and_exit(e)
 
-    return stabilizer
+    return Stabilizer(motionTrackingDevice)
+
 
 def setup_command_handler(parser, camera):
     # setup car
