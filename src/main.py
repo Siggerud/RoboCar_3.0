@@ -282,7 +282,7 @@ except X11ForwardingError as e:
 
 # start car
 carController.start()
-
+#TODO: try to put this into CarControl.start() instead
 shared_flag = carController.flag
 # keep process running until keyboard interrupt
 try:
