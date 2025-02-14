@@ -2,7 +2,7 @@ from carHandling import CarHandling
 from camera import Camera
 from cameraHelper import CameraHelper
 from cameraServoHandling import CameraServoHandling
-from carControl import CarControl, X11ForwardingError
+from carControl import CarControl
 from commandHandler import CommandHandler
 from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
@@ -10,12 +10,11 @@ from servo import Servo
 from motorDriver import MotorDriver
 from os import path
 from signalLights import SignalLights
-from audioHandler import AudioHandler, MicrophoneException
+from audioHandler import AudioHandler
 from buzzer import Buzzer
-from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
+from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException, X11ForwardingException, MicrophoneException
 
 
-# TODO: add all exceptions in the same file
 def print_error_message_and_exit(errorMessage):
     RobocarHelper.print_startup_error(errorMessage)
     exit()
@@ -297,7 +296,7 @@ audioHandler.setup(commandHandler.queue)
 # setup car controller
 try:
     carController = CarControl(camera, commandHandler, audioHandler)
-except X11ForwardingError as e:
+except X11ForwardingException as e:
     print_error_message_and_exit(e)
 
 # start car

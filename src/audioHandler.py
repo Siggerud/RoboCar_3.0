@@ -1,7 +1,8 @@
 import speech_recognition as sr
 import sounddevice  # to avoid lots of ALSA error
 import subprocess
-from time import sleep, time
+from time import sleep
+from exceptions import MicrophoneException
 
 class AudioHandler:
     def __init__(self, exitCommand: str, language: str, microphoneName: str):
@@ -138,5 +139,4 @@ class AudioHandler:
             return "en-US"
 
 
-class MicrophoneException(Exception):
-    pass
+

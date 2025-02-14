@@ -5,6 +5,7 @@ from time import sleep
 from camera import Camera
 from commandHandler import CommandHandler
 from audioHandler import AudioHandler
+from exceptions import X11ForwardingException
 
 class CarControl:
     def __init__(self, camera, commandHandler, audioHandler):
@@ -103,11 +104,9 @@ class CarControl:
                           f"Number of retries: {treshold - numOfTries}\n")
                     sleep(sleepTime)
         except KeyboardInterrupt:
-            raise X11ForwardingError("User aborted connecting to forwarded X11 server")
+            raise X11ForwardingException("User aborted connecting to forwarded X11 server")
 
-        raise X11ForwardingError("X11 forwarding not detected.")
+        raise X11ForwardingException("X11 forwarding not detected.")
 
 
-class X11ForwardingError(Exception):
-    pass
 
