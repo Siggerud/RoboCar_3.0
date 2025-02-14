@@ -1,35 +1,23 @@
-import RPi.GPIO as GPIO
 from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
-from gpioValues import GpioValues
+from motorDriver import MotorDriver
+
 
 class CarHandling(RoboObject):
-    #TODO: add a seperate motor or l289 class
     def __init__(self,
-                 leftBackward: int,
-                 leftForward: int,
-                 rightBackward: int,
-                 rightForward: int,
-                 enA: int,
-                 enB: int,
+                 motorDriver: MotorDriver,
                  pwmMinTT: int,
                  pwmMaxTT: int,
                  speedStep: int,
                  userCommands: dict):
         super().__init__(
-            [leftBackward, leftForward, rightBackward, rightForward, enA, enB],
+            [motorDriver.pins],
             {**userCommands["direction"], **userCommands["speed"]},
             pwmMinTT=pwmMinTT,
             pwmMaxTT=pwmMaxTT,
             speedStep=speedStep
         )
-
-        self._leftBackward: int = leftBackward
-        self._leftForward: int = leftForward
-        self._rightBackward: int = rightBackward
-        self._rightForward: int = rightForward
-        self._enA: int = enA
-        self._enB: int = enB
+        self._motorDriver = motorDriver
 
         self._pwmMinTT: int = pwmMinTT
         self._pwmMaxTT: int = pwmMaxTT
@@ -38,16 +26,6 @@ class CarHandling(RoboObject):
 
         self._speed: int = self._pwmMinTT
 
-        self._turnLeft: bool = False
-        self._turnRight: bool = False
-        self._goForward: bool = False
-        self._goReverse: bool = False
-
-        self._gpioThrottle = None
-
-        self._pwmA = None
-        self._pwmB = None
-
         self._direction: str = "Stopped"
 
         self._userCommands: dict = userCommands
@@ -55,15 +33,17 @@ class CarHandling(RoboObject):
         directionCommands: dict[str: str] = userCommands["direction"]
         self._direction_commands: dict[str: dict] = {
             directionCommands["turnLeftCommand"]: {"description": "Turns car left",
-                                                   "gpioValues": GpioValues(False, True, True, False), "direction": "Left"},
+                                                   "direction": "Left"},
             directionCommands["turnRightCommand"]: {"description": "Turns car right",
-                                                    "gpioValues": GpioValues(True, False, False, True), "direction": "Right"},
+                                                    "direction": "Right"},
             directionCommands["driveCommand"]: {"description": "Drives car forward",
-                                                "gpioValues": GpioValues(False, False, True, True), "direction": "Forward"},
+                                                "direction": "Forward"},
             directionCommands["reverseCommand"]: {"description": "Reverses car",
-                                                  "gpioValues": GpioValues(True, True, False, False), "direction": "Reverse"},
-            directionCommands["stopCommand"]: {"description": "Stops car", "gpioValues": GpioValues(False, False, False, False),
+                                                  "direction": "Reverse"},
+            directionCommands["stopCommand"]: {"description": "Stops car",
                                                "direction": "Stopped"},
+            directionCommands["neutralCommand"]: {"description": "Sets car to neutral",
+                                                  "direction": "Neutral"}
         }
 
         speedCommands: dict[str: str] = userCommands["speed"]
@@ -84,28 +64,12 @@ class CarHandling(RoboObject):
         }
 
     def setup(self) -> None:
-        GPIO.setup(self._leftBackward, GPIO.OUT)
-        GPIO.setup(self._leftForward, GPIO.OUT)
-        GPIO.setup(self._rightBackward, GPIO.OUT)
-        GPIO.setup(self._rightForward, GPIO.OUT)
-        GPIO.setup(self._enA, GPIO.OUT)
-        GPIO.setup(self._enB, GPIO.OUT)
-
-        self._pwmA = GPIO.PWM(self._enA, 100)
-        self._pwmB = GPIO.PWM(self._enB, 100)
-
-        self._pwmA.start(self._speed)
-        self._pwmB.start(self._speed)
-
-        self._gpioThrottle = {True: GPIO.HIGH, False: GPIO.LOW}
+        self._motorDriver.setup(self._speed)
 
     def handle_voice_command(self, command: str) -> None:
         if command in self._direction_commands:
-            newGpioValues = self._direction_commands[command]["gpioValues"]
-            self._adjust_gpio_values(newGpioValues)
-            self._adjust_direction_value(self._direction_commands[command]["direction"])
+            self._adjust_direction(self._direction_commands[command]["direction"])
         elif command in self._speed_commands or command in self._exact_speed_commands:
-            print("Adjusting speed...")
             self._adjust_speed(command)
 
     def print_commands(self) -> None:
@@ -140,8 +104,7 @@ class CarHandling(RoboObject):
         return "valid"
 
     def cleanup(self) -> None:
-        self._pwmA.stop()
-        self._pwmB.stop()
+        self._motorDriver.cleanup()
 
     def get_voice_commands(self) -> list[str]:
         return RobocarHelper.chain_together_dict_keys([self._direction_commands,
@@ -183,17 +146,24 @@ class CarHandling(RoboObject):
                 self._speed = newSpeed
 
         if adjustSpeed:
-            self._change_duty_cycle()
+            self._change_speed()
 
-    def _change_duty_cycle(self) -> None:
-        for pwm in [self._pwmA, self._pwmB]:
-            pwm.ChangeDutyCycle(self._speed)
+    def _change_speed(self) -> None:
+        self._motorDriver.change_speed(self._speed)
 
-    def _adjust_gpio_values(self, gpioValues: GpioValues) -> None:
-        GPIO.output(self._leftForward, self._gpioThrottle[gpioValues.leftForward])
-        GPIO.output(self._rightForward, self._gpioThrottle[gpioValues.rightForward])
-        GPIO.output(self._leftBackward, self._gpioThrottle[gpioValues.leftBackward])
-        GPIO.output(self._rightBackward, self._gpioThrottle[gpioValues.rightBackward])
+    def _adjust_direction(self, direction) -> None:
+        if direction == "Forward":
+            self._motorDriver.drive()
+        elif direction == "Reverse":
+            self._motorDriver.reverse()
+        elif direction == "Left":
+            self._motorDriver.turn_left()
+        elif direction == "Right":
+            self._motorDriver.turn_right()
+        elif direction == "Neutral":
+            self._motorDriver.neutral()
+        elif direction == "Stop":
+            self._motorDriver.stop()
 
     def _check_argument_validity(self, pins: list[int], userCommands: dict[str, str], **kwargs) -> None:
         super()._check_argument_validity(pins, userCommands, **kwargs)
