@@ -4,6 +4,7 @@ from roboObject import RoboObject
 from gpioValues import GpioValues
 
 class CarHandling(RoboObject):
+    #TODO: add a seperate motor or l289 class
     def __init__(self,
                  leftBackward: int,
                  leftForward: int,
