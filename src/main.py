@@ -276,23 +276,14 @@ audioHandler.setup(commandHandler.queue)
 
 # setup car controller
 try:
-    carController = CarControl(camera, commandHandler)
+    carController = CarControl(camera, commandHandler, audioHandler)
 except X11ForwardingError as e:
     print_error_message_and_exit(e)
 
 # start car
 carController.start()
 
-shared_flag = carController.flag
-# keep process running until keyboard interrupt
-try:
-    audioHandler.set_audio_command(shared_flag)
-except KeyboardInterrupt:
-    shared_flag.value = True # set event to stop all active processes
-finally:
-    # allow all processes to finish
-    carController.cleanup()
-    print("finished!")
+
 
 
 

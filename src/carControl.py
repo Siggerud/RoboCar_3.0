@@ -2,13 +2,17 @@ import subprocess
 from multiprocessing import Process, Array, Value
 import RPi.GPIO as GPIO
 from time import sleep
+from camera import Camera
+from commandHandler import CommandHandler
+from audioHandler import AudioHandler
 
 class CarControl:
-    def __init__(self, camera, commandHandler):
+    def __init__(self, camera, commandHandler, audioHandler):
         self._check_if_X11_connected()
 
-        self._camera = camera
-        self._commandHandler = commandHandler
+        self._camera: Camera = camera
+        self._commandHandler: CommandHandler = commandHandler
+        self._audioHandler: AudioHandler = audioHandler
 
         self._processes: list = []
 
@@ -16,16 +20,22 @@ class CarControl:
 
         self.shared_flag = Value('b', False)
 
-    @property
-    def flag(self) -> Value:
-        return self.shared_flag
-
     def start(self) -> None:
         # start processes
         self._activate_camera()
         self._activate_voice_command_handling()
 
-    def cleanup(self) -> None:
+        # running this in main thread since I've had issues with running the audio handler in subprocesses
+        try:
+            self._audioHandler.set_audio_command(self.shared_flag)
+        except KeyboardInterrupt:
+            self.shared_flag.value = True  # set event to stop all active processes
+        finally:
+            # allow all processes to finish
+            self._cleanup()
+            print("finished!")
+
+    def _cleanup(self) -> None:
         # close all processes
         for process in self._processes:
             process.join()
