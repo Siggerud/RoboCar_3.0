@@ -11,7 +11,7 @@ class CarHandling(RoboObject):
                  speedStep: int,
                  userCommands: dict):
         super().__init__(
-            [motorDriver.pins],
+            motorDriver.pins,
             {**userCommands["direction"], **userCommands["speed"]},
             pwmMinTT=pwmMinTT,
             pwmMaxTT=pwmMaxTT,
