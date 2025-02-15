@@ -66,12 +66,6 @@ class MotorDriver:
         GPIO.output(self._rightBackward, GPIO.LOW)
 
     def stop(self):
-        GPIO.output(self._leftForward, GPIO.HIGH)
-        GPIO.output(self._rightForward, GPIO.HIGH)
-        GPIO.output(self._leftBackward, GPIO.HIGH)
-        GPIO.output(self._rightBackward, GPIO.HIGH)
-
-    def neutral(self):
         GPIO.output(self._leftForward, GPIO.LOW)
         GPIO.output(self._rightForward, GPIO.LOW)
         GPIO.output(self._leftBackward, GPIO.LOW)

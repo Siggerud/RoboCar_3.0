@@ -213,7 +213,6 @@ def setup_car(parser):
         "driveCommand": carHandlingCommands["drive"],
         "reverseCommand": carHandlingCommands["reverse"],
         "stopCommand": carHandlingCommands["stop"],
-        "neutralCommand": carHandlingCommands["neutral"]
     }
 
     speedCommands: dict = {

@@ -41,9 +41,7 @@ class CarHandling(RoboObject):
             directionCommands["reverseCommand"]: {"description": "Reverses car",
                                                   "direction": "Reverse"},
             directionCommands["stopCommand"]: {"description": "Stops car",
-                                               "direction": "Stopped"},
-            directionCommands["neutralCommand"]: {"description": "Sets car to neutral",
-                                                  "direction": "Neutral"}
+                                               "direction": "Stopped"}
         }
 
         speedCommands: dict[str: str] = userCommands["speed"]
