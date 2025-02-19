@@ -2,21 +2,24 @@ from carHandling import CarHandling
 from camera import Camera
 from cameraHelper import CameraHelper
 from cameraServoHandling import CameraServoHandling
-from carControl import CarControl, X11ForwardingError
+from carControl import CarControl
 from commandHandler import CommandHandler
 from roboCarHelper import RobocarHelper
 from configparser import ConfigParser
+from servo import Servo
+from motorDriver import MotorDriver
 from os import path
 from signalLights import SignalLights
-from audioHandler import AudioHandler, MicrophoneException
+from audioHandler import AudioHandler
 from buzzer import Buzzer
 from stabilizer import Stabilizer
 from motionTrackingDevice import MotionTrackingDevice, MotionTrackingDeviceException
-from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException
-#TODO: add all exceptions in the same file
+from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException, X11ForwardingException, MicrophoneException
+
 def print_error_message_and_exit(errorMessage):
     RobocarHelper.print_startup_error(errorMessage)
     exit()
+
 
 def setup_signal_lights(parser):
     signalSpecs = parser["Signal.light.specs"]
@@ -37,12 +40,13 @@ def setup_signal_lights(parser):
 
     return signalLights
 
+
 def setup_camera(parser):
     cameraSpecs = parser["Camera.specs"]
 
     try:
-        resolutionWidth: int = cameraSpecs.getint("ResolutionWidth")
-        resolutionHeight: int = cameraSpecs.getint("ResolutionHeight")
+        resolutionWidth: int = cameraSpecs.getint("Resolution_width")
+        resolutionHeight: int = cameraSpecs.getint("Resolution_height")
     except ValueError as e:
         print_error_message_and_exit(e)
 
@@ -50,6 +54,7 @@ def setup_camera(parser):
     camera = Camera(resolution)
 
     return camera
+
 
 def setup_camera_helper(parser, *args):
     cameraCommands = parser["Camera.commands"]
@@ -109,19 +114,20 @@ def setup_buzzer(parser) -> Buzzer:
 
     return buzzer
 
+
 def setup_servo(parser):
     servoDataHorizontal = parser["Servo.handling.specs.horizontal"]
 
     try:
-        servoPinHorizontal: int = servoDataHorizontal.getint("ServoPin")
-        minAngleHorizontal: int = servoDataHorizontal.getint("MinAngle")
-        maxAngleHorizontal: int = servoDataHorizontal.getint("MaxAngle")
+        servoPinHorizontal: int = servoDataHorizontal.getint("servo_pin")
+        minAngleHorizontal: int = servoDataHorizontal.getint("min_angle")
+        maxAngleHorizontal: int = servoDataHorizontal.getint("max_angle")
 
         servoDataHorizontal = parser[f"Servo.handling.specs.vertical"]
 
-        servoPinVertical: int = servoDataHorizontal.getint("ServoPin")
-        minAngleVertical: int = servoDataHorizontal.getint("MinAngle")
-        maxAngleVertical: int = servoDataHorizontal.getint("MaxAngle")
+        servoPinVertical: int = servoDataHorizontal.getint("servo_pin")
+        minAngleVertical: int = servoDataHorizontal.getint("min_angle")
+        maxAngleVertical: int = servoDataHorizontal.getint("max_angle")
 
     except ValueError as e:
         print_error_message_and_exit(e)
@@ -148,9 +154,13 @@ def setup_servo(parser):
         "exactAngleCommands": exactAngleCommands
     }
 
+    horizontalServo: Servo = Servo(servoPinHorizontal)
+    verticalServo: Servo = Servo(servoPinVertical)
+
     try:
         servo = CameraServoHandling(
-            [servoPinHorizontal, servoPinVertical],
+            horizontalServo,
+            verticalServo,
             [minAngleHorizontal, minAngleVertical],
             [maxAngleHorizontal, maxAngleVertical],
             commands
@@ -159,6 +169,7 @@ def setup_servo(parser):
         print_error_message_and_exit(e)
 
     return servo
+
 
 def setup_audio_handler(parser):
     audioSpecs = parser["Audio.specs"]
@@ -174,21 +185,22 @@ def setup_audio_handler(parser):
 
     return audioHandler
 
+
 def setup_car(parser):
     carHandlingSpecs = parser["Car.handling.specs"]
 
     try:
         # define GPIO pins
-        rightForward: int = carHandlingSpecs.getint("RightForward")
-        rightBackward: int = carHandlingSpecs.getint("RightBackward")
-        leftForward: int = carHandlingSpecs.getint("LeftForward")
-        leftBackward: int = carHandlingSpecs.getint("LeftBackward")
-        enA: int = carHandlingSpecs.getint("EnA")
-        enB: int = carHandlingSpecs.getint("EnB")
+        rightForward: int = carHandlingSpecs.getint("right_forward")
+        rightBackward: int = carHandlingSpecs.getint("right_backward")
+        leftForward: int = carHandlingSpecs.getint("left_forward")
+        leftBackward: int = carHandlingSpecs.getint("left_backward")
+        enA: int = carHandlingSpecs.getint("enA")
+        enB: int = carHandlingSpecs.getint("enB")
 
         # define pwm values
-        minPwmTT: int = carHandlingSpecs.getint("MinimumMotorPWM")
-        maxPwmTT: int = carHandlingSpecs.getint("MaximumMotorPWM")
+        minPwmTT: int = carHandlingSpecs.getint("minimum_motor_PWM")
+        maxPwmTT: int = carHandlingSpecs.getint("maximum_motor_PWM")
 
         speedStep: int = carHandlingSpecs.getint("speed_step")
     except ValueError as e:
@@ -201,7 +213,7 @@ def setup_car(parser):
         "turnRightCommand": carHandlingCommands["turn_right"],
         "driveCommand": carHandlingCommands["drive"],
         "reverseCommand": carHandlingCommands["reverse"],
-        "stopCommand": carHandlingCommands["stop"]
+        "stopCommand": carHandlingCommands["stop"],
     }
 
     speedCommands: dict = {
@@ -215,15 +227,19 @@ def setup_car(parser):
         "speed": speedCommands
     }
 
+    motorDriver: MotorDriver = MotorDriver(
+        leftBackward,
+        leftForward,
+        rightBackward,
+        rightForward,
+        enA,
+        enB
+    )
+
     try:
         # define car handling
         car = CarHandling(
-            leftBackward,
-            leftForward,
-            rightBackward,
-            rightForward,
-            enA,
-            enB,
+            motorDriver,
             minPwmTT,
             maxPwmTT,
             speedStep,
@@ -233,6 +249,7 @@ def setup_car(parser):
         print_error_message_and_exit(e)
 
     return car
+
 
 def setup_stabilizer():
     stabilizerSpecs = parser["Stabilizer"]
@@ -309,27 +326,9 @@ stabilizer = setup_stabilizer()
 
 # setup car controller
 try:
-    carController = CarControl(camera, commandHandler, stabilizer)
-except X11ForwardingError as e:
+    carController = CarControl(camera, commandHandler, audioHandler, stabilizer)
+except X11ForwardingException as e:
     print_error_message_and_exit(e)
 
 # start car
 carController.start()
-
-shared_flag = carController.flag
-# keep process running until keyboard interrupt
-try:
-    audioHandler.set_audio_command(shared_flag)
-except KeyboardInterrupt:
-    shared_flag.value = True # set event to stop all active processes
-finally:
-    # allow all processes to finish
-    carController.cleanup()
-    print("finished!")
-
-
-
-
-
-
-

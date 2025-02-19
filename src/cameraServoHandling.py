@@ -1,11 +1,12 @@
 from servo import Servo
 from roboObject import RoboObject
 from roboCarHelper import RobocarHelper
+from servo import Servo
 
 class CameraServoHandling(RoboObject):
-    def __init__(self, servoPins: list[int], minAngles: list[int], maxAngles: list[int], userCommands: dict):
+    def __init__(self, horizontalServo: Servo, verticalServo: Servo, minAngles: list[int], maxAngles: list[int], userCommands: dict):
         super().__init__(
-            servoPins,
+            [horizontalServo.servoPin, verticalServo.servoPin],
             {**userCommands["basicCommands"], **userCommands["exactAngleCommands"]},
             minAngles=minAngles,
             maxAngles=maxAngles
@@ -22,8 +23,8 @@ class CameraServoHandling(RoboObject):
         }
 
         self._servos: dict = {
-            "horizontal": Servo(self._boardToBcmPins[servoPins[0]]),
-            "vertical": Servo(self._boardToBcmPins[servoPins[1]])
+            "horizontal": horizontalServo,
+            "vertical": verticalServo
         }
 
         self._neutralAngle: int = 0

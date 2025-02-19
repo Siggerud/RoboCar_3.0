@@ -1,6 +1,18 @@
+from raspberryPiPins import RaspberryPiPins
+
 class RobocarHelper:
     def __init__(self):
         pass
+
+    @staticmethod
+    def get_board_to_bcm_pins():
+        piPins = RaspberryPiPins()
+        return {boardPin: bcmPin for boardPin, bcmPin in zip(piPins.boardPins, piPins.bcmPins)}
+
+    @staticmethod
+    def get_bcm_to_board_pins():
+        piPins = RaspberryPiPins()
+        return {bcmPin: boardPin for boardPin, bcmPin in zip(piPins.boardPins, piPins.bcmPins)}
 
     @staticmethod
     def low_pass_filter(previousValue: float, currentValue: float, confidenceFactor:float=0.1) -> float:

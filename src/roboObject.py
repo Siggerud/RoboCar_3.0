@@ -1,14 +1,13 @@
 from exceptions import InvalidPinException, OutOfRangeException, InvalidCommandException
+from raspberryPiPins import RaspberryPiPins
 
 class RoboObject:
     _boardPinsInUse: list[int] = []
     _commandsInUse: list[str] = []
 
     def __init__(self, pins: list, commands: dict, **kwargs):
-        self._boardPins: list = [3, 5, 7, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24, 26, 29, 31, 32, 33, 35, 36, 37, 38, 40]
-        self._bcmPins: list = [2, 3, 4, 17, 18, 27, 22, 23, 24, 10, 9, 25, 11, 8, 7, 5, 6, 12, 13, 19, 16, 26, 20, 21]
-        self._boardToBcmPins: dict = self._get_board_to_bcm_pins()
-
+        piPins = RaspberryPiPins()
+        self._boardPins = piPins.boardPins
         self._check_argument_validity(pins, commands, **kwargs)
 
     def cleanup(self) -> None:
@@ -67,9 +66,6 @@ class RoboObject:
         placeholder = "{param}"
         if placeholder not in command:
             raise InvalidCommandException(f"Command {command} is missing the {{param}} placeholder")
-
-    def _get_board_to_bcm_pins(self) -> dict[int, int]:
-        return {boardPin: bcmPin for boardPin, bcmPin in zip(self._boardPins, self._bcmPins)}
 
     def _print_commands(self, title: str, dicts: dict[str, str]) -> None:
         maxCommandLength = max(len(command) for command in dicts.keys()) + 1

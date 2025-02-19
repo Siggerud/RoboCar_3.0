@@ -3,15 +3,19 @@ from multiprocessing import Process, Array, Value
 import RPi.GPIO as GPIO
 from stabilizer import Stabilizer
 from time import sleep
+from camera import Camera
+from commandHandler import CommandHandler
+from audioHandler import AudioHandler
+from exceptions import X11ForwardingException
 
 class CarControl:
-    def __init__(self, camera, commandHandler, stabilizer):
+    def __init__(self, camera, commandHandler, audioHandler, stabilizer):
         self._check_if_X11_connected()
 
-        self._camera = camera
-        self._commandHandler = commandHandler
-
-        self._stabilizer = stabilizer
+        self._camera: Camera = camera
+        self._commandHandler: CommandHandler = commandHandler
+        self._audioHandler: AudioHandler = audioHandler
+        self._stabilizer: Stabilizer = stabilizer
 
         self._processes: list = []
 
@@ -19,17 +23,23 @@ class CarControl:
 
         self.shared_flag = Value('b', False)
 
-    @property
-    def flag(self) -> Value:
-        return self.shared_flag
-
     def start(self) -> None:
         # start processes
         self._activate_camera()
         self._activate_voice_command_handling()
         self._start_car_stabilization()
 
-    def cleanup(self) -> None:
+        # running this in main thread since I've had issues with running the audio handler in subprocesses
+        try:
+            self._audioHandler.set_audio_command(self.shared_flag)
+        except KeyboardInterrupt:
+            self.shared_flag.value = True  # set event to stop all active processes
+        finally:
+            # allow all processes to finish
+            self._cleanup()
+            print("finished!")
+
+    def _cleanup(self) -> None:
         # close all processes
         for process in self._processes:
             process.join()
@@ -113,11 +123,9 @@ class CarControl:
                           f"Number of retries: {treshold - numOfTries}\n")
                     sleep(sleepTime)
         except KeyboardInterrupt:
-            raise X11ForwardingError("User aborted connecting to forwarded X11 server")
+            raise X11ForwardingException("User aborted connecting to forwarded X11 server")
 
-        raise X11ForwardingError("X11 forwarding not detected.")
+        raise X11ForwardingException("X11 forwarding not detected.")
 
 
-class X11ForwardingError(Exception):
-    pass
 
