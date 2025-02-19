@@ -10,7 +10,7 @@ class Stabilizer:
     def stabilize(self):
         self._count += 1
         rollAngle, pitchAngle = self._motionTrackingDevice.get_roll_and_pitch()
-
+        print(f"Roll angle: {rollAngle}, Pitch angle: {pitchAngle}")
         if abs(rollAngle) > self._rollTreshold:
             print("Roll angle is too high")
         elif abs(pitchAngle) > self._pitchTreshold:
