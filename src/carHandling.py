@@ -160,8 +160,10 @@ class CarHandling(RoboObject):
             self._motorDriver.turn_right()
         elif direction == "Neutral":
             self._motorDriver.neutral()
-        elif direction == "Stop":
+        elif direction == "Stopped":
             self._motorDriver.stop()
+
+        self._adjust_direction_value(direction)
 
     def _check_argument_validity(self, pins: list[int], userCommands: dict[str, str], **kwargs) -> None:
         super()._check_argument_validity(pins, userCommands, **kwargs)
