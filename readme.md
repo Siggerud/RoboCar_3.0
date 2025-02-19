@@ -301,7 +301,7 @@ VCC -> 5V <br />
 GND -> GND <br />
 SDA -> GPIO 3 (SDA) <br />
 SCL -> GPIO 5 (SCL) <br />
-=======
+
 #### Raspberry pi to horizontal servo
 GPIO 37 -> SignalWire <br />
 3.3V -> + <br />
