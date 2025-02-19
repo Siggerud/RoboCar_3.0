@@ -297,6 +297,7 @@ L289 VMS -> Batterypack +-<br />
 L289 GND -> Batterypack -
 
 #### MPU6050 to Raspberry pi
+TODO: check if this can be switched to 3.3V
 VCC -> 5V <br />
 GND -> GND <br />
 SDA -> GPIO 3 (SDA) <br />
