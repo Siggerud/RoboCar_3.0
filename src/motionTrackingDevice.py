@@ -27,7 +27,7 @@ class MotionTrackingDevice:
         self._errorRoll: float = 0
         self._errorPitch: float = 0
 
-        self._confidenceFactor: float = 0.92
+        self._confidenceFactor: float = 0.93
         self._errorFactor: float = 0.01
 
         self._count = 0
