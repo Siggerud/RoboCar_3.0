@@ -215,7 +215,7 @@ python setup/speechRecognitionSetup.py
 
 If the output is what you communicated, the speech recognition works.
 
-### Setup gyro and accelerometer
+### Setup mpu6050 (gyro and accerelometer) and servos
 #### Enable I2C
 ```
 sudo raspi-config
@@ -240,6 +240,11 @@ try to adjust the car too soon or too late, so you can specify an offset in the 
 file. The easiest way to this is by running the command below.
 ```
 python setAngleOffsets.py
+```
+
+#### Install servo library
+```
+pip install adafruit-circuitpython-servokit
 ```
 
 ### Add changes to config file if necessary
