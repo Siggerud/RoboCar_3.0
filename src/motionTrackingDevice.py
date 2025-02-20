@@ -63,8 +63,8 @@ class MotionTrackingDevice:
         self._pitchComp = pitchAccel * (1 - self._confidenceFactor) + (self._pitchComp + pitchGyroAngleDelta) * self._confidenceFactor
 
         # calculate the steady state error values
-        self._errorRoll = self._errorRoll + (self._rollAccelAngle - self._rollComp) * self._tLoop
-        self._errorPitch = self._errorPitch + (self._pitchAccelAngle - self._pitchComp) * self._tLoop
+        #self._errorRoll = self._errorRoll + (self._rollAccelAngle - self._rollComp) * self._tLoop
+        #self._errorPitch = self._errorPitch + (self._pitchAccelAngle - self._pitchComp) * self._tLoop
 
         tStop: float = time()
         self._tLoop = tStop - tStart
