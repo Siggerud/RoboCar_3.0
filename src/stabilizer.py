@@ -16,7 +16,7 @@ class Stabilizer:
         rollAngle, pitchAngle = self._motionTrackingDevice.get_roll_and_pitch()
         if self._count % 10 == 0:
             print(f"Roll angle: {self._maxRoll}, Pitch angle: {self._maxPitch}")
-        if count > 100:
+        if self._count > 100:
             if abs(rollAngle) > self._maxRoll:
                 self._maxRoll = abs(rollAngle)
 
