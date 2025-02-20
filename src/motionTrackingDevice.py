@@ -57,12 +57,7 @@ class MotionTrackingDevice:
         rollGyroAngleDelta: float = xGyro * self._tLoop
         pitchGyroAngleDelta: float = yGyro * self._tLoop
 
-        # calculate the complimentary angles based on data from both the accelerometer and the gyro data. We use
-        # the low pass filter as a complimentary filter in this case
-        #self._rollComp = RobocarHelper.low_pass_filter((self._rollComp + rollGyroAngleDelta), self._rollAccelAngle,
-        #                                              self._confidenceFactor) + self._errorRoll * self._errorFactor
-        #self._pitchComp = RobocarHelper.low_pass_filter((self._pitchComp + pitchGyroAngleDelta), self._pitchAccelAngle,
-        #                                              self._confidenceFactor) + self._errorPitch * self._errorFactor
+        # calculate the complimentary angles based on data from both the accelerometer and the gyro data
         self._rollComp = self._rollAccelAngle * (1 - self._confidenceFactor) + (self._rollComp + rollGyroAngleDelta) * self._confidenceFactor + self._errorRoll * self._errorFactor
         self._pitchComp = self._pitchAccelAngle * (1 - self._confidenceFactor) + (self._pitchComp + pitchGyroAngleDelta) * self._confidenceFactor + self._errorPitch * self._errorFactor
 
