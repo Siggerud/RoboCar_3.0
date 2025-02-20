@@ -27,7 +27,7 @@ class MotionTrackingDevice:
         self._errorRoll: float = 0
         self._errorPitch: float = 0
 
-        self._confidenceFactor: float = 0.08
+        self._confidenceFactor: float = 0.9
         self._errorFactor: float = 0.01
 
         self._count = 0
@@ -63,8 +63,8 @@ class MotionTrackingDevice:
         #                                              self._confidenceFactor) + self._errorRoll * self._errorFactor
         #self._pitchComp = RobocarHelper.low_pass_filter((self._pitchComp + pitchGyroAngleDelta), self._pitchAccelAngle,
         #                                              self._confidenceFactor) + self._errorPitch * self._errorFactor
-        self._rollComp = rollAccel * (1 - self._confidenceFactor) + (self._rollComp + rollGyroAngleDelta) * self._confidenceFactor
-        self._pitchComp = pitchAccel * (1 - self._confidenceFactor) + (self._pitchComp + pitchGyroAngleDelta) * self._confidenceFactor
+        self._rollComp = self._rollAccelAngle * (1 - self._confidenceFactor) + (self._rollComp + rollGyroAngleDelta) * self._confidenceFactor
+        self._pitchComp = self._pitchAccelAngle * (1 - self._confidenceFactor) + (self._pitchComp + pitchGyroAngleDelta) * self._confidenceFactor
 
         # calculate the steady state error values
         self._errorRoll = self._errorRoll + (self._rollAccelAngle - self._rollComp) * self._tLoop
