@@ -27,7 +27,7 @@ class MotionTrackingDevice:
         self._errorRoll: float = 0
         self._errorPitch: float = 0
 
-        self._confidenceFactor: float = 0.95
+        self._confidenceFactor: float = 0.92
         self._errorFactor: float = 0.01
 
         self._count = 0
@@ -59,13 +59,8 @@ class MotionTrackingDevice:
 
         # calculate the complimentary angles based on data from both the accelerometer and the gyro data. We use
         # the low pass filter as a complimentary filter in this case
-        #self._rollComp = RobocarHelper.low_pass_filter((self._rollComp + rollGyroAngleDelta), self._rollAccelAngle,
-         #                                              self._confidenceFactor) + self._errorRoll * self._errorFactor
-        #self._pitchComp = RobocarHelper.low_pass_filter((self._pitchComp + pitchGyroAngleDelta), self._pitchAccelAngle,
-          #                                              self._confidenceFactor) + self._errorPitch * self._errorFactor
-        self._rollComp = rollAccel * 0.1 + (self._rollComp + rollGyroAngleDelta) * 0.9
-        self._pitchComp = pitchAccel * 0.1 + (self._pitchComp + pitchGyroAngleDelta) * 0.9
-
+        self._rollComp = rollAccel * (1 - self._confidenceFactor) + (self._rollComp + rollGyroAngleDelta) * self._confidenceFactor
+        self._pitchComp = pitchAccel * (1 - self._confidenceFactor) + (self._pitchComp + pitchGyroAngleDelta) * self._confidenceFactor
 
         # calculate the steady state error values
         self._errorRoll = self._errorRoll + (self._rollAccelAngle - self._rollComp) * self._tLoop
