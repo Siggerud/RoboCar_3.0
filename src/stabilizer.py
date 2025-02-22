@@ -1,5 +1,6 @@
 from motionTrackingDevice import MotionTrackingDevice
 from adafruit_servokit import ServoKit
+import RPi.GPIO as GPIO
 
 class Stabilizer:
     def __init__(self, motionTrackingDevice: MotionTrackingDevice, rollTreshold: int, pitchTreshold: int):
@@ -7,13 +8,17 @@ class Stabilizer:
         self._rollTreshold = rollTreshold
         self._pitchTreshold = pitchTreshold
         self._count = 0
-
+        print(f"before servokit: {GPIO.getmode()}")
         self._kit = ServoKit(channels=16)
-
+        print(f"after servokit: {GPIO.getmode()}")
         self._overRollTreshold = False
         self._overPitchTreshold = False
         self._maxRoll = 0
         self._maxPitch = 0
+
+    def setup(self):
+        pass
+        #TODO: add a seperate class for the servo setup
 
     def stabilize(self):
         self._count += 1
