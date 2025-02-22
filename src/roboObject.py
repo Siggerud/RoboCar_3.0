@@ -37,8 +37,8 @@ class RoboObject:
     def _check_if_pins_are_valid(self, pins: list[int]) -> None:
         for pin in pins:
             # check that the pin number is a valid pin number
-            #if pin not in self._boardPins:
-            #    raise InvalidPinException(f"Pin argument '{pin}' is not a valid pin number")
+            if pin not in self._boardPins:
+                raise InvalidPinException(f"Pin argument '{pin}' is not a valid pin number")
 
             # check that pin has not already been specified by another robo object class
             if pin in self._boardPinsInUse:

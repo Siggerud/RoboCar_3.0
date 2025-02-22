@@ -16,7 +16,10 @@ class Stabilizer:
         self._maxPitch = 0
 
     def setup(self):
+        # this import sets GPIO mode to BCM, so to avoid interfering with other processes, it's
+        # better to import it after initialization
         from adafruit_servokit import ServoKit
+
         self._kit = ServoKit(channels=16)
 
     def stabilize(self):

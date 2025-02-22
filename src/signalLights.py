@@ -12,9 +12,9 @@ class SignalLights(RoboObject):
         )
 
         self._lightPins: dict = {
-            "green": RobocarHelper.get_board_to_bcm_pins()[greenLightPin],
-            "yellow": RobocarHelper.get_board_to_bcm_pins()[yellowLightPin],
-            "red": RobocarHelper.get_board_to_bcm_pins()[redLightPin]
+            "green": greenLightPin,
+            "yellow": yellowLightPin,
+            "red": redLightPin
         }
         self._blinkTime: float = blinkTime
 
