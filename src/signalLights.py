@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from time import sleep
 from roboObject import RoboObject
+from roboCarHelper import RobocarHelper
 
 class SignalLights(RoboObject):
     def __init__(self, greenLightPin: int, yellowLightPin: int, redLightPin: int, blinkTime: float):
@@ -11,9 +12,9 @@ class SignalLights(RoboObject):
         )
 
         self._lightPins: dict = {
-            "green": greenLightPin,
-            "yellow": yellowLightPin,
-            "red": redLightPin
+            "green": RobocarHelper.get_board_to_bcm_pins()[greenLightPin],
+            "yellow": RobocarHelper.get_board_to_bcm_pins()[yellowLightPin],
+            "red": RobocarHelper.get_board_to_bcm_pins()[redLightPin]
         }
         self._blinkTime: float = blinkTime
 

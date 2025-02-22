@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-
+from roboCarHelper import RobocarHelper
 
 class MotorDriver:
     def __init__(self,
@@ -9,12 +9,12 @@ class MotorDriver:
                  rightForward: int,
                  enA: int,
                  enB: int):
-        self._leftBackward: int = leftBackward
-        self._leftForward: int = leftForward
-        self._rightBackward: int = rightBackward
-        self._rightForward: int = rightForward
-        self._enA: int = enA
-        self._enB: int = enB
+        self._leftBackward: int = RobocarHelper.get_board_to_bcm_pins()[leftBackward]
+        self._leftForward: int = RobocarHelper.get_board_to_bcm_pins()[leftForward]
+        self._rightBackward: int = RobocarHelper.get_board_to_bcm_pins()[rightBackward]
+        self._rightForward: int = RobocarHelper.get_board_to_bcm_pins()[rightForward]
+        self._enA: int = RobocarHelper.get_board_to_bcm_pins()[enA]
+        self._enB: int = RobocarHelper.get_board_to_bcm_pins()[enB]
 
         self._pwmA = None
         self._pwmB = None

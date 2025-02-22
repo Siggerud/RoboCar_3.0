@@ -76,7 +76,7 @@ class CarControl:
         process.start()
 
     def _GPIO_Process(self, func, *args) -> None:
-        GPIO.setmode(GPIO.BOARD) # set GPIO mode as BOARD for all classes using GPIO pins
+        #GPIO.setmode(GPIO.BOARD) # set GPIO mode as BOARD for all classes using GPIO pins
         GPIO.setwarnings(False) # disable GPIO warnings
         func(*args) # call parameter method
         GPIO.cleanup() # cleanup all classes using GPIO pins

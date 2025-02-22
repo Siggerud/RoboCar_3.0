@@ -7,7 +7,7 @@ class Buzzer(RoboObject):
     def __init__(self, buzzerPin: int, defaultHonkTime: float, maxHonkTime: float, userCommands: dict, **kwargs):
         super().__init__([buzzerPin], userCommands, defaultHonkTime=defaultHonkTime, maxHonkTime=maxHonkTime)
         
-        self._buzzerPin: int = buzzerPin
+        self._buzzerPin: int = RobocarHelper.get_board_to_bcm_pins()[buzzerPin]
         self._defaultHonkTime: float = defaultHonkTime
         self._maxHonkTime: float = maxHonkTime
 
