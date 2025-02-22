@@ -4,7 +4,7 @@ from roboCarHelper import RobocarHelper
 class Servo:
     pi = pigpio.pi()
 
-    def __init__(self, pin: int, boardMode: str = "BCM"):
+    def __init__(self, pin: int, boardMode: str = "BOARD"):
         self._servoPin: int = self._get_servo_pin(pin, boardMode)
 
         self._pwmAbsoluteMin: int = 500  # value all the way to the right or down
