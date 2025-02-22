@@ -10,8 +10,8 @@ class Buzzer(GPIOObject):
         super().setup([self._buzzPin])
 
     def start_buzzing(self):
-        GPIO.output(self._buzzPin, GPIO.HIGH)
+        self._set_pin_low(self._buzzPin)
 
     def stop_buzzing(self):
-        GPIO.output(self._buzzPin, GPIO.LOW)
+        self._set_pin_high(self._buzzPin)
 

@@ -31,8 +31,8 @@ class MotorDriver(GPIOObject):
                        self._enB]
                       )
 
-        self._pwmA = GPIO.PWM(self._enA, 100)
-        self._pwmB = GPIO.PWM(self._enB, 100)
+        self._pwmA = self._get_pwm_pin(self._enA, 100)
+        self._pwmB = self._get_pwm_pin(self._enB, 100)
 
         self._pwmA.start(startSpeed)
         self._pwmB.start(startSpeed)
@@ -46,34 +46,34 @@ class MotorDriver(GPIOObject):
             pwm.ChangeDutyCycle(speed)
 
     def drive(self):
-        GPIO.output(self._leftForward, GPIO.HIGH)
-        GPIO.output(self._rightForward, GPIO.HIGH)
-        GPIO.output(self._leftBackward, GPIO.LOW)
-        GPIO.output(self._rightBackward, GPIO.LOW)
+        self._set_pin_high(self._leftForward)
+        self._set_pin_high(self._rightForward)
+        self._set_pin_low(self._leftBackward)
+        self._set_pin_low(self._rightBackward)
 
     def reverse(self):
-        GPIO.output(self._leftForward, GPIO.LOW)
-        GPIO.output(self._rightForward, GPIO.LOW)
-        GPIO.output(self._leftBackward, GPIO.HIGH)
-        GPIO.output(self._rightBackward, GPIO.HIGH)
+        self._set_pin_low(self._leftForward)
+        self._set_pin_low(self._rightForward)
+        self._set_pin_high(self._leftBackward)
+        self._set_pin_high(self._rightBackward)
 
     def turn_left(self):
-        GPIO.output(self._leftForward, GPIO.HIGH)
-        GPIO.output(self._rightForward, GPIO.LOW)
-        GPIO.output(self._leftBackward, GPIO.LOW)
-        GPIO.output(self._rightBackward, GPIO.HIGH)
+        self._set_pin_high(self._leftForward)
+        self._set_pin_low(self._rightForward)
+        self._set_pin_low(self._leftBackward)
+        self._set_pin_high(self._rightBackward)
 
     def turn_right(self):
-        GPIO.output(self._leftForward, GPIO.LOW)
-        GPIO.output(self._rightForward, GPIO.HIGH)
-        GPIO.output(self._leftBackward, GPIO.HIGH)
-        GPIO.output(self._rightBackward, GPIO.LOW)
+        self._set_pin_low(self._leftForward)
+        self._set_pin_high(self._rightForward)
+        self._set_pin_high(self._leftBackward)
+        self._set_pin_low(self._rightBackward)
 
     def stop(self):
-        GPIO.output(self._leftForward, GPIO.LOW)
-        GPIO.output(self._rightForward, GPIO.LOW)
-        GPIO.output(self._leftBackward, GPIO.LOW)
-        GPIO.output(self._rightBackward, GPIO.LOW)
+        self._set_pin_low(self._leftForward)
+        self._set_pin_low(self._rightForward)
+        self._set_pin_low(self._leftBackward)
+        self._set_pin_low(self._rightBackward)
 
     def cleanup(self) -> None:
         self._pwmA.stop()
