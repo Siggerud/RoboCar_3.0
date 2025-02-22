@@ -11,7 +11,7 @@ from motorDriver import MotorDriver
 from os import path
 from signalLights import SignalLights
 from audioHandler import AudioHandler
-from buzzer import Buzzer
+from honkHandling import HonkHandling
 from stabilizer import Stabilizer
 from motionTrackingDevice import MotionTrackingDevice, MotionTrackingDeviceException
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException, X11ForwardingException, MicrophoneException
@@ -91,28 +91,28 @@ def setup_camera_helper(parser, *args):
     return cameraHelper
 
 
-def setup_buzzer(parser) -> Buzzer:
-    buzzerSpecs = parser["Buzzer.specs"]
+def setup_honk_handling(parser) -> HonkHandling:
+    honkSpecs = parser["Honk.specs"]
 
     try:
-        pin: int = buzzerSpecs.getint("pin")
-        defaultHonkTime: float = buzzerSpecs.getfloat("default_buzz_time")
-        maxHonkTime: float = buzzerSpecs.getfloat("max_buzz_time")
+        pin: int = honkSpecs.getint("pin")
+        defaultHonkTime: float = honkSpecs.getfloat("default_honk_time")
+        maxHonkTime: float = honkSpecs.getfloat("max_honk_time")
     except ValueError as e:
         print_error_message_and_exit(e)
 
-    buzzCommands = parser["Buzzer.commands"]
+    honkCommands = parser["Honk.commands"]
     commands: dict = {
-        "buzzCommand": buzzCommands["buzz"],
-        "buzzForSpecifiedTimeCommand": buzzCommands["buzz_for_specified_time"]
+        "honkCommand": honkCommands["honk"],
+        "honkForSpecifiedTimeCommand": honkCommands["honk_for_specified_time"]
     }
 
     try:
-        buzzer = Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
+        honk_handler = HonkHandling(pin, defaultHonkTime, maxHonkTime, commands)
     except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
         print_error_message_and_exit(e)
 
-    return buzzer
+    return honk_handler
 
 
 def setup_servo(parser):
@@ -285,7 +285,7 @@ def setup_command_handler(parser, camera):
     servo = setup_servo(parser)
 
     # setup honk
-    honk = setup_buzzer(parser)
+    honk = setup_honk_handling(parser)
 
     # enable objects in camera class
     camera.set_car_enabled()

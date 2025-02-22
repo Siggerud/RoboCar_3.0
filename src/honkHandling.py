@@ -1,63 +1,53 @@
-import RPi.GPIO as GPIO
 from time import sleep
 from roboCarHelper import RobocarHelper
 from roboObject import RoboObject
+from buzzer import Buzzer
 
-class Buzzer(RoboObject):
+class HonkHandling(RoboObject):
     def __init__(self, buzzerPin: int, defaultHonkTime: float, maxHonkTime: float, userCommands: dict, **kwargs):
         super().__init__([buzzerPin], userCommands, defaultHonkTime=defaultHonkTime, maxHonkTime=maxHonkTime)
         
-        self._buzzerPin: int = buzzerPin
+        self._buzzer: Buzzer = Buzzer(buzzerPin)
         self._defaultHonkTime: float = defaultHonkTime
         self._maxHonkTime: float = maxHonkTime
 
-        self._buzzCommand: dict[str: dict] = {userCommands["buzzCommand"]: {"description": "Starts honking"}}
-        self._buzzForSpecifiedTimeCommands: dict[str: float] = self._set_honk_for_specified_time_commands(userCommands["buzzForSpecifiedTimeCommand"])
+        self._honkCommand: dict[str: dict] = {userCommands["honkCommand"]: {"description": "Starts honking"}}
+        self._honkForSpecifiedTimeCommands: dict[str: float] = self._set_honk_for_specified_time_commands(userCommands["honkForSpecifiedTimeCommand"])
 
         # mainly for printing at startup
         self._variableCommands: dict[str: dict] = {
-            userCommands["buzzForSpecifiedTimeCommand"].replace("param", "time"): {
+            userCommands["honkForSpecifiedTimeCommand"].replace("param", "time"): {
                 "description": "Honks for the specified time"
             }
         }
 
     def setup(self) -> None:
-        GPIO.setup(self._buzzerPin, GPIO.OUT)
+        self._buzzer.setup()
 
     def get_command_validity(self, command: str) -> str:
         return "valid" # honking commands are always valid
 
-    """
-    Handles voice commands for the buzzer.
-
-    This method processes the given voice command and triggers the buzzer to honk
-    for a specified duration based on the command.
-
-    Parameters:
-    command (str): The voice command to be processed. It can be one of the predefined
-                   commands to start honking or honk for a specified time.
-    """
     def handle_voice_command(self, command: str) -> None:
-        if command in self._buzzCommand:
+        if command in self._honkCommand:
             honkTime: float = self._defaultHonkTime
-        elif command in self._buzzForSpecifiedTimeCommands:
-            honkTime: float = self._buzzForSpecifiedTimeCommands[command]
-        self._buzz(honkTime)
+        elif command in self._honkForSpecifiedTimeCommands:
+            honkTime: float = self._honkForSpecifiedTimeCommands[command]
+        self._honk(honkTime)
 
     def print_commands(self) -> None:
-        allDictsWithCommands: dict = {**self._buzzCommand, **self._variableCommands}
+        allDictsWithCommands: dict = {**self._honkCommand, **self._variableCommands}
         title: str = "Honk commands:"
         self._print_commands(title, allDictsWithCommands)
 
     def get_voice_commands(self) -> list[str]:
-        return RobocarHelper.chain_together_dict_keys([self._buzzCommand,
-                                                       self._buzzForSpecifiedTimeCommands]
+        return RobocarHelper.chain_together_dict_keys([self._honkCommand,
+                                                       self._honkForSpecifiedTimeCommands]
                                                       )
 
-    def _buzz(self, honkTime: float) -> None:
-        GPIO.output(self._buzzerPin, GPIO.HIGH)
+    def _honk(self, honkTime: float) -> None:
+        self._buzzer.start_buzzing()
         sleep(honkTime)
-        GPIO.output(self._buzzerPin, GPIO.LOW)
+        self._buzzer.stop_buzzing()
 
     def _set_honk_for_specified_time_commands(self, userCommand: str) -> dict[str, float]:
         honkTime: float = 0.1
