@@ -1,4 +1,4 @@
-from RoboCarHelper import RoboCarHelper
+from roboCarHelper import RobocarHelper
 import RPi.GPIO as GPIO
 from typing import Optional
 
@@ -11,9 +11,9 @@ class GPIOObject:
 
         for pin in outPins:
             if self._boardMode == "BOARD" and setBoardMode == "BCM":
-                pin = RoboCarHelper.get_board_to_bcm_pins(pin)
+                pin = RobocarHelper.get_board_to_bcm_pins(pin)
             elif self._boardMode == "BCM" and setBoardMode == "BOARD":
-                pin = RoboCarHelper.get_bcm_to_board_pins(pin)
+                pin = RobocarHelper.get_bcm_to_board_pins(pin)
             GPIO.setup(pin, GPIO.OUT)
 
     def _get_board_mode(self) -> Optional[str]:

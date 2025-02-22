@@ -19,7 +19,7 @@ class Servo:
         if boardMode == "BCM":
             return pin
         elif boardMode == "BOARD":
-            return RobocarHelper.get_board_to_bcm_pins()[pin]
+            return RobocarHelper.get_board_to_bcm_pins(pin)
 
     def setup(self) -> None:
         self.pi.set_mode(self._servoPin, pigpio.OUTPUT)
@@ -34,7 +34,7 @@ class Servo:
 
     @property
     def servoPin(self) -> int:
-        return RobocarHelper.get_bcm_to_board_pins()[self._servoPin]
+        return RobocarHelper.get_bcm_to_board_pins(self._servoPin)
 
     @property
     def current_angle(self) -> int:

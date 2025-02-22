@@ -5,14 +5,14 @@ class RobocarHelper:
         pass
 
     @staticmethod
-    def get_board_to_bcm_pins():
+    def get_board_to_bcm_pins(pin: int) -> int:
         piPins = RaspberryPiPins()
-        return {boardPin: bcmPin for boardPin, bcmPin in zip(piPins.boardPins, piPins.bcmPins)}
+        return {boardPin: bcmPin for boardPin, bcmPin in zip(piPins.boardPins, piPins.bcmPins)}[pin]
 
     @staticmethod
-    def get_bcm_to_board_pins():
+    def get_bcm_to_board_pins(pin: int) -> int:
         piPins = RaspberryPiPins()
-        return {bcmPin: boardPin for boardPin, bcmPin in zip(piPins.boardPins, piPins.bcmPins)}
+        return {bcmPin: boardPin for boardPin, bcmPin in zip(piPins.boardPins, piPins.bcmPins)}[pin]
 
     @staticmethod
     def low_pass_filter(previousValue: float, currentValue: float, confidenceFactor:float=0.1) -> float:
