@@ -67,6 +67,6 @@ class HonkHandling(RoboObject):
 
         self._check_if_num_is_greater_than_or_equal_to_number(kwargs["maxHonkTime"], 0,"max honk time")
 
-        self._check_for_placeholder_in_command(userCommands["buzzForSpecifiedTimeCommand"])
+        self._check_for_placeholder_in_command(userCommands["honkForSpecifiedTimeCommand"])
 
 
