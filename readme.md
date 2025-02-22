@@ -278,14 +278,12 @@ of your choice.
 ```
 python src/run.py
 ```
-5. Press button to start car
 
 ## Driving and controlling the car
 Give the commands given in the startup message when running the program.
 
 ### Exiting the program
-Give the exit command given in the start up message to return to stand by mode. To start car again just press the
-button again. To exit completely, press Ctrl + C.
+Give the exit command given in the start up message to return to stand by mode. To exit completely, press Ctrl + C.
 
 ## Appendix
 
@@ -325,6 +323,12 @@ GND -> GND <br />
 SDA -> GPIO 3 (SDA) <br />
 SCL -> GPIO 5 (SCL) <br />
 
+### PCA9685 to Raspberry pi
+VCC -> 5V <br />
+GND -> GND <br />
+SDA -> GPIO 3 (SDA) <br />
+SCL -> GPIO 5 (SCL) <br />
+
 #### Raspberry pi to horizontal servo
 GPIO 37 -> SignalWire <br />
 3.3V -> + <br />
@@ -355,9 +359,7 @@ Red LED<br />
 GPIO 29 -> +<br />
 GND -> -<br />
 
-#### Raspberry pi to button
-GPIO 38 -> button <br />
-GND -> button <br />
+
 
 ### Parts list
 
@@ -380,7 +382,6 @@ Breadboard <br />
 1 yellow LED light <br />
 1 red LED light<br />
 3 330 Ohm resistor<br />
-1 button
 
 #### Structural components
 3D printed parts <br />
