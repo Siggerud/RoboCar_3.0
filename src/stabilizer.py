@@ -1,6 +1,6 @@
 from motionTrackingDevice import MotionTrackingDevice
-
 import RPi.GPIO as GPIO
+from pca9685 import Pca9685
 
 class Stabilizer:
     def __init__(self, motionTrackingDevice: MotionTrackingDevice, rollTreshold: int, pitchTreshold: int):
@@ -9,8 +9,7 @@ class Stabilizer:
         self._pitchTreshold = pitchTreshold
         self._count = 0
         print(f"before servokit: {GPIO.getmode()}")
-        from adafruit_servokit import ServoKit
-        self._kit = ServoKit(channels=16)
+        self._kit = None
         print(f"after servokit: {GPIO.getmode()}")
         self._overRollTreshold = False
         self._overPitchTreshold = False
@@ -18,7 +17,7 @@ class Stabilizer:
         self._maxPitch = 0
 
     def setup(self):
-        pass
+        self._kit = Pca9685()
         #TODO: add a seperate class for the servo setup
 
     def stabilize(self):
@@ -32,27 +31,27 @@ class Stabilizer:
         if abs(rollAngle) > self._rollTreshold:
             if self._overRollTreshold == False:
                 print("Roll angle is too high")
-                self._kit.servo[0].angle = 45
-                self._kit.servo[1].angle = 45
+                self._kit.kit.servo[0].angle = 45
+                self._kit.kit.servo[1].angle = 45
                 self._overRollTreshold = True
         else:
             if self._overRollTreshold == True:
                 print("Roll angle back to ok levels")
-                self._kit.servo[0].angle = 90
-                self._kit.servo[1].angle = 90
+                self._kit.kit.servo[0].angle = 90
+                self._kit.kit.servo[1].angle = 90
                 self._overRollTreshold = False
 
         if abs(pitchAngle) > self._pitchTreshold:
             if self._overPitchTreshold == False:
-                self._kit.servo[2].angle = 45
-                self._kit.servo[3].angle = 45
+                self._kit.kit.servo[2].angle = 45
+                self._kit.kit.servo[3].angle = 45
                 print("Pitch angle is too high")
                 self._overPitchTreshold = True
         else:
             if self._overPitchTreshold == True:
                 print("Pitch angle back to ok levels")
-                self._kit.servo[2].angle = 90
-                self._kit.servo[3].angle = 90
+                self._kit.kit.servo[2].angle = 90
+                self._kit.kit.servo[3].angle = 90
                 self._overPitchTreshold = False
 
 
