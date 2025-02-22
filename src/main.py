@@ -321,8 +321,10 @@ commandHandler = setup_command_handler(parser, camera)
 
 audioHandler = setup_audio_handler(parser)
 audioHandler.setup(commandHandler.queue)
-
+import RPi.GPIO as GPIO
+print(f"Main: before stabilizer: {GPIO.getmode()}")
 stabilizer = setup_stabilizer()
+print(f"Main: after stabilizer: {GPIO.getmode()}")
 
 # setup car controller
 try:
