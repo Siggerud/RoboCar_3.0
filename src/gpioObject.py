@@ -16,7 +16,7 @@ class GPIOObject:
             GPIO.setup(self._pinMap[pin], GPIO.OUT)
 
     def _get_pwm_pin(self, pin: int, frequency: int) -> GPIO.PWM:
-        GPIO.PWM(self._pinMap[pin], frequency)
+        return GPIO.PWM(self._pinMap[pin], frequency)
 
     def _set_pin_low(self, pin: int) -> None:
         GPIO.output(self._pinMap[pin], GPIO.LOW)
