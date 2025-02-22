@@ -251,7 +251,7 @@ def setup_car(parser):
     return car
 
 
-def setup_stabilizer():
+def setup_stabilizer(parser):
     stabilizerSpecs = parser["Stabilizer"]
     rollAxis: str = stabilizerSpecs["roll_axis"]
     pitchAxis: str = stabilizerSpecs["pitch_axis"]
@@ -318,10 +318,8 @@ commandHandler = setup_command_handler(parser, camera)
 
 audioHandler = setup_audio_handler(parser)
 audioHandler.setup(commandHandler.queue)
-import RPi.GPIO as GPIO
-print(f"Main: before stabilizer: {GPIO.getmode()}")
-stabilizer = setup_stabilizer()
-print(f"Main: after stabilizer: {GPIO.getmode()}")
+
+stabilizer = setup_stabilizer(parser)
 
 # setup car controller
 try:
