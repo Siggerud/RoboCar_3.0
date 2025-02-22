@@ -62,24 +62,24 @@ pip install pip==22.3.1 --break-system-packages
 
 Install picamera2
 ```
-pip install picamera2
+pip install picamera2==0.3.22
 ```
 
 Install opencv-python
 ```
-pip install opencv-python
+pip install opencv-python==4.10.0.84
 ```
 
 Install pytest (Optional, only if you want to run tests)
 ```
-pip install pytest
+pip install pytest==8.3.4
 ```
 
 ### Setting up pigpio
 We need pigpio to control our servo, otherwise
 there will be a lot of jitter.
 ```
-sudo apt-get install pigpio 
+sudo apt-get install pigpio=1.79-1+rpt1
 ```
 
 Setup pipgio service to run at boot
@@ -159,9 +159,23 @@ Exit
 
 Install utilites for using headphones with Pi
 ```
-sudo apt install bluetooth bluez bluez-tools rfkill pulseaudio pavucontrol
+sudo apt install bluetooth=5.66-1+rpt1+deb12u2
 ```
-
+```
+sudo apt install bluez=5.66-1+rpt1+deb12u2
+```
+```
+sudo apt install bluez-tools=2.0~20170911.0.7cb788c-4
+```
+```
+sudo apt install rfkill=2.38.1-5+deb12u2
+```
+```
+sudo apt install pulseaudio=16.1+dfsg1-2+rpt1
+```
+```
+sudo apt install pavucontrol=5.0-2
+```
 Open PulseAudio Volume Control and mark your headphones as default
 for input and output device. In the configuration tab set the profile for your
 headphones to be HSF/HFP, this is to gain access to the build in microphone in the headphones.
@@ -177,18 +191,21 @@ If you get an error here, then check if you forgot to downgrade pip to 22.3.1
 
 Install SpeechRecognition dependencies
 ```
-sudo apt install portaudio19-dev python3-pyaudio
+sudo apt install portaudio19-dev=19.6.0-1.2
 ```
 ```
-pip install pyaudio
+sudo apt install python3-pyaudio=0.2.13-1+b1
 ```
 ```
-sudo apt install flac
+pip install pyaudio==0.2.13
+```
+```
+sudo apt install flac=1.4.2+ds-2
 ```
 
 Install sounddevice to avoid massive debug logging
 ```
-pip install sounddevice
+pip install sounddevice==0.5.1
 ```
 
 Run setup/microphoneDeviceIndex to find the index of your microphone. It should
@@ -225,7 +242,7 @@ Go to Interface options -> I2C -> Enable
 
 #### Install mpu6050 library for raspberry pi
 ```
-pip install mpu6050-raspberrypi
+pip install mpu6050-raspberrypi==1.2
 ```
 
 #### Set roll- and pitch axis in config file
@@ -244,7 +261,7 @@ python setAngleOffsets.py
 
 #### Install servo library
 ```
-pip install adafruit-circuitpython-servokit
+pip install adafruit-circuitpython-servokit==1.3.19
 ```
 
 ### Add changes to config file if necessary
