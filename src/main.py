@@ -298,9 +298,6 @@ def setup_command_handler(parser, camera):
     # setup signal lights
     signalLights = setup_signal_lights(parser)
 
-    # setup stabilizer
-    stabilizer = setup_stabilizer()
-
     exitCommand = parser["Global.commands"]["exit"]
 
     # set up command handler
