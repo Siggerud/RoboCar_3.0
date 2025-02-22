@@ -6,9 +6,9 @@ class GPIOObject:
     def __init__(self, boardMode: str):
         self._boardMode: str = boardMode
 
-    def setup(self, outPins: list) -> None:
+    def setup(self, outPins: list[int]) -> None:
         setBoardMode = self._get_board_mode()
-
+        print(setBoardMode)
         for pin in outPins:
             if self._boardMode == "BOARD" and setBoardMode == "BCM":
                 pin = RobocarHelper.get_board_to_bcm_pins(pin)
