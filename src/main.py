@@ -11,7 +11,7 @@ from motorDriver import MotorDriver
 from os import path
 from signalLights import SignalLights
 from audioHandler import AudioHandler
-from buzzer import Buzzer
+from honker import BuzzerHandler
 from stabilizer import Stabilizer
 from motionTrackingDevice import MotionTrackingDevice, MotionTrackingDeviceException
 from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException, X11ForwardingException, MicrophoneException
@@ -91,7 +91,7 @@ def setup_camera_helper(parser, *args):
     return cameraHelper
 
 
-def setup_buzzer(parser) -> Buzzer:
+def setup_buzzer(parser) -> BuzzerHandler:
     buzzerSpecs = parser["Buzzer.specs"]
 
     try:
@@ -108,7 +108,7 @@ def setup_buzzer(parser) -> Buzzer:
     }
 
     try:
-        buzzer = Buzzer(pin, defaultHonkTime, maxHonkTime, commands)
+        buzzer = BuzzerHandler(pin, defaultHonkTime, maxHonkTime, commands)
     except (OutOfRangeException, InvalidCommandException, InvalidPinException) as e:
         print_error_message_and_exit(e)
 
@@ -323,6 +323,7 @@ audioHandler = setup_audio_handler(parser)
 audioHandler.setup(commandHandler.queue)
 
 stabilizer = setup_stabilizer()
+
 
 # setup car controller
 try:

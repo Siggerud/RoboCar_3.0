@@ -4,8 +4,8 @@ from roboCarHelper import RobocarHelper
 class Servo:
     pi = pigpio.pi()
 
-    def __init__(self, pin: int):
-        self._servoPin: int = RobocarHelper.get_board_to_bcm_pins()[pin]
+    def __init__(self, pin: int, boardMode: str = "BCM"):
+        self._servoPin: int = self._get_servo_pin(pin, boardMode)
 
         self._pwmAbsoluteMin: int = 500  # value all the way to the right or down
         self._pwmAbsoluteMax: int = 2500  # value all the way to the left or up
@@ -13,6 +13,13 @@ class Servo:
         self._angleToPwm: dict = self._get_angle_mapped_to_pwm_values()
 
         self._current_angle: int = 0
+
+    # pigpio needs the pins to be set in BCM mode
+    def _get_servo_pin(self, pin: int, boardMode: str) -> int:
+        if boardMode == "BCM":
+            return pin
+        elif boardMode == "BOARD":
+            return RobocarHelper.get_board_to_bcm_pins()[pin]
 
     def setup(self) -> None:
         self.pi.set_mode(self._servoPin, pigpio.OUTPUT)

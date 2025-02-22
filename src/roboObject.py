@@ -1,5 +1,7 @@
 from exceptions import InvalidPinException, OutOfRangeException, InvalidCommandException
 from raspberryPiPins import RaspberryPiPins
+import RPi.GPIO as GPIO
+from typing import Optional
 
 class RoboObject:
     _boardPinsInUse: list[int] = []

@@ -7,6 +7,7 @@ from camera import Camera
 from commandHandler import CommandHandler
 from audioHandler import AudioHandler
 from exceptions import X11ForwardingException
+from typing import Optional
 
 class CarControl:
     def __init__(self, camera, commandHandler, audioHandler, stabilizer):
@@ -76,8 +77,9 @@ class CarControl:
         process.start()
 
     def _GPIO_Process(self, func, *args) -> None:
-        print(GPIO.getmode())
-        GPIO.setmode(GPIO.BOARD) # set GPIO mode as BOARD for all classes using GPIO pins
+        mode = self._get_gpio_mode() # if a dependency has already set the GPIO mode, don't set it again
+        if not mode:
+            GPIO.setmode(GPIO.BOARD) # set GPIO mode as BOARD for all classes using GPIO pins
         GPIO.setwarnings(False) # disable GPIO warnings
         func(*args) # call parameter method
         GPIO.cleanup() # cleanup all classes using GPIO pins
@@ -106,6 +108,18 @@ class CarControl:
             flag.value = True
         finally:
             self._camera.cleanup()
+
+    def _get_gpio_mode(self) -> Optional[int]:
+        modes: dict[int: int] = {
+            10: GPIO.BOARD,
+            11: GPIO.BCM
+        }
+
+        setMode = GPIO.getmode()
+        if setMode:
+            return modes[setMode]
+        else:
+            return None
 
     def _check_if_X11_connected(self) -> None:
         treshold: int = 5

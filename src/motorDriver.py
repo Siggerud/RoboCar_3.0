@@ -1,31 +1,35 @@
 import RPi.GPIO as GPIO
+from gpioObject import GPIOObject
 
-
-class MotorDriver:
+class MotorDriver(GPIOObject):
     def __init__(self,
                  leftBackward: int,
                  leftForward: int,
                  rightBackward: int,
                  rightForward: int,
                  enA: int,
-                 enB: int):
+                 enB: int,
+                 boardMode: str = "BOARD"):
+        super().__init__(boardMode)
         self._leftBackward: int = leftBackward
         self._leftForward: int = leftForward
         self._rightBackward: int = rightBackward
         self._rightForward: int = rightForward
         self._enA: int = enA
         self._enB: int = enB
+        self._boardMode: str = boardMode
 
         self._pwmA = None
         self._pwmB = None
 
     def setup(self, startSpeed):
-        GPIO.setup(self._leftBackward, GPIO.OUT)
-        GPIO.setup(self._leftForward, GPIO.OUT)
-        GPIO.setup(self._rightBackward, GPIO.OUT)
-        GPIO.setup(self._rightForward, GPIO.OUT)
-        GPIO.setup(self._enA, GPIO.OUT)
-        GPIO.setup(self._enB, GPIO.OUT)
+        super().setup([self._leftBackward,
+                       self._leftForward,
+                       self._rightBackward,
+                       self._rightForward,
+                       self._enA,
+                       self._enB]
+                      )
 
         self._pwmA = GPIO.PWM(self._enA, 100)
         self._pwmB = GPIO.PWM(self._enB, 100)
