@@ -9,7 +9,7 @@ from exceptions import X11ForwardingException
 
 class CarControl:
     def __init__(self, camera, commandHandler, audioHandler):
-        self._check_if_X11_connected()
+        #self._check_if_X11_connected()
 
         self._camera: Camera = camera
         self._commandHandler: CommandHandler = commandHandler
