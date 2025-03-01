@@ -147,6 +147,8 @@ class CarHandling(RoboObject):
             self._change_speed()
 
     def _change_speed(self) -> None:
+        #TODO: assert that speed is between 0 and 100
+
         self._motorDriver.change_speed(self._speed)
 
     def _adjust_direction(self, direction) -> None:
@@ -158,8 +160,6 @@ class CarHandling(RoboObject):
             self._motorDriver.turn_left()
         elif direction == "Right":
             self._motorDriver.turn_right()
-        elif direction == "Neutral":
-            self._motorDriver.neutral()
         elif direction == "Stopped":
             self._motorDriver.stop()
 
