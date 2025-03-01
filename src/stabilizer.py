@@ -18,9 +18,10 @@ class Stabilizer:
     def setup(self):
         # this import sets GPIO mode to BCM, so to avoid interfering with other processes, it's
         # better to import it after initialization
-        from adafruit_servokit import ServoKit
+        #from adafruit_servokit import ServoKit
 
-        self._kit = ServoKit(channels=16)
+        #self._kit = ServoKit(channels=16)
+        pass
 
     def stabilize(self):
         self._count += 1
@@ -30,31 +31,31 @@ class Stabilizer:
             print(f"Max roll: {self._maxRoll}, Max pitch: {self._maxPitch}")
             print()
 
-        if abs(rollAngle) > self._rollTreshold:
-            if self._overRollTreshold == False:
-                print("Roll angle is too high")
-                self._kit.servo[0].angle = 45
-                self._kit.servo[1].angle = 45
-                self._overRollTreshold = True
-        else:
-            if self._overRollTreshold == True:
-                print("Roll angle back to ok levels")
-                self._kit.servo[0].angle = 90
-                self._kit.servo[1].angle = 90
-                self._overRollTreshold = False
-
-        if abs(pitchAngle) > self._pitchTreshold:
-            if self._overPitchTreshold == False:
-                self._kit.servo[2].angle = 45
-                self._kit.servo[3].angle = 45
-                print("Pitch angle is too high")
-                self._overPitchTreshold = True
-        else:
-            if self._overPitchTreshold == True:
-                print("Pitch angle back to ok levels")
-                self._kit.servo[2].angle = 90
-                self._kit.servo[3].angle = 90
-                self._overPitchTreshold = False
+        # if abs(rollAngle) > self._rollTreshold:
+        #     if self._overRollTreshold == False:
+        #         print("Roll angle is too high")
+        #         self._kit.servo[0].angle = 45
+        #         self._kit.servo[1].angle = 45
+        #         self._overRollTreshold = True
+        # else:
+        #     if self._overRollTreshold == True:
+        #         print("Roll angle back to ok levels")
+        #         self._kit.servo[0].angle = 90
+        #         self._kit.servo[1].angle = 90
+        #         self._overRollTreshold = False
+        #
+        # if abs(pitchAngle) > self._pitchTreshold:
+        #     if self._overPitchTreshold == False:
+        #         self._kit.servo[2].angle = 45
+        #         self._kit.servo[3].angle = 45
+        #         print("Pitch angle is too high")
+        #         self._overPitchTreshold = True
+        # else:
+        #     if self._overPitchTreshold == True:
+        #         print("Pitch angle back to ok levels")
+        #         self._kit.servo[2].angle = 90
+        #         self._kit.servo[3].angle = 90
+        #         self._overPitchTreshold = False
 
 
 
