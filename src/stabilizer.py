@@ -23,6 +23,8 @@ class Stabilizer:
     def setup(self):
         # this import sets GPIO mode to BCM, so to avoid interfering with other processes, it's
         # better to import it after initialization
+
+        #TODO: make a seperate pca9685 class
         from adafruit_servokit import ServoKit
 
         self._kit = ServoKit(channels=16)
