@@ -291,15 +291,14 @@ GND -> -
 #### Raspberry pi to LEDs
 Green LED<br />
 GPIO 32 -> +<br />
-GND -> -<br />
+GND -> 330 Ohm -> -<br />
 <br />
 Yellow LED<br />
 GPIO 31 -> +<br />
-GND -> -<br />
-
+GND -> 330 Ohm -> -<br />
 Red LED<br />
 GPIO 29 -> +<br />
-GND -> -<br />
+GND -> 330 Ohm -> -<br />
 
 #### Raspberry pi to button
 GPIO 38 -> button <br />
