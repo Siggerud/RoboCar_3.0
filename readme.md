@@ -270,11 +270,13 @@ L289 VMS -> Batterypack +-<br />
 L289 GND -> Batterypack -
 
 #### Raspberry pi to horizontal servo
+TODO: check if this can be switched to 5V
 GPIO 37 -> SignalWire <br />
 3.3V -> + <br />
 GND -> -
 
 #### Raspberry pi to vertical servo
+TODO: check if this can be switched to 5V
 GPIO 33 -> SignalWire <br />
 3.3V -> + <br />
 GND -> -
