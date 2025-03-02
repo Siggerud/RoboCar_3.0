@@ -14,7 +14,9 @@ from audioHandler import AudioHandler
 from honkHandling import HonkHandling
 from stabilizer import Stabilizer
 from motionTrackingDevice import MotionTrackingDevice, MotionTrackingDeviceException
-from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException, X11ForwardingException, MicrophoneException
+from exceptions import OutOfRangeException, InvalidCommandException, InvalidPinException, X11ForwardingException, \
+    MicrophoneException
+
 
 def print_error_message_and_exit(errorMessage):
     RobocarHelper.print_startup_error(errorMessage)
@@ -269,12 +271,25 @@ def setup_stabilizer(parser):
         "y": offsetY
     }
 
+    stabilizerServoChannels = parser["Stabilizer.servo.channels"]
+
+    # TODO: add validation check of channels, should be between 0 and 15 and unique
+    try:
+        stabilizerChannels: dict[str: int] = {
+            "frontRight": stabilizerServoChannels.getint("front_right"),
+            "frontLeft": stabilizerServoChannels.getint("front_left"),
+            "rearLeft": stabilizerServoChannels.getint("rear_left"),
+            "rearRight": stabilizerServoChannels.getint("rear_right")
+        }
+    except ValueError as e:
+        print_error_message_and_exit(e)
+
     try:
         motionTrackingDevice = MotionTrackingDevice(rollAxis, pitchAxis, offsets)
     except MotionTrackingDeviceException as e:
         print_error_message_and_exit(e)
 
-    return Stabilizer(motionTrackingDevice, rollTreshold, pitchTreshold)
+    return Stabilizer(motionTrackingDevice, rollTreshold, pitchTreshold, stabilizerChannels)
 
 
 def setup_command_handler(parser, camera):

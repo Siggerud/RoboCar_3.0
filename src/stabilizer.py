@@ -1,15 +1,20 @@
 from motionTrackingDevice import MotionTrackingDevice
-import RPi.GPIO as GPIO
+
 
 class Stabilizer:
-    def __init__(self, motionTrackingDevice: MotionTrackingDevice, rollTreshold: int, pitchTreshold: int):
-        self._motionTrackingDevice = motionTrackingDevice
-        self._rollTreshold = rollTreshold
-        self._pitchTreshold = pitchTreshold
+    def __init__(self,
+                 motionTrackingDevice: MotionTrackingDevice,
+                 rollTreshold: int,
+                 pitchTreshold: int,
+                 stabilizerChannels: dict[str, int]
+                 ):
+        self._motionTrackingDevice: MotionTrackingDevice = motionTrackingDevice
+        self._rollTreshold: int = rollTreshold
+        self._pitchTreshold: int = pitchTreshold
+        self._stabilizerChannels: dict[str: int] = stabilizerChannels
+
         self._count = 0
-        print(f"before servokit: {GPIO.getmode()}")
         self._kit = None
-        print(f"after servokit: {GPIO.getmode()}")
         self._overRollTreshold = False
         self._overPitchTreshold = False
         self._maxRoll = 0
@@ -30,33 +35,44 @@ class Stabilizer:
             print(f"Max roll: {self._maxRoll}, Max pitch: {self._maxPitch}")
             print()
 
-        if abs(rollAngle) > self._rollTreshold:
+        if rollAngle > self._rollTreshold:
             if self._overRollTreshold == False:
                 print("Roll angle is too high")
-                self._kit.servo[0].angle = 45
-                self._kit.servo[1].angle = 45
+                self._kit.servo[self._stabilizerChannels["frontRight"]].angle = 45
+                self._kit.servo[self._stabilizerChannels["rearRight"]].angle = 45
+                self._overRollTreshold = True
+        elif rollAngle < -self._rollTreshold:
+            if self._overRollTreshold == False:
+                print("Roll angle is too low")
+                self._kit.servo[self._stabilizerChannels["frontLeft"]].angle = 45
+                self._kit.servo[self._stabilizerChannels["rearLeft"]].angle = 45
                 self._overRollTreshold = True
         else:
             if self._overRollTreshold == True:
                 print("Roll angle back to ok levels")
-                self._kit.servo[0].angle = 90
-                self._kit.servo[1].angle = 90
+                self._kit.servo[self._stabilizerChannels["frontLeft"]].angle = 90
+                self._kit.servo[self._stabilizerChannels["frontRight"]].angle = 90
+                self._kit.servo[self._stabilizerChannels["rearLeft"]].angle = 90
+                self._kit.servo[self._stabilizerChannels["rearRight"]].angle = 90
                 self._overRollTreshold = False
 
-        if abs(pitchAngle) > self._pitchTreshold:
+        if pitchAngle > self._pitchTreshold:
             if self._overPitchTreshold == False:
-                self._kit.servo[2].angle = 45
-                self._kit.servo[3].angle = 45
+                self._kit.servo[self._stabilizerChannels["frontRight"]].angle = 45
+                self._kit.servo[self._stabilizerChannels["frontLeft"]].angle = 45
+                print("Pitch angle is too high")
+                self._overPitchTreshold = True
+        elif pitchAngle < -self._pitchTreshold:
+            if self._overPitchTreshold == False:
+                self._kit.servo[self._stabilizerChannels["rearRight"]].angle = 45
+                self._kit.servo[self._stabilizerChannels["rearLeft"]].angle = 45
                 print("Pitch angle is too high")
                 self._overPitchTreshold = True
         else:
             if self._overPitchTreshold == True:
                 print("Pitch angle back to ok levels")
-                self._kit.servo[2].angle = 90
-                self._kit.servo[3].angle = 90
+                self._kit.servo[self._stabilizerChannels["frontLeft"]].angle = 90
+                self._kit.servo[self._stabilizerChannels["frontRight"]].angle = 90
+                self._kit.servo[self._stabilizerChannels["rearLeft"]].angle = 90
+                self._kit.servo[self._stabilizerChannels["rearRight"]].angle = 90
                 self._overPitchTreshold = False
-
-
-
-
-

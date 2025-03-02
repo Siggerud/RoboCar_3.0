@@ -329,6 +329,12 @@ GND -> GND <br />
 SDA -> GPIO 3 (SDA) <br />
 SCL -> GPIO 5 (SCL) <br />
 
+#### PCA9685 channels to servos
+Channel 0 -> Front right <br />
+Channel 1 -> Rear left <br />
+Channel 2 -> Front left <br />
+Channel 3 -> Rear right <br />
+
 #### Raspberry pi to horizontal servo
 GPIO 37 -> SignalWire <br />
 3.3V -> + <br />
