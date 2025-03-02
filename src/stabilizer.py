@@ -37,6 +37,8 @@ class Stabilizer:
             print(f"Max roll: {self._maxRoll}, Max pitch: {self._maxPitch}")
             print()
 
+        # positive pitch angle is forward tilt
+        # positive roll angle is left tilt
         if rollAngle > self._rollTreshold:
             if self._overRollTreshold == False:
                 print("Roll angle is too high")
